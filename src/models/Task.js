@@ -1,8 +1,11 @@
 const { DataTypes } = require('sequelize')
 const { conn: sequelize } = require('../db')
 
-const Task = sequelize.define({
-  id: DataTypes.UUID,
+const Task = sequelize.define('Task', {
+  id: {
+    type: DataTypes.UUID,
+    primaryKey: true
+  },
   title: {
     type: DataTypes.STRING,
     allowNull: false,
