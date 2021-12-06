@@ -1,5 +1,7 @@
 require('dotenv').config()
 
+if (!process.env.SECRET) console.error('The SECRET env variable is not declared')
+
 const config = {
   dbUser: process.env.DB_USER || 'postgres',
   dbPassword: process.env.DB_PASSWORD || '1234',
@@ -8,8 +10,9 @@ const config = {
   dbPort: process.env.DB_PORT || '5432',
   dev: process.env.NODE_ENV !== 'production',
   port: process.env.API_PORT || '3001',
-  host: process.env.API_host || 'localhost',
+  host: process.env.API_HOST || 'localhost',
   cors: process.env.CORS || 'localhost:3000',
+  secret: process.env.SECRET
 }
 
 module.exports = config
