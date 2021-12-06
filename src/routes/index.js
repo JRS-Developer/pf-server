@@ -1,7 +1,7 @@
 const router = require('express').Router()
+const tasksRouter = require('./tasks')
 
-router.get('/hola', (req, res) => {
-  res.json({ message: 'hola' })
-})
+router.use('/tasks', tasksRouter)
 
 module.exports = router
+
