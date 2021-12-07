@@ -26,6 +26,7 @@ Materias.hasMany(Task)
 Task.belongsTo(Materias)
 // TODO: Añadir relaciones de tasks a students y teachers. (many-to-many)
 
+
 module.exports = {
   Task,
   Notes,
