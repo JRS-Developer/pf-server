@@ -139,7 +139,7 @@ import Profile from '../models/Profile';
             //se trae el nuevo rol por body
             const { role_id } = req.body
             //se busca el id del user a modificar por params
-            const { id } = req.params
+            const { id } = req.query
             
             //se hace el update en el modelo
             await User.update(
@@ -206,7 +206,7 @@ import Profile from '../models/Profile';
 
         try {
 
-            
+
 
             //en caso de haber error es manejado por el catch
         } catch (error){

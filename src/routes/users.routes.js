@@ -6,16 +6,21 @@ const  get_user_info,
     create_user, 
     user_delete, 
     user_role_set,
-    upDate_user
+    upDate_user,
+    get_roles,
+    create_roles,
+    upDate_roles
  = require('../controllers/usersController');
 
 
 router.get('/', get_user_info);
 router.get('/', user_info_by_role);
+router.get('/roles', get_roles);
 router.post('/', create_user);
+router.post('/roles', create_roles);
 router.delete('/:id', user_delete);
-router.put('/:id', user_role_set);
+router.put('/', user_role_set);
 router.put('/:id', upDate_user);
-
+router.put('/roles/:id', upDate_roles);
 
 module.exports = router;
