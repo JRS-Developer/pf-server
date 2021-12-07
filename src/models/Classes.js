@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize')
 const { conn: sequelize } = require('../db')
-const { Schools } = require('./')
 
 const Classes = sequelize.define('classes', {
   id: {

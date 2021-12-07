@@ -1,6 +1,6 @@
 const { Task } = require('../models')
 
-const getTasks = async (req, res) => {
+const getTasks = async (req, res, next) => {
   try {
     // Obtengo las tareas en base de la clase y materia
     const { class_id, materia_id } = req.body
@@ -10,32 +10,32 @@ const getTasks = async (req, res) => {
 
     return res.json(tasks)
   } catch (error) {
-    console.error(error)
+    next(error)
   }
 }
 
-const createTask = async (req, res) => {
+const createTask = async (req, res, next) => {
   try {
     const { title, description, end_date, teacher_id, class_id, materia_id } =
       req.body
     // TODO: añadir validaciones de datos
 
-    await Task.create(
+    await Task.create({
       title,
       description,
       end_date,
       teacher_id,
       class_id,
-      materia_id
-    )
+      materia_id,
+    })
 
     return res.json({ message: 'Task created successfully' })
   } catch (error) {
-    console.error(error)
+    next(error)
   }
 }
 
-const getTaskById = async (req, res) => {
+const getTaskById = async (req, res, next) => {
   try {
     const { id } = req.params
 
@@ -49,11 +49,11 @@ const getTaskById = async (req, res) => {
 
     return res.json(taskFound)
   } catch (error) {
-    console.error(error)
+    next(error)
   }
 }
 
-const updateTaskById = async (req, res) => {
+const updateTaskById = async (req, res, next) => {
   try {
     // Los unicos parametros que pueden ser cambiados son: title, description, y end_date
     const { title, description, end_date } = req.body
@@ -75,23 +75,19 @@ const updateTaskById = async (req, res) => {
       .status(400)
       .json({ message: 'There is not any task with that ID' })
   } catch (error) {
-    console.error(error)
+    next(error)
   }
 }
 
-const deleteTaskById = async (req, res) => {
+const deleteTaskById = async (req, res, next) => {
   try {
     const { id } = req.params
 
-    const deleted = await Task.destroy({ where: { id } })
+    await Task.destroy({ where: { id } })
 
-    if (deleted) return res.json({ message: 'Task deleted successfully' })
-
-    return res
-      .status(400)
-      .json({ message: 'There is not any task with that ID' })
+    return res.json({ message: 'Task deleted successfully' })
   } catch (error) {
-    console.error(error)
+    next(error)
   }
 }
 
@@ -100,5 +96,5 @@ module.exports = {
   createTask,
   getTaskById,
   updateTaskById,
-  deleteTaskById
+  deleteTaskById,
 }
