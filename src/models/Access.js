@@ -1,21 +1,21 @@
 const { DataTypes } = require('sequelize');
-import { conn } from '../db';
+const { conn } = require('../db');
 
 const Access = conn.define('access', {
-  id:{
+  id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
-  user_id:{
+  user_id: {
     type: DataTypes.UUID,
     allowNull: false
   },
-  module_id:{
+  module_id: {
     type: DataTypes.UUID,
     allowNull: false
   },
-  action_id:{
+  action_id: {
     type: DataTypes.UUID,
     allowNull: false
   }
@@ -23,4 +23,4 @@ const Access = conn.define('access', {
   timestamps: false
 });
 
-export default Access
+module.exports = Access

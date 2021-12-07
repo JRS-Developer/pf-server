@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize')
 const { conn: sequelize } = require('../db')
+const Schools = require('./Schools')
+const Materias = require('./Materias')
 
 const Classes = sequelize.define('classes', {
   id: {
@@ -11,5 +13,12 @@ const Classes = sequelize.define('classes', {
     allowNull: false,
   },
 })
+
+// School - Class (one-to-many)
+Schools.hasMany(Classes)
+Classes.belongsTo(Schools)
+// Classes - Materias (many-to-many)
+Classes.belongsToMany(Materias, { through: 'materias_classes' })
+Materias.belongsToMany(Classes, { through: 'materias_classes' })
 
 module.exports = Classes
