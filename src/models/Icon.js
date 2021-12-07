@@ -1,15 +1,15 @@
 const { DataTypes } = require('sequelize');
-import { conn } from '../db';
-import Module from './Module';
-import Action from "./Action";
+const { conn } = require('../db');
+const Module = require('./Module');
+const Action = require("./Action");
 
 const Icon = conn.define('icons', {
-  id:{
+  id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
-  name:{
+  name: {
     type: DataTypes.STRING,
     allowNull: false
   },
