@@ -1,4 +1,4 @@
-const Classes = require('../models/Classes')
+const Classes = require('../models/Classes');
 
 const getClasses = async (req, res, next) => {
   try {

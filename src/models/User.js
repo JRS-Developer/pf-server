@@ -10,12 +10,16 @@ const User = conn.define('users', {
     primaryKey: true,
     allowNull: false,
   },
-  name: {
+  user_name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  birthdate: {
-    type: DataTypes.DATE,
+  firt_name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  last_name: {
+    type: DataTypes.STRING,
     allowNull: false,
   },
   identification: {

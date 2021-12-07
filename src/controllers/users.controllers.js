@@ -1,7 +1,13 @@
-const User = require('../models/User')
-const Role = require('../models/Role')
+const User = require('../models/User');
+const Role = require('../models/Role');
+const {
+    create_user_sch,
+    upDate_user_sch
+} = require('./schemas');
 
 //**users**
+
+
 
 //get para obtener datos de usuarios
 const get_user_info = async (req, res, next) => {
@@ -17,10 +23,10 @@ const get_user_info = async (req, res, next) => {
       if (!user_found)
         return res
           .status(400)
-          .json({ error: "There isn't any user with that id" })
+          .json({ error: "There isn't any user with that id" });
 
-      return res.json(user_found)
-    }
+      return res.json(user_found);
+    };
 
     //Buscamos todos los usuarios disponibles
     const users = await User.findAll({
@@ -28,7 +34,7 @@ const get_user_info = async (req, res, next) => {
         role_id,
         school_id,
       },
-    })
+    });
 
     //se envia la respuesta como un arreglo de objetos
     res.json(users)
@@ -47,11 +53,30 @@ const user_info_by_role = async (req, res) => {
 //post para añadir usuario
 const create_user = async (req, res, next) => {
   try {
+    
+    //se hace la validación de los datos
+    await create_user_sch.validateAsync(req.body);
+
     //se reciben los datos por body
-    const { name, email, password, avatar } = req.body
+    const { 
+        username, 
+        first_name, 
+        last_name, 
+        identification, 
+        email, 
+        password, 
+        avatar } = req.body
 
     //se crea el nuevo objeto en la BD
-    await User.create(name, email, password, avatar)
+    await User.create(
+        username, 
+        first_name, 
+        last_name, 
+        identification, 
+        email, 
+        password, 
+        avatar
+    )
     //mensaje satisfactorio
     res.json({ message: 'user successfully created' })
 

@@ -14,7 +14,7 @@ const { get_user_info,
 
 
 router.get('/', get_user_info);
-router.get('/', user_info_by_role);
+router.get('/:role', user_info_by_role);
 router.get('/roles', get_roles);
 router.post('/', create_user);
 router.post('/roles', create_roles);
