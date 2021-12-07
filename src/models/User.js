@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 import { conn } from '../db';
 import Role from "./Role";
-
+import School from "./School"
 const User = conn.define('users', {
   id: {
     type: DataTypes.UUID,
