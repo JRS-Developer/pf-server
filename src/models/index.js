@@ -15,7 +15,7 @@ Classes.belongsToMany(Materias, { through: 'materias_classes' })
 Materias.belongsToMany(Classes, { through: 'materias_classes' })
 
 // Tasks
-// Tasks - Notes (one-to-many)
+// Tasks - Notes (one-to-one)
 Task.hasOne(Notes)
 Notes.belongsTo(Task)
 // Tasks - Classes (one-to-many)
