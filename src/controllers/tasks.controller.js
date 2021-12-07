@@ -1,10 +1,30 @@
+const Joi = require('joi')
 const { Task } = require('../models')
+
+// Schemas
+const getTasksSchema = Joi.object({
+  class_id: Joi.required(),
+  materia_id: Joi.required(),
+})
+
+const createTaskSchema = Joi.object({
+  title: Joi.string().required(),
+  description: Joi.string(),
+  end_date: Joi.date().required(),
+  teacher_id: Joi.required(),
+  class_id: Joi.required(),
+  materia_id: Joi.required(),
+})
 
 const getTasks = async (req, res, next) => {
   try {
     // Obtengo las tareas en base de la clase y materia
     const { class_id, materia_id } = req.body
-    // TODO: añadir validaciones de datos
+
+    // Validar los datos
+    const { error } = getTasksSchema.validate({ class_id, materia_id })
+
+    if (error) return res.status(400).json({ error: error.details[0].message })
 
     const tasks = await Task.findAll({ where: { class_id, materia_id } })
 
@@ -18,7 +38,18 @@ const createTask = async (req, res, next) => {
   try {
     const { title, description, end_date, teacher_id, class_id, materia_id } =
       req.body
-    // TODO: añadir validaciones de datos
+
+    // Validar datos
+    const { error } = createTaskSchema.validate({
+      title,
+      description,
+      end_date,
+      teacher_id,
+      class_id,
+      materia_id,
+    })
+
+    if (error) return res.status(400).json({ error: error.details[0].error })
 
     await Task.create({
       title,
