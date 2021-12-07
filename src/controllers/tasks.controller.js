@@ -3,17 +3,17 @@ const { Task } = require('../models')
 
 // Schemas
 const getTasksSchema = Joi.object({
-  class_id: Joi.required(),
-  materia_id: Joi.required(),
+  class_id: Joi.string().guid().required(),
+  materia_id: Joi.string().guid().required(),
 })
 
 const createTaskSchema = Joi.object({
   title: Joi.string().required(),
   description: Joi.string(),
   end_date: Joi.date().required(),
-  teacher_id: Joi.required(),
-  class_id: Joi.required(),
-  materia_id: Joi.required(),
+  teacher_id: Joi.string().guid().required(),
+  class_id: Joi.string().guid().required(),
+  materia_id: Joi.string().guid().required(),
 })
 
 const getTasks = async (req, res, next) => {
@@ -30,6 +30,7 @@ const getTasks = async (req, res, next) => {
 
     return res.json(tasks)
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
@@ -62,6 +63,7 @@ const createTask = async (req, res, next) => {
 
     return res.json({ message: 'Task created successfully' })
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
@@ -80,6 +82,7 @@ const getTaskById = async (req, res, next) => {
 
     return res.json(taskFound)
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
@@ -106,6 +109,7 @@ const updateTaskById = async (req, res, next) => {
       .status(400)
       .json({ message: 'There is not any task with that ID' })
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
@@ -118,6 +122,7 @@ const deleteTaskById = async (req, res, next) => {
 
     return res.json({ message: 'Task deleted successfully' })
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
