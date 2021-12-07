@@ -1,19 +1,22 @@
-const { DataTypes } = require('sequelize');
-import { conn } from '../db';
+const { DataTypes } = require('sequelize')
+const { conn } = require('../db')
 
-const Role = conn.define('roles', {
-  id:{
-    type: DataTypes.UUID,
-    defaultValue: DataTypes.UUIDV4,
-    primaryKey: true,
+const Role = conn.define(
+  'roles',
+  {
+    id: {
+      type: DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4,
+      primaryKey: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   },
-  name:{
-    type: DataTypes.STRING,
-    allowNull: false
-  },
+  {
+    timestamps: false,
+  }
+)
 
-}, {
-  timestamps: false
-});
-
-export default Role
+module.exports = Role
