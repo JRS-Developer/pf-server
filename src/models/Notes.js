@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize')
 const { conn: sequelize } = require('../db')
+const StudentTask = require('./Task/StudentTask')
 
 const Notes = sequelize.define('notes', {
   id: {
@@ -11,5 +12,10 @@ const Notes = sequelize.define('notes', {
     allowNull: false
   },
 })
+
+// NOTES
+// Notes - StudentsTasks (one-to-one)
+Notes.hasOne(StudentTask)
+StudentTask.belongsTo(Notes)
 
 module.exports = Notes

@@ -1,19 +1,18 @@
 const { DataTypes } = require('sequelize');
-import { conn } from '../db';
+const { conn } = require('../db');
 
 const Action = conn.define('actions', {
-  id:{
+  id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
-  name:{
+  name: {
     type: DataTypes.STRING,
     allowNull: false
   },
-
 }, {
   timestamps: false
 });
 
-export default Action
+module.exports = Action
