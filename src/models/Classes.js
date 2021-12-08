@@ -6,6 +6,7 @@ const Materias = require('./Materias')
 const Classes = sequelize.define('classes', {
   id: {
     type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
   name: {
@@ -15,8 +16,8 @@ const Classes = sequelize.define('classes', {
 })
 
 // School - Class (one-to-many)
-Schools.hasMany(Classes)
-Classes.belongsTo(Schools)
+Schools.hasMany(Classes, {foreignKey: 'school_id'})
+Classes.belongsTo(Schools, {foreignKey: 'school_id'})
 // Classes - Materias (many-to-many)
 Classes.belongsToMany(Materias, { through: 'materias_classes' })
 Materias.belongsToMany(Classes, { through: 'materias_classes' })

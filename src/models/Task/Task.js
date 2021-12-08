@@ -19,12 +19,12 @@ const Task = sequelize.define('task', {
 })
 
 // Tasks - Classes (one-to-many)
-Classes.hasMany(Task)
-Task.belongsTo(Classes)
+Classes.hasMany(Task, {foreignKey: 'class_id'})
+Task.belongsTo(Classes, {foreignKey: 'class_id'})
 
 // Tasks - Materias (one-to-many)
-Materias.hasMany(Task)
-Task.belongsTo(Materias)
+Materias.hasMany(Task, {foreignKey: 'materia_id'})
+Task.belongsTo(Materias, {foreignKey: 'materia_id'})
 
 // Tasks - Teachers (one-to-many)
 User.hasMany(Task, { foreignKey: 'teacher_id' })
