@@ -1,15 +1,36 @@
+const Joi = require('joi')
 const { Task } = require('../models')
+
+// Schemas
+const getTasksSchema = Joi.object({
+  class_id: Joi.string().guid().required(),
+  materia_id: Joi.string().guid().required(),
+})
+
+const createTaskSchema = Joi.object({
+  title: Joi.string().required(),
+  description: Joi.string(),
+  end_date: Joi.date().required(),
+  teacher_id: Joi.string().guid().required(),
+  class_id: Joi.string().guid().required(),
+  materia_id: Joi.string().guid().required(),
+})
 
 const getTasks = async (req, res, next) => {
   try {
     // Obtengo las tareas en base de la clase y materia
     const { class_id, materia_id } = req.body
-    // TODO: añadir validaciones de datos
+
+    // Validar los datos
+    const { error } = getTasksSchema.validate({ class_id, materia_id })
+
+    if (error) return res.status(400).json({ error: error.details[0].message })
 
     const tasks = await Task.findAll({ where: { class_id, materia_id } })
 
     return res.json(tasks)
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
@@ -18,7 +39,18 @@ const createTask = async (req, res, next) => {
   try {
     const { title, description, end_date, teacher_id, class_id, materia_id } =
       req.body
-    // TODO: añadir validaciones de datos
+
+    // Validar datos
+    const { error } = createTaskSchema.validate({
+      title,
+      description,
+      end_date,
+      teacher_id,
+      class_id,
+      materia_id,
+    })
+
+    if (error) return res.status(400).json({ error: error.details[0].error })
 
     await Task.create({
       title,
@@ -31,6 +63,7 @@ const createTask = async (req, res, next) => {
 
     return res.json({ message: 'Task created successfully' })
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
@@ -49,6 +82,7 @@ const getTaskById = async (req, res, next) => {
 
     return res.json(taskFound)
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
@@ -75,6 +109,7 @@ const updateTaskById = async (req, res, next) => {
       .status(400)
       .json({ message: 'There is not any task with that ID' })
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
@@ -87,6 +122,7 @@ const deleteTaskById = async (req, res, next) => {
 
     return res.json({ message: 'Task deleted successfully' })
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
