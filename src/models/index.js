@@ -1,35 +1,25 @@
-const Task = require('./Task')
+const Task = require('./Task/Task')
+const StudentTask = require('./Task/StudentTask')
 const Notes = require('./Notes')
 const Schools = require('./Schools')
 const Classes = require('./Classes')
 const Materias = require('./Materias')
-
-// INFO: Relaciones entre las tablas:
-
-// Classes
-// School - Class (one-to-many)
-Schools.hasMany(Classes)
-Classes.belongsTo(Schools)
-// Classes - Materias (many-to-many)
-Classes.belongsToMany(Materias, { through: 'materias_classes' })
-Materias.belongsToMany(Classes, { through: 'materias_classes' })
-
-// Tasks
-// Tasks - Notes (one-to-one)
-Task.hasOne(Notes)
-Notes.belongsTo(Task)
-// Tasks - Classes (one-to-many)
-Classes.hasMany(Task)
-Task.belongsTo(Classes)
-// Tasks - Materias (one-to-many)
-Materias.hasMany(Task)
-Task.belongsTo(Materias)
-// TODO: Añadir relaciones de tasks a students y teachers. (many-to-many)
+const User = require('./User')
+const Icon = require('./Icon')
+const Access = require('./Access')
+const Module = require('./Module')
+const Action = require('./Action')
 
 module.exports = {
   Task,
   Notes,
   Classes,
   Schools,
-  Materias
+  Materias,
+  Icon,
+  Module,
+  Action,
+  Access,
+  User,
+  StudentTask
 }
