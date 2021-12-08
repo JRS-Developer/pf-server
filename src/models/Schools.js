@@ -9,6 +9,6 @@ const Schools = sequelize.define('schools', {
   name: DataTypes.STRING
 })
 
-console.log(Schools)
+// console.log('hola soy: ',Schools)
 
 module.exports = Schools
