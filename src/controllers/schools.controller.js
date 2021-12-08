@@ -7,7 +7,7 @@ const createSchoolSchema = Joi.object({
 
 const updateSchoolSchema = Joi.object({
   id: Joi.string().guid().required(),
-  naeme: Joi.string().allow(''),
+  name: Joi.string().allow(''),
 })
 
 const validateId = (id) => Joi.string().guid().required().validate(id)
@@ -44,9 +44,17 @@ const createSchool = async (req, res, next) => {
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    await Schools.create({ name })
+    const [, created] = await Schools.findOrCreate({
+      where: { name },
+      defaults: { name },
+    })
 
-    return res.json({ message: 'School created successfully' })
+    if (!created)
+      return res
+        .status(400)
+        .json({ error: 'There is already a school with that data' })
+
+    return res.status(201).json({ message: 'School created successfully' })
   } catch (error) {
     console.error(error)
     next(error)
@@ -58,13 +66,26 @@ const updateSchoolById = async (req, res, next) => {
     const { id } = req.params
     const { name } = req.body
 
+    // Si el body esta vacio, entonces retorno un error
+    if (!Object.keys(req.body)) {
+      return res.status(400).json({ error: 'Please provide some body data' })
+    }
+
+    // Valido los parametros mandados por body
     const { error } = updateSchoolSchema.validate({ id, name })
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    await Schools.update({ name }, { where: { id } })
+    // Actualizo la escuela
+    const [count] = await Schools.update({ name }, { where: { id } })
 
-    return res.json({ message: 'School updated successfully' })
+    // Compruebo si hubieron cambios, si no, entonces retorno un error
+    if (!count)
+      return res
+        .status(400)
+        .json({ error: 'Not found any school with that Id' })
+
+    return res.status(201).json({ message: 'School updated successfully' })
   } catch (error) {
     console.error(error)
     next(error)
@@ -76,11 +97,13 @@ const deleteSchoolById = async (req, res, next) => {
     const { id } = req.params
 
     const { error } = validateId(id)
-    if (error) return res.status(400).json({ error: error.details[0].message })
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message })
+    }
 
     await Schools.destroy({ where: { id } })
 
-    return res.json({ message: 'School deleted successfully' })
+    return res.status(201).json({ message: 'School deleted successfully' })
   } catch (error) {
     console.error(error)
     next(error)
