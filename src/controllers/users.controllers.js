@@ -48,10 +48,18 @@ const user_info_by_role = async (req, res) => {
 const create_user = async (req, res, next) => {
   try {
     //se reciben los datos por body
-    const { name, email, password, avatar } = req.body
+    const { name, email, password, avatar, birthdate, identification } =
+      req.body
 
     //se crea el nuevo objeto en la BD
-    await User.create(name, email, password, avatar)
+    await User.create({
+      name,
+      email,
+      password,
+      avatar,
+      birthdate,
+      identification,
+    })
     //mensaje satisfactorio
     res.json({ message: 'user successfully created' })
 
@@ -173,7 +181,7 @@ const create_roles = async (req, res, next) => {
     const { name } = req.body
 
     //se crea el nuevo rol
-    await Role.create(name)
+    await Role.create({name})
 
     //mensaje satisfactorio
     res.json({ message: 'role succesfully created' })

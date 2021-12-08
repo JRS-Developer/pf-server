@@ -47,3 +47,5 @@ function autorizadoParaEliminarAula(req, res, next) {
 
   next()
 }
+
+module.exports = router
