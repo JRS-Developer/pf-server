@@ -1,0 +1,6 @@
+GET  http://localhost:3001/api/aulas/2
+Content-Type: application/json
+
+{
+"userId": 4
+}
