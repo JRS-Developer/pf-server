@@ -1,9 +1,24 @@
 const Materias = require('../models/Materias')
+const Joi = require('joi')
+
+const getMateriaSchema = Joi.object({
+    id: Joi.string().guid().required(),
+    name: Joi.string().allow(''),
+  })
+  
+  const createMateriaSchema = Joi.object({
+    id: Joi.string().guid().required(),
+    name: Joi.string().required(),
+  })
 
 //get para obtener la materia
 const get_materia = async (req, res, next)=>{
     try{
         const {id, name} = req.body
+        
+        const { error } = getMateriaSchema.validate({ id, name })
+        if (error) return res.status(400).json({ error: error.details[0].message })
+        
         if(id){
             const findMateria = await Materias.findAll({
                 where:{id, name}
@@ -21,6 +36,13 @@ const get_materia = async (req, res, next)=>{
 const create_materia = async (req, res, next)=>{
     try{
     const { name } = req.body
+    
+    const { error } = createMateriaSchema.validate({ id, name })
+    if (error) return res.status(400).json({ error: error.details[0].message })
+    
+    const materiaFound = await Materias.findByPk(id)
+    if (!materiaFound)return res.status(400).json({ error: 'There is not any materia with that ID' })
+
     await Materias.create(name)
     res.json({ message: 'materia successfully created' })
     }catch(error){
