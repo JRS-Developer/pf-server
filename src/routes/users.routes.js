@@ -11,7 +11,9 @@ const { get_user_info,
   create_roles,
   upDate_roles
 } = require('../controllers/users.controllers');
+const { verifyToken } = require('../middlewares/auth');
 
+router.use(verifyToken)
 
 router.get('/', get_user_info);
 router.get('/', user_info_by_role);

@@ -6,6 +6,9 @@ const {
   getClasses,
   createClass,
 } = require('../controllers/classes.controller')
+const { verifyToken } = require('../middlewares/auth')
+
+router.use(verifyToken)
 
 router.get('/', getClasses)
 router.post('/', createClass)
