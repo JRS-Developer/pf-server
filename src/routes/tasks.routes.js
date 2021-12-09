@@ -6,6 +6,9 @@ const {
   deleteTaskById,
   updateTaskById,
 } = require('../controllers/tasks.controller')
+const { verifyToken } = require('../middlewares/auth')
+
+router.use(verifyToken)
 
 router.get('/', getTasks)
 router.post('/', createTask)
