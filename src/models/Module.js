@@ -18,11 +18,11 @@ const Module = conn.define('modules', {
   },
   icon: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: true
   },
   module_id: {
     type: DataTypes.UUID,
-    allowNull: true,
+    allowNull: true
   },
 }, {
   timestamps: true
