@@ -25,7 +25,7 @@ const get_materia = async (req, res, next)=>{
             })
             return res.json(findMateria)
         }else{
-            return res.json({message: 'This materia do not exist'})
+            return res.status(400).json({message: 'This materia do not exist'})
         }
     }catch(error) {
         next(error)
@@ -43,7 +43,7 @@ const create_materia = async (req, res, next)=>{
     const materiaFound = await Materias.findByPk(id)
     if (!materiaFound)return res.status(400).json({ error: 'There is not any materia with that ID' })
 
-    await Materias.create(name)
+    await Materias.create({name})
     res.json({ message: 'materia successfully created' })
     }catch(error){
         next(error)

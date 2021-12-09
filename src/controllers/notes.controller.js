@@ -22,7 +22,7 @@ const get_notes = async(req, res, next)=>{
     try{
         const { value } = req.body
        
-        const { error } = getNotesSchema.validate(notes_id, value)
+        const { error } = getNotesSchema.validate({notes_id, value})
         if (error) return res.status(400).json({ error: error.details[0].message })
 
         if(value){
@@ -47,7 +47,7 @@ const create_note = async(req, res, next)=>{
         if (!notesFound)return res.status(400).json({ error: 'There is not any note' })
 
 
-        await Notes.create(value)
+        await Notes.create({value})
         res.json({message:'create!'})
     }catch(error) {
         next(error)
