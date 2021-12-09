@@ -2,6 +2,7 @@ const { User } = require('../models/')
 const Joi = require('joi')
 const jwt = require('jsonwebtoken')
 const { secret } = require('../lib/config')
+const Role = require('../models/Role')
 
 const loginUserSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -19,7 +20,10 @@ const loginUser = async (req, res, next) => {
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     // Busco si el usuario existe
-    const userFound = await User.findOne({ where: { email } })
+    const userFound = await User.findOne({
+      include: {model: Role},
+      where: { email }
+    })
 
     // Sino existe le retorno un error
     if (!userFound)
@@ -42,10 +46,12 @@ const loginUser = async (req, res, next) => {
 
     // Creo el token almacenandole el id del usuario y sus roles
     // INFO: Lo mas probable es que despues se quiera guardar tambien los access, pero falta gestionar esa tabla.
-    const token = jwt.sign({ id: userFound.id, roles }, secret, {
+    console.log(userFound)
+    const token = jwt.sign({ id: userFound.id, roles: userFound.roleId, email: userFound.email }, secret, {
       expiresIn: '24h',
     })
-
+    //console.log(tokenData)
+    
     res.json({ token })
   } catch (error) {
     console.error(error)

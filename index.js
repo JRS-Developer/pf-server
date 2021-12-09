@@ -22,12 +22,12 @@ const defaultRoles = async () => {
     }
   ]
   
-  return await conn.models.roles.bulkCreate(rolesPorDefault)
+  //return await conn.models.roles.bulkCreate(rolesPorDefault)
 
 }
 
 
-conn.sync({ force: true }).then(defaultRoles).then(() => {
+conn.sync({ force: false }).then(defaultRoles).then(() => {
   app.listen(port, () => {
     console.log(`The server is running on port ${port}`)
   })

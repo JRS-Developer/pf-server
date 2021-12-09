@@ -12,6 +12,8 @@ const verifyToken = (req, res, next) => {
 
     // Verifico que el token sea valido
     jwt.verify(token, secret)
+    const tokenDesencriptado = jwt.verify(token, secret)
+    //console.log(tokenDesencriptado)
     return next()
   } catch (error) {
     // Si el token no es valido, entonces retorno un error 401

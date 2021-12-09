@@ -1,4 +1,10 @@
 const router = require('express').Router()
+const { aulas } = require('../datos/datos')
+const { puedeVerClass, puedeVerClasses, puedeEliminarClass, authUser } = require('../permisos/auths')
+const {verifyToken} = require('../middlewares/auth')
+
+
+
 const {
   updateClassById,
   deleteClassById,
@@ -7,11 +13,13 @@ const {
   createClass,
 } = require('../controllers/classes.controller')
 
-router.get('/', getClasses)
-router.post('/', createClass)
+router.get('/', verifyToken, (req, res) =>{
+  res.json(getClasses)
+})
+router.post('/', verifyToken, createClass)
 
-router.get('/:id', getClassById)
-router.put('/:id', updateClassById)
-router.delete('/:id', deleteClassById)
+router.get('/:id', verifyToken, getClassById)
+router.put('/:id', verifyToken, updateClassById)
+router.delete('/:id', verifyToken, deleteClassById)
 
 module.exports = router
