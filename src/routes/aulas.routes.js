@@ -1,37 +1,38 @@
 const router = require('express').Router()
-const { aulas } = require('../datos/datos')
-const { puedeVerAula, puedeVerAulas, puedeEliminarAula, authUser } = require('../permisos/auths')
+const { classes } = require('../datos/datos')
+const { puedeVerClass, puedeVerClasses, puedeEliminarClass, authUser } = require('../permisos/auths')
+const {verifyToken} = require('../middlewares/auth')
 
-router.get('/', authUser, (req, res) => {
-  res.json(puedeVerAulas(req.user, aulas))
+router.get('/', verifyToken, (req, res) => {
+  res.json(puedeVerClasses(req.user, classes))
 })
+// listo
 
+router.get('/:classId', verifyToken, setClass, puedeVerClass, (req, res) => {
 
-router.get('/:aulaId', authUser, setAula, puedeVerAula, (req, res) => {
-
-  res.json("Puede ver el aula señor")
+  res.json("Puede ver el class señor")
   //mostrar el ula
 
 })
 
-router.delete('/:aulaId', setAula, authUser, puedeEliminarAula, (req, res) => {
-  res.send('Aula eliminada')
+router.delete('/:classId', setClass, verifyToken, puedeEliminarClass, (req, res) => {
+  res.send('Class eliminada')
 })
 
-function setAula(req, res, next) {
-  const aulaId = parseInt(req.params.aulaId)
-  req.aula = aulas.find(aula => aula.id === aulaId)
+function setClass(req, res, next) {
+  const classId = parseInt(req.params.classId)
+  req.class = classes.find(Class => Class.id === classId)
 
-  if (req.aula == null) {
+  if (req.class == null) {
     res.status(404)
-    return res.send('Aula no encontrada')
+    return res.send('Class no encontrada')
   }
-  console.log("setAula")
+  console.log("setClass")
   next()
 }
 
-function autorizadoParaVerAula(req, res, next) {
-  if (!puedeVerAula(req.user, req.aula)) {
+function autorizadoParaVerClass(req, res, next) {
+  if (!puedeVerClass(req.user, req.class)) {
     res.status(401)
     return res.send('No tienes el permiso necesario, consulta al administrador')
   }
@@ -39,8 +40,8 @@ function autorizadoParaVerAula(req, res, next) {
   next()
 }
 
-function autorizadoParaEliminarAula(req, res, next) {
-  if (!puedeEliminarAula(req.user, req.aula)) {
+function autorizadoParaEliminarClass(req, res, next) {
+  if (!puedeEliminarClass(req.user, req.class)) {
     res.status(401)
     return res.send('No tienes el permiso necesario, consulta al administrador')
   }

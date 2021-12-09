@@ -52,7 +52,7 @@ const create_user = async (req, res, next) => {
       req.body
 
     //se crea el nuevo objeto en la BD
-    await User.create({
+    const newUser = await User.create({
       name,
       email,
       password,
@@ -61,7 +61,7 @@ const create_user = async (req, res, next) => {
       identification,
     })
     //mensaje satisfactorio
-    res.json({ message: 'user successfully created' })
+    res.json(newUser)
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
