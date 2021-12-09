@@ -11,6 +11,18 @@ const Action = conn.define('actions', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  action_param: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  onclick: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  icon: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
 }, {
   timestamps: false
 });

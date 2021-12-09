@@ -5,6 +5,7 @@ const helmet = require('helmet')
 const routes = require('./routes')
 const config = require('./lib/config')
 
+
 const app = express()
 
 app.use(express.json())
@@ -18,5 +19,6 @@ app.use(
 app.use(helmet())
 
 app.use('/api', routes)
+
 
 module.exports = app
