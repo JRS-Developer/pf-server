@@ -1,20 +1,21 @@
 const router = require('express').Router()
 const { aulas } = require('../datos/datos')
 const { puedeVerAula, puedeVerAulas, puedeEliminarAula, authUser } = require('../permisos/auths')
+const {verifyToken} = require('../middlewares/auth')
 
-router.get('/', authUser, (req, res) => {
+router.get('/', verifyToken, (req, res) => {
   res.json(puedeVerAulas(req.user, aulas))
 })
 
 
-router.get('/:aulaId', authUser, setAula, puedeVerAula, (req, res) => {
+router.get('/:aulaId', verifyToken, setAula, puedeVerAula, (req, res) => {
 
   res.json("Puede ver el aula señor")
   //mostrar el ula
 
 })
 
-router.delete('/:aulaId', setAula, authUser, puedeEliminarAula, (req, res) => {
+router.delete('/:aulaId', setAula, verifyToken, puedeEliminarAula, (req, res) => {
   res.send('Aula eliminada')
 })
 

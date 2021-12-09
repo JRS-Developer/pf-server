@@ -12,7 +12,7 @@ const config = {
   port: process.env.API_PORT || '3001',
   host: process.env.API_HOST || 'localhost',
   cors: process.env.CORS || 'localhost:3000',
-  secret: process.env.SECRET
+  secret: process.env.SECRET 
 }
 
 module.exports = config
