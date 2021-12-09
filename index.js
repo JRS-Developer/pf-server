@@ -43,12 +43,10 @@ conn.sync({ force: true }).then(() => {
     modules.map(dt => {
       if(dt.module_id === 0){
         let newModule = Module.create({
-          //where: {
             id: dt.id,
             name: dt.name,
             url: dt.url,
             icon : dt.icon,
-          //}
         })
 
         newModule.then( function(res){
@@ -57,13 +55,11 @@ conn.sync({ force: true }).then(() => {
         })
       }else{
         let newModule = Module.create({
-          //where: {
             id: dt.id,
             name: dt.name,
             url: dt.url,
             icon : dt.icon,
             module_id: dt.module_id
-          //}
         })
 
         newModule.then( function(res){
@@ -79,5 +75,4 @@ conn.sync({ force: true }).then(() => {
         console.log("modules pre cargadas");
       });
   }
-
 })
