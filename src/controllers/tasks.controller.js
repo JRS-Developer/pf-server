@@ -50,7 +50,9 @@ const createTask = async (req, res, next) => {
       materia_id,
     })
 
-    if (error) return res.status(400).json({ error: error.details[0].error })
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message })
+    }
 
     await Task.create({
       title,
@@ -93,7 +95,7 @@ const updateTaskById = async (req, res, next) => {
     const { title, description, end_date } = req.body
     const { id } = req.params
 
-    const updated = await Task.update(
+    const [count] = await Task.update(
       { title, description, end_date },
       {
         where: {
@@ -101,7 +103,7 @@ const updateTaskById = async (req, res, next) => {
         },
       }
     )
-    if (updated.length) {
+    if (count) {
       return res.json({ message: 'Task updated successfully' })
     }
 
