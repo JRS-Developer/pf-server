@@ -10,9 +10,10 @@ const auth = require('./auth.routes')
 
 router.use('/tasks', tasks)
 router.use('/users', users)
-// FIX: Aulas y classes son lo mismo? Si es asi hay que decidir cual dejar y cual descartar
+// FIX: Aulas y classes son lo mismo? Si es asi hay que decidir cual dejar y cual descartar 
+// Nos quedamos con classes, ahora pasamos el codig de aulas a classes
 router.use('/classes', classes)
-router.use('/aulas', aulas)
+// router.use('/aulas', aulas)
 router.use('/auth', auth)
 router.use('/schools', schools)
 router.use('/notes', notes)

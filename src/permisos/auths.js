@@ -1,6 +1,6 @@
 const { ROLE, aulas, users } = require('../datos/datos')
 
-function puedeVerAula(req, res, next) {
+function puedeVerClass(req, res, next) {
   const { userId } = req.body
 
   const aula = aulas.filter((a) => a.id === parseInt(req.params.aulaId))[0]
@@ -12,12 +12,12 @@ function puedeVerAula(req, res, next) {
   res.send('No entraste al if')
 }
 
-function puedeVerAulas(user, aulas) {
+function puedeVerClasses(user, aulas) {
   if (user.rol === ROLE.sAdmin) return aulas
   return aulas.filter((aula) => aula.userId === user.id)
 }
 
-function puedeEliminarAula(user) {
+function puedeEliminarClass(user) {
   return user.Id === 1
 }
 
@@ -44,9 +44,9 @@ function authRole(rol) {
 }
 
 module.exports = {
-  puedeVerAula,
-  puedeVerAulas,
-  puedeEliminarAula,
+  puedeVerClass,
+  puedeVerClasses,
+  puedeEliminarClass,
   authUser,
   authRole,
 }
