@@ -12,8 +12,20 @@ const Module = conn.define('modules', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  url: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  icon: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  module_id: {
+    type: DataTypes.UUID,
+    allowNull: true,
+  },
 }, {
-  timestamps: false
+  timestamps: true
 });
 
 // MODULES
