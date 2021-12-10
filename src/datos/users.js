@@ -7,6 +7,7 @@ const users = [
     identification: '1231233',
     email: 'wilmer@hotmail.com',
     password: '1234',
+    country: 'Peru'
   },
   {
     firstName: 'Nicolas',
@@ -16,6 +17,7 @@ const users = [
     identification: '11231234',
     email: 'nico@hotmail.com',
     password: '12345',
+    country: 'Argentina'
   },
   {
     firstName: 'Valentin',
@@ -25,6 +27,7 @@ const users = [
     identification: '12312335',
     email: 'vale@hotmail.com',
     password: '12346',
+    country: 'Argentina'
   },
   {
     firstName: 'Luan',
@@ -34,6 +37,7 @@ const users = [
     identification: '12312336',
     email: 'luan@hotmail.com',
     password: '12347',
+    country: 'Argentina'
   },
   {
     firstName: 'Jose',
@@ -43,7 +47,7 @@ const users = [
     identification: '12312337',
     email: 'jose@hotmail.com',
     password: '12347',
-    country: 
+    country: 'Venezuela'
   },
   {
     firstName: 'Edwin',
@@ -53,6 +57,7 @@ const users = [
     identification: '12312338',
     email: 'edwin@hotmail.com',
     password: '12348',
+    country: 'Colombia'
   },
   {
     firstName: 'Leandro',
@@ -62,6 +67,7 @@ const users = [
     identification: '12312339',
     email: 'leandro@hotmail.com',
     password: '12349',
+    country: 'Argentina'
   },
 ]
 
