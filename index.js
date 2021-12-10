@@ -4,9 +4,12 @@ const { port } = require('./src/lib/config')
 
 
 //Models
-const { Action, Module } = require('./src/models');
+const { Action, Module, User } = require('./src/models');
 //Datos
 const { modules, actions } = require('./src/datos/modules-actions')
+//Users
+const {users} = require('./src/datos/users')
+
 
 const defaultRoles = async () => {
   rolesPorDefault = [
@@ -32,11 +35,12 @@ const defaultRoles = async () => {
 }
 
 
-conn.sync({ force: false }).then(defaultRoles).then(() => {
+conn.sync({ force: true }).then(defaultRoles).then(() => {
   app.listen(port, () => {
     console.log(`The server is running on port ${port}`)
     initialActions();
     initialModules();
+    initialUsers();
 
   })
 
@@ -100,4 +104,31 @@ conn.sync({ force: false }).then(defaultRoles).then(() => {
         console.log("modules pre cargadas");
       });
   }
+
+  function initialUsers(){
+    let $saveData = [];
+    users.map(dt => {
+      let $data = User.findOrCreate({
+        where: {
+          
+            firstName: dt.firstName,
+            lastName: dt.lastName,
+            userName: dt.userName,
+            email: dt.email,
+            password: dt.password,
+            birthdate: dt.birthdate,
+            identification: dt.identification,
+          
+        }
+      })
+  
+      $saveData.push($data)
+    })
+  
+    Promise.all($saveData)
+      .then(res => {
+        console.log("Usuarios pre cargados");
+      });
+  }
 })
+

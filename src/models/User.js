@@ -10,7 +10,15 @@ const User = conn.define('users', {
     primaryKey: true,
     allowNull: false,
   },
-  name: {
+  firstName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  lastName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  userName: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -29,6 +37,16 @@ const User = conn.define('users', {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  country: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  
+  //El estado es para cuando se lo "borre" al usuario cuando queremos dar de baja. Lo ponemos en estado "inactivo"
+  status:{
+    type: DataTypes.BOOLEAN,
+    defaultValue: true
   },
   avatar: DataTypes.STRING, // Opcional
 })
