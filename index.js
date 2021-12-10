@@ -2,115 +2,109 @@ const app = require('./src/app')
 const { conn } = require('./src/db')
 const { port } = require('./src/lib/config')
 
-
 //Models
-const { Action, Module, User } = require('./src/models');
+const { Action, Module, User } = require('./src/models')
 //Datos
 const { modules, actions } = require('./src/datos/modules-actions')
 //Users
-const {users} = require('./src/datos/users')
-
+const { users } = require('./src/datos/users')
 
 const defaultRoles = async () => {
-  rolesPorDefault = [
+  const rolesPorDefault = [
     {
-      name: "sUser",
+      name: 'sUser',
     },
     {
-      name: "Admin",
+      name: 'Admin',
     },
     {
-      name: "Profesor",
+      name: 'Profesor',
     },
     {
-      name: "Alumno",
+      name: 'Alumno',
     },
     {
-      name: "Tutor",
-    }
+      name: 'Tutor',
+    },
   ]
-  
-  //return await conn.models.roles.bulkCreate(rolesPorDefault)
 
+  //return await conn.models.roles.bulkCreate(rolesPorDefault)
 }
 
+conn
+  .sync({ force: true })
+  .then(defaultRoles)
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`The server is running on port ${port}`)
+      initialActions()
+      initialModules()
+      initialUsers()
+    })
 
-conn.sync({ force: true }).then(defaultRoles).then(() => {
-  app.listen(port, () => {
-    console.log(`The server is running on port ${port}`)
-    initialActions();
-    initialModules();
-    initialUsers();
+    function initialActions() {
+      let $saveData = []
+      actions.map((dt) => {
+        let $data = Action.findOrCreate({
+          where: {
+            id: dt.id,
+            name: dt.name,
+            action_param: dt.action_param,
+            onclick: dt.onclick,
+            icon: dt.icon,
+          },
+        })
 
-  })
+        $saveData.push($data)
+      })
 
-  function initialActions(){
-    let $saveData = [];
-    actions.map(dt => {
-      let $data = Action.findOrCreate({
-        where: {
-          id: dt.id,
-          name: dt.name,
-          action_param: dt.action_param,
-          onclick: dt.onclick,
-          icon: dt.icon,
+      Promise.all($saveData).then(() => {
+        console.log('acciones pre cargadas')
+      })
+    }
+
+    function initialModules() {
+      let $saveData = []
+      let arrayActionsIds = [actions[0].id, actions[1].id, actions[2].id]
+      modules.map((dt) => {
+        if (dt.module_id === 0) {
+          let newModule = Module.create({
+            id: dt.id,
+            name: dt.name,
+            url: dt.url,
+            icon: dt.icon,
+          })
+
+          newModule.then(function (res) {
+            res.addActions(arrayActionsIds)
+            $saveData.push(newModule)
+          })
+        } else {
+          let newModule = Module.create({
+            id: dt.id,
+            name: dt.name,
+            url: dt.url,
+            icon: dt.icon,
+            module_id: dt.module_id,
+          })
+
+          newModule.then(function (res) {
+            res.addActions(arrayActionsIds)
+            $saveData.push(newModule)
+          })
         }
       })
 
-      $saveData.push($data)
-    })
+      Promise.all($saveData).then(() => {
+        console.log('modules pre cargadas')
+      })
+    }
 
-    Promise.all($saveData)
-      .then(res => {
-        console.log("acciones pre cargadas");
-      });
-  }
-
-  function initialModules(){
-    let $saveData = [];
-    let arrayActionsIds = [actions[0].id, actions[1].id, actions[2].id];
-    modules.map(dt => {
-      if(dt.module_id === 0){
-        let newModule = Module.create({
-            id: dt.id,
-            name: dt.name,
-            url: dt.url,
-            icon : dt.icon,
-        })
-
-        newModule.then( function(res){
-          res.addActions(arrayActionsIds);
-          $saveData.push(newModule)
-        })
-      }else{
-        let newModule = Module.create({
-            id: dt.id,
-            name: dt.name,
-            url: dt.url,
-            icon : dt.icon,
-            module_id: dt.module_id
-        })
-
-        newModule.then( function(res){
-          res.addActions(arrayActionsIds);
-          $saveData.push(newModule)
-        })
-      }
-
-    })
-
-    Promise.all($saveData)
-      .then(res => {
-        console.log("modules pre cargadas");
-      });
-  }
-
-  function initialUsers(){
-    let $saveData = [];
-    users.map(dt => {
-      let $data = User.findOrCreate({
-        where: {
-          
+    function initialUsers() {
+      let $saveData = []
+      users.map((dt) => {
+        let $data = User.findOrCreate({
+          where: {
             firstName: dt.firstName,
             lastName: dt.lastName,
             userName: dt.userName,
@@ -118,17 +112,15 @@ conn.sync({ force: true }).then(defaultRoles).then(() => {
             password: dt.password,
             birthdate: dt.birthdate,
             identification: dt.identification,
-          
-        }
-      })
-  
-      $saveData.push($data)
-    })
-  
-    Promise.all($saveData)
-      .then(res => {
-        console.log("Usuarios pre cargados");
-      });
-  }
-})
+            country: dt.country,
+          },
+        })
 
+        $saveData.push($data)
+      })
+
+      Promise.all($saveData).then(() => {
+        console.log('Usuarios pre cargados')
+      })
+    }
+  })
