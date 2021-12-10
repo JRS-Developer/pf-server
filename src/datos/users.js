@@ -43,6 +43,7 @@ const users = [
     identification: '12312337',
     email: 'jose@hotmail.com',
     password: '12347',
+    country: 
   },
   {
     firstName: 'Edwin',

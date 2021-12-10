@@ -24,10 +24,13 @@ const get_user_info = async (req, res, next) => {
 
     //Buscamos todos los usuarios disponibles
     const users = await User.findAll({
-      where: {
-        role_id,
-        school_id,
-      },
+      // where: {
+      //   role_id,
+      //   school_id,
+      // },
+      include:{
+        model:Role
+      }
     })
 
     //se envia la respuesta como un arreglo de objetos
