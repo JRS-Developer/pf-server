@@ -48,12 +48,22 @@ const user_info_by_role = async (req, res) => {
 const create_user = async (req, res, next) => {
   try {
     //se reciben los datos por body
-    const { name, email, password, avatar, birthdate, identification } =
-      req.body
+    const {
+      firstName,
+      lastName,
+      userName,
+      email,
+      password,
+      avatar,
+      birthdate,
+      identification,
+    } = req.body
 
     //se crea el nuevo objeto en la BD
     const newUser = await User.create({
-      name,
+      firstName,
+      lastName,
+      userName,
       email,
       password,
       avatar,
@@ -78,7 +88,13 @@ const upDate_user = async (req, res, next) => {
     const { password } = req.query
 
     //Manejo de los demas datos por formulario
-    const { name, email, avatar } = req.body
+    const { firstName,
+      lastName,
+      userName,
+      email,
+      avatar,
+      birthdate,
+      identification, } = req.body
 
     //la password se modifica de forma individual
     if (password) {
@@ -96,7 +112,13 @@ const upDate_user = async (req, res, next) => {
 
     //aca se modifican los demaás datos cuando no sea solicitada la modificación de la password
     await User.update(
-      { name, email, avatar },
+      { firstName,
+        lastName,
+        userName,
+        email,
+        avatar,
+        birthdate,
+        identification },
       {
         where: {
           id: id,
@@ -118,9 +140,10 @@ const user_delete = async (req, res, next) => {
   try {
     //se recibe id por params
     const { id } = req.params
+    const { status } = req.body
 
     //se elimina el objeto de la BD
-    await User.destroy({ where: { id: id } })
+    await User.update({status:status}, {where: { id: id } }) 
 
     //mensaje satisfactorio
     res.json({ message: 'user was deleted' })
@@ -130,6 +153,7 @@ const user_delete = async (req, res, next) => {
     next(error)
   }
 }
+
 
 //put para cambiar rol de usuario
 const user_role_set = async (req, res, next) => {
@@ -181,7 +205,7 @@ const create_roles = async (req, res, next) => {
     const { name } = req.body
 
     //se crea el nuevo rol
-    await Role.create({name})
+    await Role.create({ name })
 
     //mensaje satisfactorio
     res.json({ message: 'role succesfully created' })
