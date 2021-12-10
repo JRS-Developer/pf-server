@@ -6,9 +6,13 @@ const Schools = sequelize.define('schools', {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
-    defaultValue: DataTypes.UUIDV4
+    defaultValue: DataTypes.UUIDV4,
   },
-  name: DataTypes.STRING
+  status: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
+  },
+  name: DataTypes.STRING,
 })
 
 module.exports = Schools

@@ -13,11 +13,15 @@ const Classes = sequelize.define('classes', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  status: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
+  },
 })
 
 // School - Class (one-to-many)
-Schools.hasMany(Classes, {foreignKey: 'school_id'})
-Classes.belongsTo(Schools, {foreignKey: 'school_id'})
+Schools.hasMany(Classes, { foreignKey: 'school_id' })
+Classes.belongsTo(Schools, { foreignKey: 'school_id' })
 // Classes - Materias (many-to-many)
 Classes.belongsToMany(Materias, { through: 'materias_classes' })
 Materias.belongsToMany(Classes, { through: 'materias_classes' })
