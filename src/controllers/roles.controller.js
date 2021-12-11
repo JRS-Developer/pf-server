@@ -22,6 +22,23 @@ const getRoles = async (_req, res, next) => {
   }
 }
 
+//get para obtener un rol por id
+const getRoleById = async (req, res, next) => {
+  const { id } = req.params
+  try {
+    //se traen todos los roles
+    const role = await Role.findByPk(id)
+
+    //se envían como un array de objetos
+    res.json(role)
+
+    //en caso de haber error es manejado por el catch
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
 //Post para crear roles
 const createRole = async (req, res, next) => {
   try {
@@ -56,7 +73,7 @@ const updateRole = async (req, res, next) => {
       return res.status(400).json({ error: 'Please provide some body data' })
 
     // Valido los datos
-    const { error } = updateRoleSchema.validate({ id, ...req.body })
+    const { error } = updateRoleSchema.validate({ id, name })
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
@@ -76,7 +93,7 @@ const deleteRole = async (req, res, next) => {
 
     await Role.update({ status }, { where: { id } })
 
-    res.status(201).json({ message: 'Status updated succesfully' })
+    res.status(201).json({ message: 'Status updated successfully' })
   } catch (error) {
     console.error(error)
     next(error)
@@ -85,6 +102,7 @@ const deleteRole = async (req, res, next) => {
 
 module.exports = {
   getRoles,
+  getRoleById,
   createRole,
   updateRole,
   deleteRole
