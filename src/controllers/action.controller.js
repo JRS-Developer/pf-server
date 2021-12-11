@@ -14,7 +14,10 @@ const getActions = async (req, res, next) => {
 
     const actions = await Action.findAll()
 
-    return res.json(actions)
+    //console.log(actions);
+
+    return res.json(actions);
+
   } catch (error) {
     console.error(error)
     next(error)
@@ -32,7 +35,6 @@ const createAction = async (req, res, next) => {
       onclick,
       icon,
     })
-    console.log(error);
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     await Action.create({
@@ -74,16 +76,30 @@ const updateActionById = async (req, res, next) => {
     const { name, action_param, onclick, icon } = req.body
     const { id } = req.params
 
-    const updated = await Action.update(
-      { name, action_param, onclick, icon },
-      {
-        where: {
-          id,
-        },
+    if( !req.body.name ){
+      const updated = await Action.update(
+        { status: req.body.status },
+        {
+          where: {
+            id,
+          },
+        }
+      )
+      if (updated.length) {
+        return res.json({ message: 'Status updated successfully' })
       }
-    )
-    if (updated.length) {
-      return res.json({ message: 'Action updated successfully' })
+    }else{
+      const updated = await Action.update(
+        { name, action_param, onclick, icon },
+        {
+          where: {
+            id,
+          },
+        }
+      )
+      if (updated.length) {
+        return res.json({ message: 'Action updated successfully' })
+      }
     }
 
     return res

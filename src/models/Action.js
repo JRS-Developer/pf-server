@@ -25,7 +25,8 @@ const Action = conn.define('actions', {
   },
   status: {
     type: DataTypes.BOOLEAN,
-    defaultValue: true,
+    allowNull: false,
+    defaultValue: true
   },
 }, {
   timestamps: false

@@ -28,13 +28,13 @@ const Module = conn.define(
     },
     status: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true,
+      allowNull: false,
+      defaultValue: true
     },
   },
-  {
-    timestamps: true,
-  }
-)
+}, {
+  timestamps: true
+});
 
 // MODULES
 Action.belongsToMany(Module, { through: 'actions_modules' })

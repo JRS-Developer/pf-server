@@ -15,7 +15,8 @@ const Role = conn.define(
     },
     status: {
       type: DataTypes.BOOLEAN,
-      defaultValue: true,
+      allowNull: false,
+      defaultValue: true
     },
   },
   {

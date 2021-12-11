@@ -43,6 +43,15 @@ conn
       defaultRoles()
     })
 
+
+conn.sync({ force: false }).then(defaultRoles).then(() => {
+  app.listen(port, () => {
+    console.log(`The server is running on port ${port}`)
+    //initialActions();
+    //initialModules();
+
+  })
+
     function initialActions() {
       let $saveData = []
       actions.map((dt) => {
@@ -55,6 +64,7 @@ conn
             icon: dt.icon,
           },
         })
+
 
         $saveData.push($data)
       })
