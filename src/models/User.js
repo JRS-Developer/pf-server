@@ -41,6 +41,7 @@ const User = conn.define('users', {
   password: {
     type: DataTypes.STRING,
     allowNull: false,
+    // Guardo la contra encriptada
     set(value) {
       this.setDataValue('password', bcrypt.hashSync(value, 10))
     }

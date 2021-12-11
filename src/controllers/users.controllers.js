@@ -186,14 +186,22 @@ const updateUser = async (req, res, next) => {
     // Si hay algun error lo retorno
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    const [count] = await User.update(data, {
+    // YA QUE LA CONTRASEÑA EN LA BASE DE DATOS ESTA ENCRIPTADA, PUES NO PODEMOS AGARRAR LA CONTRASEÑA QUE MANDA EL BODY Y ENCRIPTARLA DE NUEVO, PORQUE NO SERVIRIA, Asi que debo primero buscar en la base de datos, y si la contraseña en la base de datos es la misma que del body, entonces no la encripto
+    const user = await User.findByPk(id)
+
+    // Sino hay usuario entonces revuelvo un error
+    if(!user)  return res.status(400).json({ error: NO_USER_FOUND })
+
+    // Si la contraseña es la misma que la de la base de datos, entonces la borro del objeto data y asi evito volver a encriptarla.
+    if (user?.password === password) {
+      delete data.password
+    }
+
+    await User.update(data, {
       where: {
         id,
       },
     })
-
-    // Checkeo que haya cambios, sino, significa que no hay ningun usuario con ese ID
-    if (!count) return res.status(400).json({ error: NO_USER_FOUND })
 
     //mensaje satisfactorio
     res.json({ message: 'User updated successfully' })
@@ -212,7 +220,7 @@ const deleteUser = async (req, res, next) => {
     const { id } = req.params
     let { status } = req.body
 
-    if(!status) status = false
+    if (!status) status = false
 
     // Valido los datos
     const { error } = deleteUserSchema.validate({ status, id })
