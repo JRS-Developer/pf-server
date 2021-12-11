@@ -12,21 +12,8 @@ const updateSchoolSchema = Joi.object({
 
 const validateId = (id) => Joi.string().guid().required().validate(id)
 
-const validateOptionalStr = (string) => Joi.string().allow('').validate(string)
-
-const getSchools = async (req, res, next) => {
+const getSchools = async (_req, res, next) => {
   try {
-    const { name } = req.body
-
-    const { error } = validateOptionalStr(name)
-
-    if (error) return res.status(400).json({ error: error.details[0].message })
-
-    if (name) {
-      const schoolsByName = await Schools.findAll({ where: { name } })
-      return res.json(schoolsByName)
-    }
-
     const schools = await Schools.findAll()
 
     res.json(schools)
@@ -79,7 +66,6 @@ const updateSchoolById = async (req, res, next) => {
     // Actualizo la escuela
     const [count] = await Schools.update({ name }, { where: { id } })
 
-    // Compruebo si hubieron cambios, si no, entonces retorno un error
     if (!count)
       return res
         .status(400)
