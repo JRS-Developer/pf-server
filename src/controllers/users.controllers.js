@@ -9,7 +9,7 @@ const createUserSchema = Joi.object({
   userName: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
-  avatar: Joi.string().allow(''),
+  avatar: Joi.string().allow('', null),
   birthdate: Joi.date(),
   identification: Joi.string().required(),
   country: Joi.string().required(),
@@ -22,7 +22,7 @@ const updateUserSchema = Joi.object({
   userName: Joi.string(),
   email: Joi.string().email(),
   password: Joi.string(),
-  avatar: Joi.string(),
+  avatar: Joi.string().allow('', null),
   birthdate: Joi.date(),
   identification: Joi.string(),
   country: Joi.string(),
@@ -126,7 +126,7 @@ const createUser = async (req, res, next) => {
     //se crea el nuevo objeto en la BD
     const newUser = await User.create(data)
     //mensaje satisfactorio
-    res.json(newUser)
+    res.json({message: 'User created successfully'})
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
