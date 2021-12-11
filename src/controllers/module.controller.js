@@ -75,16 +75,30 @@ const updateModuleById = async (req, res, next) => {
     const { name, url, icon, module_id } = req.body
     const { id } = req.params
 
-    const updated = await Module.update(
-      { name, url, icon, module_id },
-      {
-        where: {
-          id,
-        },
+    if( !name ){
+      const updated = await Module.update(
+        { status: req.body.status },
+        {
+          where: {
+            id,
+          },
+        }
+      )
+      if (updated.length) {
+        return res.json({ message: 'Module updated successfully' })
       }
-    )
-    if (updated.length) {
-      return res.json({ message: 'Module updated successfully' })
+    }else{
+      const updated = await Module.update(
+        { name, url, icon, module_id },
+        {
+          where: {
+            id,
+          },
+        }
+      )
+      if (updated.length) {
+        return res.json({ message: 'Module updated successfully' })
+      }
     }
 
     return res

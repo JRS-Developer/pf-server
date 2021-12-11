@@ -24,6 +24,11 @@ const Module = conn.define('modules', {
     type: DataTypes.UUID,
     allowNull: true
   },
+  status: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
+  },
 }, {
   timestamps: true
 });
