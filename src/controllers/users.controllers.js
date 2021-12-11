@@ -1,5 +1,37 @@
-const User = require('../models/User')
-const Role = require('../models/Role')
+const { User, Role } = require('../models/')
+const Joi = require('joi')
+
+const NO_USER_FOUND = "There isn't any user with that id"
+
+const createUserSchema = Joi.object({
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  userName: Joi.string().required(),
+  email: Joi.string().email().required(),
+  password: Joi.string().required(),
+  avatar: Joi.string().allow(''),
+  birthdate: Joi.date(),
+  identification: Joi.string().required(),
+  country: Joi.string().required(),
+})
+
+const updateUserSchema = Joi.object({
+  id: Joi.string().guid(),
+  firstName: Joi.string(),
+  lastName: Joi.string(),
+  userName: Joi.string(),
+  email: Joi.string().email(),
+  password: Joi.string(),
+  avatar: Joi.string(),
+  birthdate: Joi.date(),
+  identification: Joi.string(),
+  country: Joi.string(),
+})
+
+const deleteUserSchema = Joi.object({
+  id: Joi.string().guid(),
+  status: Joi.boolean().required(),
+})
 
 //**users**
 
@@ -7,26 +39,26 @@ const Role = require('../models/Role')
 const get_user_info = async (req, res, next) => {
   try {
     const { id } = req.query
-    const { role_id, school_id } = req.params
+    // const { role_id, school_id } = req.params
     // Buscamos usuarios por ID (pasado por query) para acceder al detalle de uno en particular
     if (id) {
       //se busca user por id
       const user_found = await User.findByPk(id)
 
       //se verifica si se encontró coincidencia y se retorna el objeto sino se envia error
-      if (!user_found)
-        return res
-          .status(400)
-          .json({ error: "There isn't any user with that id" })
+      if (!user_found) return res.status(400).json({ error: NO_USER_FOUND })
 
       return res.json(user_found)
     }
 
     //Buscamos todos los usuarios disponibles
     const users = await User.findAll({
-      where: {
-        role_id,
-        school_id,
+      // where: {
+      //   role_id,
+      //   school_id,
+      // },
+      include: {
+        model: Role,
       },
     })
 
@@ -48,17 +80,34 @@ const user_info_by_role = async (req, res) => {
 const create_user = async (req, res, next) => {
   try {
     //se reciben los datos por body
-    const { name, email, password, avatar, birthdate, identification } =
-      req.body
-
-    //se crea el nuevo objeto en la BD
-    const newUser = await User.create({
-      name,
+    const {
+      firstName,
+      lastName,
+      userName,
       email,
       password,
       avatar,
       birthdate,
       identification,
+      country,
+    } = req.body
+
+    // Valido los datos
+    const { error } = createUserSchema.validate(req.body)
+
+    if (error) return res.status(400).json({ error: error.details[0].message })
+
+    //se crea el nuevo objeto en la BD
+    const newUser = await User.create({
+      firstName,
+      lastName,
+      userName,
+      email,
+      password,
+      avatar,
+      birthdate,
+      identification,
+      country,
     })
     //mensaje satisfactorio
     res.json(newUser)
@@ -74,35 +123,66 @@ const upDate_user = async (req, res, next) => {
   try {
     const { id } = req.params
 
-    //Manejo de contraseña aparte para validaciones
-    const { password } = req.query
-
     //Manejo de los demas datos por formulario
-    const { name, email, avatar } = req.body
+    const {
+      firstName,
+      lastName,
+      userName,
+      email,
+      password,
+      avatar,
+      birthdate,
+      identification,
+      country,
+    } = req.body
+
+    // Valido datos, si el body esta vacio, retorno un error
+    if (!Object.keys(req.body).length)
+      return res.status(400).json({ error: 'Please provide some body data' })
+
+    // Valido que los datos del body y el id sean validos
+    const { error } = updateUserSchema.validate({ ...req.body, id })
+
+    // Si hay algun error lo retorno
+    if (error) return res.status(400).json({ error: error.details[0].message })
 
     //la password se modifica de forma individual
     if (password) {
-      await User.update(
+      const [count] = await User.update(
         { password },
         {
           where: {
-            id: id,
+            id,
           },
         }
       )
+      // Checkeo que haya cambios, sino, significa que no hay ningun usuario con ese ID
+      if (!count) return res.status(400).json({ error: NO_USER_FOUND })
       //mensaje satisfactorio
       return res.json({ message: 'password succesfully modified' })
     }
 
     //aca se modifican los demaás datos cuando no sea solicitada la modificación de la password
-    await User.update(
-      { name, email, avatar },
+    const [count] = await User.update(
+      {
+        firstName,
+        lastName,
+        userName,
+        email,
+        avatar,
+        birthdate,
+        identification,
+        country,
+      },
       {
         where: {
-          id: id,
+          id,
         },
       }
     )
+
+    // Checkeo que haya cambios, sino, significa que no hay ningun usuario con ese ID
+    if (!count) return res.status(400).json({ error: NO_USER_FOUND })
 
     //mensaje satisfactorio
     res.json({ message: 'user data modified' })
@@ -118,9 +198,17 @@ const user_delete = async (req, res, next) => {
   try {
     //se recibe id por params
     const { id } = req.params
+    const { status } = req.body
 
-    //se elimina el objeto de la BD
-    await User.destroy({ where: { id: id } })
+    // Valido los datos
+    const { error } = deleteUserSchema.validate({ ...req.body, id })
+
+    if (error) return res.status(400).json({ error: error.details[0].message })
+
+    // Se actualia el status para determinar si es un usuario activo o no
+    const [count] = await User.update({ status: status }, { where: { id: id } })
+
+    if (!count) return res.status(400).json({ error: NO_USER_FOUND })
 
     //mensaje satisfactorio
     res.json({ message: 'user was deleted' })
@@ -139,8 +227,12 @@ const user_role_set = async (req, res, next) => {
     //se busca el id del user a modificar por params
     const { id } = req.query
 
+    const { error } = Joi.string().guid().required()
+
+    if (error) return res.status(400).json({ error: error.details[0].message })
+
     //se hace el update en el modelo
-    await User.update(
+    const [count] = await User.update(
       { role_id },
       {
         where: {
@@ -148,6 +240,9 @@ const user_role_set = async (req, res, next) => {
         },
       }
     )
+
+    if (!count) return res.status(400).json({ error: NO_USER_FOUND })
+
     //mensaje satisfactorio
     res.json({ message: 'user role changed' })
 
@@ -160,7 +255,7 @@ const user_role_set = async (req, res, next) => {
 //**roles**
 
 //get para obtener roles
-const get_roles = async (req, res, next) => {
+const get_roles = async (_req, res, next) => {
   try {
     //se traen todos los roles
     const roles = await Role.findAll()
@@ -180,8 +275,12 @@ const create_roles = async (req, res, next) => {
     //se recibe el dato necesario name por body
     const { name } = req.body
 
+    const { error } = Joi.string().required().validate(name)
+
+    if (error) return res.status(400).json({ error: error.details[0].message })
+
     //se crea el nuevo rol
-    await Role.create({name})
+    await Role.create({ name })
 
     //mensaje satisfactorio
     res.json({ message: 'role succesfully created' })
