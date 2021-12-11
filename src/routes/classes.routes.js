@@ -1,9 +1,7 @@
 const router = require('express').Router()
 const { aulas } = require('../datos/datos')
 const { puedeVerClass, puedeVerClasses, puedeEliminarClass, authUser } = require('../permisos/auths')
-//const {verifyToken} = require('../middlewares/auth')
-
-
+const {verifyToken} = require('../middlewares/auth')
 
 const {
   updateClassById,
