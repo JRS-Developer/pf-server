@@ -3,7 +3,7 @@ const { conn } = require('./src/db')
 const { port } = require('./src/lib/config')
 
 //Models
-const { Action, Module, User } = require('./src/models')
+const { Action, Module, User, Role } = require('./src/models')
 //Datos
 const { modules, actions } = require('./src/datos/modules-actions')
 //Users
@@ -28,18 +28,19 @@ const defaultRoles = async () => {
     },
   ]
 
-  //return await conn.models.roles.bulkCreate(rolesPorDefault)
+  await Role.bulkCreate(rolesPorDefault)
+  console.log('Cargado los roles')
 }
 
 conn
   .sync({ force: true })
-  .then(defaultRoles)
   .then(() => {
     app.listen(port, () => {
       console.log(`The server is running on port ${port}`)
       initialActions()
       initialModules()
       initialUsers()
+      defaultRoles()
     })
 
     function initialActions() {
