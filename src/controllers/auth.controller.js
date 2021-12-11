@@ -3,6 +3,7 @@ const Joi = require('joi')
 const jwt = require('jsonwebtoken')
 const { secret } = require('../lib/config')
 const Role = require('../models/Role')
+const bcrypt = require('bcryptjs')
 
 const loginUserSchema = Joi.object({
   email: Joi.string().email().required(),
@@ -32,8 +33,7 @@ const loginUser = async (req, res, next) => {
         .json({ error: 'There is not any user registered with that email' })
 
     // Si existe entonces debo comparar las contraseñas.
-    // TODO: comparar el password con el password hasheado por temas de seguridad.
-    const passwordIsValid = password === userFound.password
+    const passwordIsValid = bcrypt.compareSync(password, userFound.password)
 
     // Si el password no coincide, mando un error
     if (!passwordIsValid)

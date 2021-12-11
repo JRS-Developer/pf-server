@@ -2,6 +2,7 @@ const { DataTypes } = require('sequelize')
 const { conn } = require('../db')
 const Role = require('./Role')
 const School = require('./Schools')
+const bcrypt = require('bcryptjs')
 
 const User = conn.define('users', {
   id: {
@@ -33,10 +34,16 @@ const User = conn.define('users', {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
+    validate: {
+      isEmail: true
+    }
   },
   password: {
     type: DataTypes.STRING,
     allowNull: false,
+    set(value) {
+      this.setDataValue('password', bcrypt.hashSync(value, 10))
+    }
   },
   country: {
     type: DataTypes.STRING,

@@ -32,13 +32,13 @@ const defaultRoles = async () => {
   console.log('Cargado los roles')
 }
 
-conn.sync({ force: false }).then(() => {
+conn.sync({ force: true }).then(() => {
   app.listen(port, () => {
     console.log(`The server is running on port ${port}`)
-    //initialActions()
-    //initialModules()
-    //initialUsers()
-    //defaultRoles()
+    initialActions()
+    initialModules()
+    initialUsers()
+    defaultRoles()
   })
 
   function initialActions() {
