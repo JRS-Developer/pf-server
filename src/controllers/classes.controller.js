@@ -18,7 +18,6 @@ const updateClassSchema = Joi.object({
 
 const validateId = (id) => Joi.string().guid().required().validate(id)
 
-
 const getClasses = async (req, res, next) => {
   try {
     const { school_id, name } = req.body
