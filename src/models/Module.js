@@ -31,7 +31,6 @@ const Module = conn.define(
       allowNull: false,
       defaultValue: true
     },
-  },
 }, {
   timestamps: true
 });
