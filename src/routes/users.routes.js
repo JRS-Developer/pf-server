@@ -7,8 +7,9 @@ const { verifyToken } = require('../middlewares/auth');
 router.use(verifyToken)
 
 // User
-router.get('/', user.getUser);
+router.get('/', user.getUsers)
 router.post('/', user.createUser);
+router.get('/:id', user.getUserById);
 router.put('/:id', user.updateUser);
 router.delete('/:id', user.deleteUser);
 

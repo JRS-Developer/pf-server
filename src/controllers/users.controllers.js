@@ -39,23 +39,8 @@ const setUserRoleSchema = Joi.object({
 })
 
 //**users**
-
-//get para obtener datos de usuarios
-const getUser = async (req, res, next) => {
+const getUsers = async (req, res, next) => {
   try {
-    const { id } = req.query
-    // Buscamos usuarios por ID (pasado por query) para acceder al detalle de uno en particular
-    if (id) {
-      //se busca user por id
-      const user_found = await User.findByPk(id)
-
-      //se verifica si se encontró coincidencia y se retorna el objeto sino se envia error
-      if (!user_found) return res.status(400).json({ error: NO_USER_FOUND })
-
-      return res.json(user_found)
-    }
-
-    //Buscamos todos los usuarios disponibles
     const users = await User.findAll({
       include: {
         model: Role,
@@ -64,8 +49,23 @@ const getUser = async (req, res, next) => {
 
     //se envia la respuesta como un arreglo de objetos
     res.json(users)
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
 
-    //manejo del error con try catch pasando mano con next.
+//get para obtener datos de un usuario
+const getUserById = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    // Buscamos usuarios por ID (pasado por query) para acceder al detalle de uno en particular
+    const user_found = await User.findByPk(id)
+
+    //se verifica si se encontró coincidencia y se retorna el objeto sino se envia error
+    if (!user_found) return res.status(400).json({ error: NO_USER_FOUND })
+
+    return res.json(user_found)
   } catch (error) {
     console.error(error)
     next(error)
@@ -107,7 +107,17 @@ const createUser = async (req, res, next) => {
     } = req.body
 
     // Valido los datos
-    const { error } = createUserSchema.validate(req.body)
+    const { error } = createUserSchema.validate({
+      firstName,
+      lastName,
+      userName,
+      email,
+      password,
+      avatar,
+      birthdate,
+      identification,
+      country,
+    })
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
@@ -151,56 +161,42 @@ const updateUser = async (req, res, next) => {
       country,
     } = req.body
 
+    const data = {
+      firstName,
+      lastName,
+      userName,
+      email,
+      password,
+      avatar,
+      birthdate,
+      identification,
+      country,
+    }
+
     // Valido datos, si el body esta vacio, retorno un error
     if (!Object.keys(req.body).length)
       return res.status(400).json({ error: 'Please provide some body data' })
 
     // Valido que los datos del body y el id sean validos
-    const { error } = updateUserSchema.validate({ ...req.body, id })
+    const { error } = updateUserSchema.validate({
+      ...data,
+      id,
+    })
 
     // Si hay algun error lo retorno
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    //la password se modifica de forma individual
-    if (password) {
-      const [count] = await User.update(
-        { password },
-        {
-          where: {
-            id,
-          },
-        }
-      )
-      // Checkeo que haya cambios, sino, significa que no hay ningun usuario con ese ID
-      if (!count) return res.status(400).json({ error: NO_USER_FOUND })
-      //mensaje satisfactorio
-      return res.json({ message: 'password succesfully modified' })
-    }
-
-    //aca se modifican los demaás datos cuando no sea solicitada la modificación de la password
-    const [count] = await User.update(
-      {
-        firstName,
-        lastName,
-        userName,
-        email,
-        avatar,
-        birthdate,
-        identification,
-        country,
+    const [count] = await User.update(data, {
+      where: {
+        id,
       },
-      {
-        where: {
-          id,
-        },
-      }
-    )
+    })
 
     // Checkeo que haya cambios, sino, significa que no hay ningun usuario con ese ID
     if (!count) return res.status(400).json({ error: NO_USER_FOUND })
 
     //mensaje satisfactorio
-    res.json({ message: 'user data modified' })
+    res.json({ message: 'User updated successfully' })
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
@@ -214,10 +210,12 @@ const deleteUser = async (req, res, next) => {
   try {
     //se recibe id por params
     const { id } = req.params
-    const { status } = req.body
+    let { status } = req.body
+
+    if(!status) status = false
 
     // Valido los datos
-    const { error } = deleteUserSchema.validate({ ...req.body, id })
+    const { error } = deleteUserSchema.validate({ status, id })
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
@@ -227,7 +225,7 @@ const deleteUser = async (req, res, next) => {
     if (!count) return res.status(400).json({ error: NO_USER_FOUND })
 
     //mensaje satisfactorio
-    res.json({ message: 'user was deleted' })
+    res.json({ message: 'User deleted successfully' })
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
@@ -271,7 +269,8 @@ const setUserRole = async (req, res, next) => {
 }
 
 module.exports = {
-  getUser,
+  getUsers,
+  getUserById,
   getUsersByRole,
   createUser,
   updateUser,

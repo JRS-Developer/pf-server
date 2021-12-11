@@ -21,8 +21,8 @@ const loginUser = async (req, res, next) => {
 
     // Busco si el usuario existe
     const userFound = await User.findOne({
-      include: {model: Role},
-      where: { email }
+      include: { model: Role },
+      where: { email },
     })
 
     // Sino existe le retorno un error
@@ -39,19 +39,16 @@ const loginUser = async (req, res, next) => {
     if (!passwordIsValid)
       return res.status(401).json({ error: 'Invalid password' })
 
-    // Si coincide, entonces el usuario existe, asi que debo obtener sus roles y guardarlos en un json web token.
-    const roles =
-      (await userFound.getRol) &&
-      userFound.getRol().then((roles) => roles.map((r) => r.id))
-
     // Creo el token almacenandole el id del usuario y sus roles
     // INFO: Lo mas probable es que despues se quiera guardar tambien los access, pero falta gestionar esa tabla.
-    console.log(userFound)
-    const token = jwt.sign({ id: userFound.id, roles: userFound.roleId, email: userFound.email }, secret, {
-      expiresIn: '24h',
-    })
-    //console.log(tokenData)
-    
+    const token = jwt.sign(
+      { id: userFound.id, roles: userFound.roleId, email: userFound.email },
+      secret,
+      {
+        expiresIn: '24h',
+      }
+    )
+
     res.json({ token })
   } catch (error) {
     console.error(error)
