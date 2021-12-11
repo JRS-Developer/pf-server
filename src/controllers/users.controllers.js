@@ -106,8 +106,7 @@ const createUser = async (req, res, next) => {
       country,
     } = req.body
 
-    // Valido los datos
-    const { error } = createUserSchema.validate({
+    const data = {
       firstName,
       lastName,
       userName,
@@ -117,22 +116,15 @@ const createUser = async (req, res, next) => {
       birthdate,
       identification,
       country,
-    })
+    }
+
+    // Valido los datos
+    const { error } = createUserSchema.validate(data)
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     //se crea el nuevo objeto en la BD
-    const newUser = await User.create({
-      firstName,
-      lastName,
-      userName,
-      email,
-      password,
-      avatar,
-      birthdate,
-      identification,
-      country,
-    })
+    const newUser = await User.create(data)
     //mensaje satisfactorio
     res.json(newUser)
 
