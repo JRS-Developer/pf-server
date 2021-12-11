@@ -33,13 +33,17 @@ const deleteUserSchema = Joi.object({
   status: Joi.boolean().required(),
 })
 
+const setUserRoleSchema = Joi.object({
+  id: Joi.string().guid().required(),
+  role_id: Joi.string().guid().required(),
+})
+
 //**users**
 
 //get para obtener datos de usuarios
-const get_user_info = async (req, res, next) => {
+const getUser = async (req, res, next) => {
   try {
     const { id } = req.query
-    // const { role_id, school_id } = req.params
     // Buscamos usuarios por ID (pasado por query) para acceder al detalle de uno en particular
     if (id) {
       //se busca user por id
@@ -53,10 +57,6 @@ const get_user_info = async (req, res, next) => {
 
     //Buscamos todos los usuarios disponibles
     const users = await User.findAll({
-      // where: {
-      //   role_id,
-      //   school_id,
-      // },
       include: {
         model: Role,
       },
@@ -67,17 +67,31 @@ const get_user_info = async (req, res, next) => {
 
     //manejo del error con try catch pasando mano con next.
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
 
 //get para obtener datos de usuarios por roles
-const user_info_by_role = async (req, res) => {
-  res.send('se trae la info de usuarios por rol')
+const getUsersByRole = async (req, res) => {
+  try {
+    const { role_id } = req.body
+
+    const { error } = Joi.string().guid().required().validate(role_id)
+
+    if (error) return res.status(400).json({ error: error.details[0].message })
+
+    const users = await User.findAll({ where: { roleId: role_id } })
+
+    res.json(users)
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
 }
 
 //post para añadir usuario
-const create_user = async (req, res, next) => {
+const createUser = async (req, res, next) => {
   try {
     //se reciben los datos por body
     const {
@@ -114,12 +128,13 @@ const create_user = async (req, res, next) => {
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
 
 //put para modificar user
-const upDate_user = async (req, res, next) => {
+const updateUser = async (req, res, next) => {
   try {
     const { id } = req.params
 
@@ -189,12 +204,13 @@ const upDate_user = async (req, res, next) => {
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
 
 //delete para eliminar usuario
-const user_delete = async (req, res, next) => {
+const deleteUser = async (req, res, next) => {
   try {
     //se recibe id por params
     const { id } = req.params
@@ -215,28 +231,29 @@ const user_delete = async (req, res, next) => {
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
+    console.error(error)
     next(error)
   }
 }
 
 //put para cambiar rol de usuario
-const user_role_set = async (req, res, next) => {
+const setUserRole = async (req, res, next) => {
   try {
     //se trae el nuevo rol por body
     const { role_id } = req.body
     //se busca el id del user a modificar por params
-    const { id } = req.query
+    const { id } = req.params
 
-    const { error } = Joi.string().guid().required()
+    const { error } = setUserRoleSchema.validate({ role_id, id })
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     //se hace el update en el modelo
     const [count] = await User.update(
-      { role_id },
+      { roleId: role_id },
       {
         where: {
-          id: id,
+          id,
         },
       }
     )
@@ -248,66 +265,16 @@ const user_role_set = async (req, res, next) => {
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
-    next(error)
-  }
-}
-
-//**roles**
-
-//get para obtener roles
-const get_roles = async (_req, res, next) => {
-  try {
-    //se traen todos los roles
-    const roles = await Role.findAll()
-
-    //se envian como un array de objetos
-    res.json(roles)
-
-    //en caso de haber error es manejado por el catch
-  } catch (error) {
-    next(error)
-  }
-}
-
-//Post para crear roles
-const create_roles = async (req, res, next) => {
-  try {
-    //se recibe el dato necesario name por body
-    const { name } = req.body
-
-    const { error } = Joi.string().required().validate(name)
-
-    if (error) return res.status(400).json({ error: error.details[0].message })
-
-    //se crea el nuevo rol
-    await Role.create({ name })
-
-    //mensaje satisfactorio
-    res.json({ message: 'role succesfully created' })
-
-    //en caso de haber error es manejado por el catch
-  } catch (error) {
-    next(error)
-  }
-}
-
-//Put paramodificar roles
-const upDate_roles = async (req, res, next) => {
-  try {
-    //en caso de haber error es manejado por el catch
-  } catch (error) {
+    console.error(error)
     next(error)
   }
 }
 
 module.exports = {
-  get_user_info,
-  user_info_by_role,
-  create_user,
-  upDate_user,
-  user_delete,
-  user_role_set,
-  get_roles,
-  create_roles,
-  upDate_roles,
+  getUser,
+  getUsersByRole,
+  createUser,
+  updateUser,
+  deleteUser,
+  setUserRole,
 }
