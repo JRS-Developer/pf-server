@@ -97,8 +97,9 @@ const updateActionById = async (req, res, next) => {
           },
         }
       )
+      console.log(updated);
       if (updated.length) {
-        return res.json({ message: 'Action updated successfully' })
+        return res.json({ message: 'Actions updated successfully' })
       }
     }
 
