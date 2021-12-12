@@ -33,17 +33,17 @@ const defaultRoles = async () => {
   console.log('Cargado los roles')
 }
 
-conn.sync({ force: false }).then(() => {
-  app.listen(port, () => {
+conn.sync({ force: true }).then(() => {
+  app.listen(port,async () => {
     console.log(`The server is running on port ${port}`)
-    //initialActions()
-    //initialModules()
-    //initialUsers()
-    //defaultRoles()
-    //initialAccess()
+    await initialActions()
+    await initialModules()
+    await initialUsers()
+    await defaultRoles()
+    await initialAccess()
   })
 
-  function initialActions() {
+  async function initialActions() {
     let $saveData = []
     actions.map((dt) => {
       let $data = Action.create({
@@ -57,12 +57,12 @@ conn.sync({ force: false }).then(() => {
       $saveData.push($data)
     })
 
-    Promise.all($saveData).then(() => {
+    await Promise.all($saveData).then(() => {
       console.log('acciones pre cargadas')
     })
   }
 
-  function initialModules() {
+  async function initialModules() {
     let $saveData = []
     let arrayActionsIds = [actions[0].id, actions[1].id, actions[2].id]
     modules.map((dt) => {
@@ -90,12 +90,12 @@ conn.sync({ force: false }).then(() => {
       }
     })
 
-    Promise.all($saveData).then(() => {
+    await Promise.all($saveData).then(() => {
       console.log('modules pre cargadas')
     })
   }
 
-  function initialUsers() {
+  async function initialUsers() {
     let $saveData = []
     users.map((dt) => {
       let $data = User.create({
@@ -113,12 +113,12 @@ conn.sync({ force: false }).then(() => {
       $saveData.push($data)
     })
 
-    Promise.all($saveData).then(() => {
+    await Promise.all($saveData).then(() => {
       console.log('Usuarios pre cargados')
     })
   }
 
-  function initialAccess() {
+  async function initialAccess() {
     let $saveData = []
     access.map((dt) => {
       let $data = Access.create({
@@ -130,7 +130,7 @@ conn.sync({ force: false }).then(() => {
       $saveData.push($data)
     })
 
-    Promise.all($saveData).then(() => {
+    await Promise.all($saveData).then(() => {
       console.log('Access pre cargadas')
     })
   }
