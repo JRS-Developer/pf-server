@@ -83,7 +83,7 @@ const updateModuleById = async (req, res, next) => {
     const { id } = req.params
 
     if( !name ){
-      let updatedModule = await Module.update(
+      let [count, updatedModule] = await Module.update(
         { status: req.body.status },
         {
           where: {
@@ -92,20 +92,22 @@ const updateModuleById = async (req, res, next) => {
         }
       )
 
-      updatedModule.addActions(action_id)
-      if (updatedModule.length) {
+      if (count) {
         return res.json({ message: 'Module updated successfully' })
       }
     }else{
-      const updated = await Module.update(
-        { name, url, icon, module_id },
+      let [count, updateModule] = await Module.update(
+        { name, url, icon, module_id, action_id },
         {
           where: {
             id,
           },
+          returning :true
         }
       )
-      if (updated.length) {
+
+      updateModule[0].setActions && updateModule[0].setActions(action_id)
+      if (count) {
         return res.json({ message: 'Module updated successfully' })
       }
     }

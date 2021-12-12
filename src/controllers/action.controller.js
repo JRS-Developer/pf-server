@@ -14,8 +14,6 @@ const getActions = async (req, res, next) => {
 
     const actions = await Action.findAll()
 
-    //console.log(actions);
-
     return res.json(actions);
 
   } catch (error) {

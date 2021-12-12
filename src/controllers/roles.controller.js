@@ -11,7 +11,6 @@ const getRoles = async (_req, res, next) => {
   try {
     //se traen todos los roles
     const roles = await Role.findAll()
-
     //se envian como un array de objetos
     res.json(roles)
 
