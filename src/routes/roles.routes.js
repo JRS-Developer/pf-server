@@ -10,10 +10,10 @@ const { verifyToken } = require('../middlewares/auth')
 
 router.use(verifyToken)
 
-router.get('/', getRoles)
-router.get('/:id', getRoleById)
-router.post('/', createRole)
-router.put('/:id', updateRole)
-router.delete('/:id', deleteRole)
+router.get('/', getRoles) //sUser, admin,
+router.get('/:id', getRoleById) //sUser, admin,
+router.post('/', createRole) //sUser, admin,
+router.put('/:id', updateRole) //sUser, admin,
+router.delete('/:id', deleteRole) //sUser, admin,
 
 module.exports = router

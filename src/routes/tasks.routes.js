@@ -10,7 +10,7 @@ const { verifyToken } = require('../middlewares/auth')
 
 router.use(verifyToken)
 
-router.get('/', getTasks)
+router.get('/', getTasks) 
 router.post('/', createTask)
 
 router.get('/:id', getTaskById)

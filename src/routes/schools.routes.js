@@ -9,10 +9,10 @@ const { verifyToken } = require('../middlewares/auth')
 
 router.use(verifyToken)
 
-router.get('/', getSchools)
-router.post('/', createSchool)
+router.get('/', getSchools) //sUser
+router.post('/', createSchool) //sUser
 
-router.put('/:id', updateSchoolById)
-router.delete('/:id', deleteSchoolById)
+router.put('/:id', updateSchoolById) //sUser
+router.delete('/:id', deleteSchoolById) //sUser
 
 module.exports = router
