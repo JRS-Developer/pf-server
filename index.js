@@ -74,10 +74,6 @@ conn.sync({ force: true }).then(() => {
           icon: dt.icon,
         })
 
-        newModule.then(function (res) {
-          res.addActions(arrayActionsIds)
-          $saveData.push(newModule)
-        })
       } else {
         let newModule = Module.create({
           id: dt.id,
