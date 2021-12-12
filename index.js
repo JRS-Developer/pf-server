@@ -3,11 +3,12 @@ const { conn } = require('./src/db')
 const { port } = require('./src/lib/config')
 
 //Models
-const { Action, Module, User, Role } = require('./src/models')
+const { Action, Module, User, Role, Access } = require('./src/models')
 //Datos
 const { modules, actions } = require('./src/datos/modules-actions')
 //Users
 const { users } = require('./src/datos/users')
+const { access } = require("./src/datos/access")
 
 const defaultRoles = async () => {
   const rolesPorDefault = [
@@ -32,26 +33,25 @@ const defaultRoles = async () => {
   console.log('Cargado los roles')
 }
 
-conn.sync({ force: true }).then(() => {
+conn.sync({ force: false }).then(() => {
   app.listen(port, () => {
     console.log(`The server is running on port ${port}`)
-    initialActions()
-    initialModules()
-    initialUsers()
-    defaultRoles()
+    //initialActions()
+    //initialModules()
+    //initialUsers()
+    //defaultRoles()
+    //initialAccess()
   })
 
   function initialActions() {
     let $saveData = []
     actions.map((dt) => {
-      let $data = Action.findOrCreate({
-        where: {
+      let $data = Action.create({
           id: dt.id,
           name: dt.name,
           action_param: dt.action_param,
           onclick: dt.onclick,
           icon: dt.icon,
-        },
       })
 
       $saveData.push($data)
@@ -98,17 +98,16 @@ conn.sync({ force: true }).then(() => {
   function initialUsers() {
     let $saveData = []
     users.map((dt) => {
-      let $data = User.findOrCreate({
-        where: {
-          firstName: dt.firstName,
-          lastName: dt.lastName,
-          userName: dt.userName,
-          email: dt.email,
-          password: dt.password,
-          birthdate: dt.birthdate,
-          identification: dt.identification,
-          country: dt.country,
-        },
+      let $data = User.create({
+        id: dt.id,
+        firstName: dt.firstName,
+        lastName: dt.lastName,
+        userName: dt.userName,
+        email: dt.email,
+        password: dt.password,
+        birthdate: dt.birthdate,
+        identification: dt.identification,
+        country: dt.country,
       })
 
       $saveData.push($data)
@@ -116,6 +115,23 @@ conn.sync({ force: true }).then(() => {
 
     Promise.all($saveData).then(() => {
       console.log('Usuarios pre cargados')
+    })
+  }
+
+  function initialAccess() {
+    let $saveData = []
+    access.map((dt) => {
+      let $data = Access.create({
+        user_id: dt.user_id,
+        module_id: dt.module_id,
+        action_id: dt.action_id
+      })
+
+      $saveData.push($data)
+    })
+
+    Promise.all($saveData).then(() => {
+      console.log('Access pre cargadas')
     })
   }
 })
