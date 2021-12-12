@@ -9,10 +9,11 @@ const createUserSchema = Joi.object({
   userName: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
-  avatar: Joi.string().allow(''),
+  avatar: Joi.string().allow('', null),
   birthdate: Joi.date(),
   identification: Joi.string().required(),
   country: Joi.string().required(),
+  roleId: Joi.string().guid().allow('', null)
 })
 
 const updateUserSchema = Joi.object({
@@ -22,10 +23,11 @@ const updateUserSchema = Joi.object({
   userName: Joi.string(),
   email: Joi.string().email(),
   password: Joi.string(),
-  avatar: Joi.string(),
+  avatar: Joi.string().allow('', null),
   birthdate: Joi.date(),
   identification: Joi.string(),
   country: Joi.string(),
+  roleId: Joi.string().guid().allow('', null)
 })
 
 const deleteUserSchema = Joi.object({
@@ -45,6 +47,9 @@ const getUsers = async (req, res, next) => {
       include: {
         model: Role,
       },
+      attributes: {
+        exclude: ['roleId'],
+      },
     })
 
     //se envia la respuesta como un arreglo de objetos
@@ -60,7 +65,12 @@ const getUserById = async (req, res, next) => {
   try {
     const { id } = req.params
     // Buscamos usuarios por ID (pasado por query) para acceder al detalle de uno en particular
-    const user_found = await User.findByPk(id)
+    const user_found = await User.findByPk(id, {
+      include: { model: Role },
+      attributes: {
+        exclude: ['roleId'],
+      },
+    })
 
     //se verifica si se encontró coincidencia y se retorna el objeto sino se envia error
     if (!user_found) return res.status(400).json({ error: NO_USER_FOUND })
@@ -104,6 +114,7 @@ const createUser = async (req, res, next) => {
       birthdate,
       identification,
       country,
+      role // El role tiene que ser un Id
     } = req.body
 
     const data = {
@@ -116,6 +127,7 @@ const createUser = async (req, res, next) => {
       birthdate,
       identification,
       country,
+      roleId: role
     }
 
     // Valido los datos
@@ -126,7 +138,7 @@ const createUser = async (req, res, next) => {
     //se crea el nuevo objeto en la BD
     const newUser = await User.create(data)
     //mensaje satisfactorio
-    res.json(newUser)
+    res.json({message: 'User created successfully'})
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
@@ -151,6 +163,7 @@ const updateUser = async (req, res, next) => {
       birthdate,
       identification,
       country,
+      role
     } = req.body
 
     const data = {
@@ -163,6 +176,7 @@ const updateUser = async (req, res, next) => {
       birthdate,
       identification,
       country,
+      roleId: role
     }
 
     // Valido datos, si el body esta vacio, retorno un error
@@ -182,7 +196,7 @@ const updateUser = async (req, res, next) => {
     const user = await User.findByPk(id)
 
     // Sino hay usuario entonces revuelvo un error
-    if(!user)  return res.status(400).json({ error: NO_USER_FOUND })
+    if (!user) return res.status(400).json({ error: NO_USER_FOUND })
 
     // Si la contraseña es la misma que la de la base de datos, entonces la borro del objeto data y asi evito volver a encriptarla.
     if (user?.password === password) {
