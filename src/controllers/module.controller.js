@@ -92,7 +92,7 @@ const updateModuleById = async (req, res, next) => {
         }
       )
 
-      if (updatedModule.length) {
+      if (count) {
         return res.json({ message: 'Module updated successfully' })
       }
     }else{
@@ -106,8 +106,8 @@ const updateModuleById = async (req, res, next) => {
         }
       )
 
-      updateModule[0].setActions(action_id)
-      if (updateModule.length) {
+      updateModule[0].setActions && updateModule[0].setActions(action_id)
+      if (count) {
         return res.json({ message: 'Module updated successfully' })
       }
     }
