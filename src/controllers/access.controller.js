@@ -1,6 +1,5 @@
 const { Access, Module, User} = require('../models')
 const {Sequelize, Op} = require("sequelize");
-const jwt = require("jsonwebtoken");
 const {secret} = require("../lib/config");
 
 //
