@@ -13,7 +13,7 @@ const { get_user_info,
 } = require('../controllers/users.controllers');
 const { verifyToken } = require('../middlewares/auth');
 
-router.use(verifyToken)
+router.use(verifyToken);
 
 router.get('/', get_user_info);
 router.get('/', user_info_by_role);
