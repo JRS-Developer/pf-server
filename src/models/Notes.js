@@ -5,11 +5,15 @@ const StudentTask = require('./Task/StudentTask')
 const Notes = sequelize.define('notes', {
   id: {
     type: DataTypes.UUID,
-    primaryKey: true
+    primaryKey: true,
   },
   value: {
     type: DataTypes.INTEGER,
-    allowNull: false
+    allowNull: false,
+  },
+  status: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
   },
 })
 

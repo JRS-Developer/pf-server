@@ -10,6 +10,10 @@ const Materias = sequelize.define('materias', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  status: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: true,
+  },
 })
 
 module.exports = Materias

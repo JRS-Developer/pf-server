@@ -23,6 +23,11 @@ const Action = conn.define('actions', {
     type: DataTypes.STRING,
     allowNull: false
   },
+  status: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
+  },
 }, {
   timestamps: false
 });
