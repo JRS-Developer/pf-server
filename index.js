@@ -3,12 +3,15 @@ const { conn } = require('./src/db')
 const { port } = require('./src/lib/config')
 
 //Models
-const { Action, Module, User, Role, Access } = require('./src/models')
+const { Action, Module, User, Role, Access, Task, Classes, Materias } = require('./src/models')
 //Datos
 const { modules, actions } = require('./src/datos/modules-actions')
 //Users
 const { users } = require('./src/datos/users')
 const { access } = require("./src/datos/access")
+const { tasks } = require('./src/datos/tasks')
+const { classes } = require('./src/datos/classes')
+const { materias } = require('./src/datos/materias')
 
 const defaultRoles = async () => {
   const rolesPorDefault = [
@@ -41,6 +44,9 @@ conn.sync({ force: true }).then(() => {
     await initialUsers()
     await defaultRoles()
     await initialAccess()
+    await initialClasses()
+    await initialMaterias()
+    await initialTasks()
   })
 
   async function initialActions() {
@@ -134,4 +140,59 @@ conn.sync({ force: true }).then(() => {
       console.log('Access pre cargadas')
     })
   }
+
+
+  async function initialClasses() {
+    let $saveData = []
+    classes.map((dt) => {
+      let $data = Classes.create({
+          id: dt.id,
+          name:dt.name
+      })
+
+      $saveData.push($data)
+    })
+
+    await Promise.all($saveData).then(() => {
+      console.log('algunas clases pre cargadas')
+    })
+  }
+
+  async function initialMaterias() {
+    let $saveData = []
+    materias.map((dt) => {
+      let $data = Materias.create({
+          id: dt.id,
+          name:dt.name
+      })
+
+      $saveData.push($data)
+    })
+
+    await Promise.all($saveData).then(() => {
+      console.log('algunas Materias pre cargadas')
+    })
+  }
+
+
+  async function initialTasks() {
+    let $saveData = []
+    tasks.map((dt) => {
+      let $data = Task.create({
+          id: dt.id,
+          title: dt.title,
+          description:dt.description,
+          end_date: dt.end_date,
+          class_id: dt.class_id,
+          materia_id: dt.materia_id
+      })
+
+      $saveData.push($data)
+    })
+
+    await Promise.all($saveData).then(() => {
+      console.log('algunas tareas pre cargadas')
+    })
+  }
+
 })
