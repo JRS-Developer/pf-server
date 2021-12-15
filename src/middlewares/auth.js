@@ -105,7 +105,7 @@ const esProfesor = async (req, res, next) => {
     res.status(403).json({ error: "No tienes permisos para ingresar" })
     
   } catch (error) {
-    // Si el token no es valido, entonces retorno un error 403
+    // Si el token no es valido, entonces retorno un error 403.
     res.status(403).json({ error: "No tienes permisos para ingresar" })
   }
 }
