@@ -8,12 +8,14 @@ const {
   updateModuleById,
   deleteModuleById
 } = require('../controllers/module.controller')
-const { verifyToken, esSuperUser, esSuperUserOrAdmin } = require('../middlewares/auth');
+const { verifyToken, esSuperUser } = require('../middlewares/auth');
 
-router.get('/', esSuperUser, getModules) //sUser
-router.get('/:id', esSuperUser, getModuleById) //sUser
-router.post('/', esSuperUser, createModule) //sUser
-router.put('/:id', esSuperUser, updateModuleById) //sUser
-router.delete('/:id', esSuperUser, deleteModuleById) //sUser
+router.use(verifyToken)
+
+router.get('/', esSuperUser, getModules) 
+router.get('/:id', esSuperUser, getModuleById) 
+router.post('/', esSuperUser, createModule) 
+router.put('/:id', esSuperUser, updateModuleById) 
+router.delete('/:id', esSuperUser, deleteModuleById) 
 
 module.exports = router
