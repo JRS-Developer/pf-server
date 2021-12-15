@@ -2,6 +2,7 @@ const router = require('express').Router()
 const { classes } = require('../datos/datos')
 const { puedeVerClass, puedeVerClasses, puedeEliminarClass, authUser } = require('../permisos/auths')
 const {verifyToken} = require('../middlewares/auth')
+const { verifyToken, esSuperUser, esSuperUserOrAdmin } = require('../middlewares/auth');
 
 router.get('/', verifyToken, (req, res) => {
   res.json(puedeVerClasses(req.user, classes))
