@@ -18,7 +18,7 @@ const verifyToken = async (req, res, next) => {
 
     //console.log(sUser[0].id)
 
-  //  res.locals.userId = tokenDesencriptado.id;
+    res.locals.userId = tokenDesencriptado.id;
 
     return next()
   } catch (error) {
