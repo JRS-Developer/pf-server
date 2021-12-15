@@ -4,8 +4,8 @@ const { conn } = require('./db')
 const {
   Action,
   Module,
-  User,
   Role,
+  User,
   Access,
   Task,
   Classes,
@@ -24,8 +24,8 @@ const { roles } = require('./datos/roles')
 conn.sync({ force: true }).then(async () => {
   await initialActions()
   await initialModules()
-  await initialUsers()
   await initialRoles()
+  await initialUsers()
   await initialAccess()
   await initialClasses()
   await initialMaterias()
@@ -101,6 +101,7 @@ conn.sync({ force: true }).then(async () => {
         birthdate: dt.birthdate,
         identification: dt.identification,
         country: dt.country,
+        roleId: dt.roleId,
       })
 
       $saveData.push($data)
