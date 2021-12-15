@@ -1,9 +1,10 @@
 const config = require('./lib/config')
 const { Sequelize } = require('sequelize')
 
-const { dbUser, dbPort, dbPassword, dbHost, dbName, dev } = config
+const { dbUser, dbPort, dbPassword, dbHost, dbName, dev, dbURL } = config
 
-const conURI = `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`
+const conURI =
+  dbURL || `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`
 
 const sequelize = new Sequelize(conURI, {
   logging: dev ? console.log : false,
@@ -11,5 +12,5 @@ const sequelize = new Sequelize(conURI, {
 })
 
 module.exports = {
-  conn: sequelize
+  conn: sequelize,
 }
