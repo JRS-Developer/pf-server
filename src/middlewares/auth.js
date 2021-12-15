@@ -14,6 +14,7 @@ const verifyToken = async (req, res, next) => {
 
     // Verifico que el token sea valido
     const tokenDesencriptado = jwt.verify(token, secret)
+
     res.locals.userId = tokenDesencriptado.id;
 
     return next()

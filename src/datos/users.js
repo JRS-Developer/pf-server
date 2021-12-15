@@ -8,7 +8,8 @@ const users = [
     identification: '1231233',
     email: 'wilmer@hotmail.com',
     password: '1234',
-    country: 'Peru'
+    country: 'Peru',
+    roleId: "a83af560-8a48-4edd-83eb-6bd3f7e97861",
   },
   {
     id: "2e9e4070-2d42-41ed-8c6b-a018f40c7757",
@@ -19,7 +20,8 @@ const users = [
     identification: '11231234',
     email: 'nico@hotmail.com',
     password: '12345',
-    country: 'Argentina'
+    country: 'Argentina',
+    roleId: "a83af560-8a48-4edd-83eb-6bd3f7e97861",
   },
   {
     id: "6c1c7391-1290-471d-8932-96196cc2fcef",
@@ -30,7 +32,8 @@ const users = [
     identification: '12312335',
     email: 'vale@hotmail.com',
     password: '12346',
-    country: 'Argentina'
+    country: 'Argentina',
+    roleId: "a83af560-8a48-4edd-83eb-6bd3f7e97861",
   },
   {
     id: "47dd3757-29e2-4736-bc42-38e115cba2ed",
@@ -41,7 +44,8 @@ const users = [
     identification: '12312336',
     email: 'luan@hotmail.com',
     password: '12347',
-    country: 'Argentina'
+    country: 'Argentina',
+    roleId: "a83af560-8a48-4edd-83eb-6bd3f7e97861",
   },
   {
     id: "d490f704-1b12-44e2-8a61-48267ecd98b0",
@@ -52,7 +56,8 @@ const users = [
     identification: '12312337',
     email: 'jose@hotmail.com',
     password: '12347',
-    country: 'Venezuela'
+    country: 'Venezuela',
+    roleId: "a83af560-8a48-4edd-83eb-6bd3f7e97861",
   },
   {
     id: "32c00bdf-a19f-48b1-bc5c-de123567c18a",
@@ -63,7 +68,8 @@ const users = [
     identification: '12312338',
     email: 'edwin@hotmail.com',
     password: '12348',
-    country: 'Colombia'
+    country: 'Colombia',
+    roleId: "a83af560-8a48-4edd-83eb-6bd3f7e97861",
   },
   {
     id: "ab11729b-d0f1-4976-821d-8a30c3c178e7",
@@ -74,7 +80,8 @@ const users = [
     identification: '12312339',
     email: 'leandro@hotmail.com',
     password: '12349',
-    country: 'Argentina'
+    country: 'Argentina',
+    roleId: "a83af560-8a48-4edd-83eb-6bd3f7e97861",
   },
 ]
 

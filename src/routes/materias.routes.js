@@ -13,7 +13,7 @@ router.use(verifyToken)
 
 router.get('/', esSuperUserOrAdmin, get_materia) //sUser, admin y los participantes(profesor participante, verificar q sea profesor en el rol)
 router.post('/', esSuperUserOrAdminOrProfesor, create_materia) 
-router.delete('/:id',esSuperUserOrAdmin ,delete_materia) 
+router.delete('/:id',esSuperUserOrAdmin, delete_materia) 
 
 
 //crear un put materia y q el profesor lo pueda editar
