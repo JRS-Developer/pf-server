@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const { Module } = require('../models')
+const { Module, Action } = require('../models')
 
 // Schemas
 const creaModuleSchema = Joi.object({
@@ -23,7 +23,7 @@ const getModules = async (req, res, next) => {
 
 const createModule = async (req, res, next) => {
   try {
-    const { name, url, icon, module_id } =
+    const { name, url, icon, module_id, action_id } =
       req.body
 
     // Validar datos
@@ -36,13 +36,13 @@ const createModule = async (req, res, next) => {
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    await Module.create({
+    let newModule = await Module.create({
       name,
       url,
       icon,
       module_id
     })
-
+    newModule.addActions(action_id)
     return res.json({ message: 'Module created successfully' })
   } catch (error) {
     console.error(error)
@@ -54,7 +54,14 @@ const getModuleById = async (req, res, next) => {
   try {
     const { id } = req.params
 
-    const moduleFound = await Module.findByPk(id)
+    const moduleFound = await Module.findOne({
+      where: {
+        id: id
+      },
+      include: {
+        model: Action
+      }
+    })
 
     if (!moduleFound) {
       return res
@@ -72,31 +79,35 @@ const getModuleById = async (req, res, next) => {
 const updateModuleById = async (req, res, next) => {
   try {
     // Los unicos parámetros que pueden ser cambiados
-    const { name, url, icon, module_id } = req.body
+    const { name, url, icon, module_id, action_id } = req.body
     const { id } = req.params
 
     if( !name ){
-      const updated = await Module.update(
+      let [count, updatedModule] = await Module.update(
         { status: req.body.status },
         {
           where: {
-            id,
-          },
+            id
+          }
         }
       )
-      if (updated.length) {
+
+      if (count) {
         return res.json({ message: 'Module updated successfully' })
       }
     }else{
-      const updated = await Module.update(
-        { name, url, icon, module_id },
+      let [count, updateModule] = await Module.update(
+        { name, url, icon, module_id, action_id },
         {
           where: {
             id,
           },
+          returning :true
         }
       )
-      if (updated.length) {
+
+      updateModule[0].setActions && updateModule[0].setActions(action_id)
+      if (count) {
         return res.json({ message: 'Module updated successfully' })
       }
     }

@@ -1,8 +1,11 @@
 const { DataTypes } = require('sequelize')
 const { conn } = require('../db')
+const Module = require("./Module");
+const User = require("./User");
+const Action = require("./Action")
 
 const Access = conn.define(
-  'access',
+  'acceso',
   {
     id: {
       type: DataTypes.UUID,
@@ -19,7 +22,7 @@ const Access = conn.define(
     },
     action_id: {
       type: DataTypes.UUID,
-      allowNull: false,
+      allowNull: true
     },
     status: {
       type: DataTypes.BOOLEAN,
@@ -30,5 +33,33 @@ const Access = conn.define(
     timestamps: false,
   }
 )
+
+/****/
+Access.belongsTo(User, {
+  foreignKey: 'user_id',
+  sourceKey: 'id'
+})
+User.hasMany(Access, {
+  foreignKey: 'user_id',
+  sourceKey: 'id'
+})
+
+Access.belongsTo(Module, {
+  foreignKey: 'module_id',
+  sourceKey: 'id'
+})
+Module.hasMany(Access, {
+  foreignKey: 'module_id',
+  sourceKey: 'id'
+})
+
+Access.belongsTo(Action, {
+  foreignKey: 'action_id',
+  sourceKey: 'id'
+})
+Action.hasMany(Access, {
+  foreignKey: 'action_id',
+  sourceKey: 'id'
+})
 
 module.exports = Access

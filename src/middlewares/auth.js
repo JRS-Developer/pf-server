@@ -14,9 +14,12 @@ const verifyToken = async (req, res, next) => {
       return res.status(403).json({ error: 'A JWT token is required' })
 
     // Verifico que el token sea valido
-    jwt.verify(token, secret)
     const tokenDesencriptado = jwt.verify(token, secret)
+
     //console.log(sUser[0].id)
+
+  //  res.locals.userId = tokenDesencriptado.id;
+
     return next()
   } catch (error) {
     // Si el token no es valido, entonces retorno un error 401

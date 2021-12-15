@@ -7,10 +7,13 @@ const { verifyToken, esSuperUser, esSuperUserOrAdmin } = require('../middlewares
 router.use(verifyToken)
 
 // User
+
 router.get('/', esSuperUserOrAdmin, user.getUser);
 router.post('/', esSuperUserOrAdmin, user.createUser);
+router.get('/:id', esSuperUserOrAdmin, user.getUserById);
 router.put('/:id', esSuperUserOrAdmin, user.updateUser);
 router.delete('/:id', esSuperUser, user.deleteUser);
+
 
 // User Role
 router.get('/role', esSuperUserOrAdmin, user.getUsersByRole );

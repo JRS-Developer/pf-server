@@ -14,8 +14,6 @@ const getActions = async (req, res, next) => {
 
     const actions = await Action.findAll()
 
-    //console.log(actions);
-
     return res.json(actions);
 
   } catch (error) {
@@ -97,8 +95,9 @@ const updateActionById = async (req, res, next) => {
           },
         }
       )
+      console.log(updated);
       if (updated.length) {
-        return res.json({ message: 'Action updated successfully' })
+        return res.json({ message: 'Actions updated successfully' })
       }
     }
 

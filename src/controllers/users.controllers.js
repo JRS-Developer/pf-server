@@ -9,10 +9,11 @@ const createUserSchema = Joi.object({
   userName: Joi.string().required(),
   email: Joi.string().email().required(),
   password: Joi.string().required(),
-  avatar: Joi.string().allow(''),
+  avatar: Joi.string().allow('', null),
   birthdate: Joi.date(),
   identification: Joi.string().required(),
   country: Joi.string().required(),
+  roleId: Joi.string().guid().allow('', null)
 })
 
 const updateUserSchema = Joi.object({
@@ -22,10 +23,11 @@ const updateUserSchema = Joi.object({
   userName: Joi.string(),
   email: Joi.string().email(),
   password: Joi.string(),
-  avatar: Joi.string(),
+  avatar: Joi.string().allow('', null),
   birthdate: Joi.date(),
   identification: Joi.string(),
   country: Joi.string(),
+  roleId: Joi.string().guid().allow('', null)
 })
 
 const deleteUserSchema = Joi.object({
@@ -39,33 +41,41 @@ const setUserRoleSchema = Joi.object({
 })
 
 //**users**
-
-//get para obtener datos de usuarios
-const getUser = async (req, res, next) => {
+const getUsers = async (req, res, next) => {
   try {
-    const { id } = req.query
-    // Buscamos usuarios por ID (pasado por query) para acceder al detalle de uno en particular
-    if (id) {
-      //se busca user por id
-      const user_found = await User.findByPk(id)
-
-      //se verifica si se encontró coincidencia y se retorna el objeto sino se envia error
-      if (!user_found) return res.status(400).json({ error: NO_USER_FOUND })
-
-      return res.json(user_found)
-    }
-
-    //Buscamos todos los usuarios disponibles
     const users = await User.findAll({
       include: {
         model: Role,
+      },
+      attributes: {
+        exclude: ['roleId'],
       },
     })
 
     //se envia la respuesta como un arreglo de objetos
     res.json(users)
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
 
-    //manejo del error con try catch pasando mano con next.
+//get para obtener datos de un usuario
+const getUserById = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    // Buscamos usuarios por ID (pasado por query) para acceder al detalle de uno en particular
+    const user_found = await User.findByPk(id, {
+      include: { model: Role },
+      attributes: {
+        exclude: ['roleId'],
+      },
+    })
+
+    //se verifica si se encontró coincidencia y se retorna el objeto sino se envia error
+    if (!user_found) return res.status(400).json({ error: NO_USER_FOUND })
+
+    return res.json(user_found)
   } catch (error) {
     console.error(error)
     next(error)
@@ -104,15 +114,10 @@ const createUser = async (req, res, next) => {
       birthdate,
       identification,
       country,
+      role // El role tiene que ser un Id
     } = req.body
 
-    // Valido los datos
-    const { error } = createUserSchema.validate(req.body)
-
-    if (error) return res.status(400).json({ error: error.details[0].message })
-
-    //se crea el nuevo objeto en la BD
-    const newUser = await User.create({
+    const data = {
       firstName,
       lastName,
       userName,
@@ -122,9 +127,18 @@ const createUser = async (req, res, next) => {
       birthdate,
       identification,
       country,
-    })
+      roleId: role
+    }
+
+    // Valido los datos
+    const { error } = createUserSchema.validate(data)
+
+    if (error) return res.status(400).json({ error: error.details[0].message })
+
+    //se crea el nuevo objeto en la BD
+    const newUser = await User.create(data)
     //mensaje satisfactorio
-    res.json(newUser)
+    res.json({message: 'User created successfully'})
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
@@ -149,58 +163,54 @@ const updateUser = async (req, res, next) => {
       birthdate,
       identification,
       country,
+      role
     } = req.body
+
+    const data = {
+      firstName,
+      lastName,
+      userName,
+      email,
+      password,
+      avatar,
+      birthdate,
+      identification,
+      country,
+      roleId: role
+    }
 
     // Valido datos, si el body esta vacio, retorno un error
     if (!Object.keys(req.body).length)
       return res.status(400).json({ error: 'Please provide some body data' })
 
     // Valido que los datos del body y el id sean validos
-    const { error } = updateUserSchema.validate({ ...req.body, id })
+    const { error } = updateUserSchema.validate({
+      ...data,
+      id,
+    })
 
     // Si hay algun error lo retorno
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    //la password se modifica de forma individual
-    if (password) {
-      const [count] = await User.update(
-        { password },
-        {
-          where: {
-            id,
-          },
-        }
-      )
-      // Checkeo que haya cambios, sino, significa que no hay ningun usuario con ese ID
-      if (!count) return res.status(400).json({ error: NO_USER_FOUND })
-      //mensaje satisfactorio
-      return res.json({ message: 'password succesfully modified' })
+    // YA QUE LA CONTRASEÑA EN LA BASE DE DATOS ESTA ENCRIPTADA, PUES NO PODEMOS AGARRAR LA CONTRASEÑA QUE MANDA EL BODY Y ENCRIPTARLA DE NUEVO, PORQUE NO SERVIRIA, Asi que debo primero buscar en la base de datos, y si la contraseña en la base de datos es la misma que del body, entonces no la encripto
+    const user = await User.findByPk(id)
+
+    // Sino hay usuario entonces revuelvo un error
+    if (!user) return res.status(400).json({ error: NO_USER_FOUND })
+
+    // Si la contraseña es la misma que la de la base de datos, entonces la borro del objeto data y asi evito volver a encriptarla.
+    if (user?.password === password) {
+      delete data.password
     }
 
-    //aca se modifican los demaás datos cuando no sea solicitada la modificación de la password
-    const [count] = await User.update(
-      {
-        firstName,
-        lastName,
-        userName,
-        email,
-        avatar,
-        birthdate,
-        identification,
-        country,
+    await User.update(data, {
+      where: {
+        id,
       },
-      {
-        where: {
-          id,
-        },
-      }
-    )
-
-    // Checkeo que haya cambios, sino, significa que no hay ningun usuario con ese ID
-    if (!count) return res.status(400).json({ error: NO_USER_FOUND })
+    })
 
     //mensaje satisfactorio
-    res.json({ message: 'user data modified' })
+    res.json({ message: 'User updated successfully' })
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
@@ -214,10 +224,12 @@ const deleteUser = async (req, res, next) => {
   try {
     //se recibe id por params
     const { id } = req.params
-    const { status } = req.body
+    let { status } = req.body
+
+    if (!status) status = false
 
     // Valido los datos
-    const { error } = deleteUserSchema.validate({ ...req.body, id })
+    const { error } = deleteUserSchema.validate({ status, id })
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
@@ -227,7 +239,7 @@ const deleteUser = async (req, res, next) => {
     if (!count) return res.status(400).json({ error: NO_USER_FOUND })
 
     //mensaje satisfactorio
-    res.json({ message: 'user was deleted' })
+    res.json({ message: 'User deleted successfully' })
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
@@ -271,7 +283,8 @@ const setUserRole = async (req, res, next) => {
 }
 
 module.exports = {
-  getUser,
+  getUsers,
+  getUserById,
   getUsersByRole,
   createUser,
   updateUser,
