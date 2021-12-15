@@ -8,7 +8,8 @@ const users = [
     identification: '1231233',
     email: 'wilmer@hotmail.com',
     password: '1234',
-    country: 'Peru'
+    country: 'Peru',
+  
   },
   {
     id: "2e9e4070-2d42-41ed-8c6b-a018f40c7757",
