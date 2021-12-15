@@ -19,7 +19,7 @@ const createTaskSchema = Joi.object({
 const getTasks = async (req, res, next) => {
   try {
     // Obtengo las tareas en base de la clase y materia
-    const { class_id, materia_id } = req.body
+    const { class_id, materia_id } = req.query
 
     // Validar los datos
     const { error } = getTasksSchema.validate({ class_id, materia_id })

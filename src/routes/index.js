@@ -10,6 +10,7 @@ const actions = require('./actions.routes')
 const modules = require('./modules.routes')
 const roles = require('./roles.routes')
 const access = require('./access.routes')
+const publications = require('./publications.route')
 
 router.use('/tasks', tasks)
 router.use('/users', users)
@@ -22,5 +23,6 @@ router.use('/materias', materias)
 router.use('/actions', actions)
 router.use('/modules', modules)
 router.use('/access', access)
+router.use('/publications', publications)
 
 module.exports = router

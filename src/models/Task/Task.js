@@ -8,7 +8,8 @@ const StudentTask = require('./StudentTask')
 const Task = sequelize.define('task', {
   id: {
     type: DataTypes.UUID,
-    primaryKey: true
+    primaryKey: true,
+    defaultValue: DataTypes.UUIDV4,
   },
   title: {
     type: DataTypes.STRING,
