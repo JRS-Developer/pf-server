@@ -8,7 +8,7 @@ router.use(verifyToken)
 
 // User
 
-router.get('/', esSuperUserOrAdmin, user.getUser);
+router.get('/', esSuperUserOrAdmin, user.getUsers);
 router.post('/', esSuperUserOrAdmin, user.createUser);
 router.get('/:id', esSuperUserOrAdmin, user.getUserById);
 router.put('/:id', esSuperUserOrAdmin, user.updateUser);
