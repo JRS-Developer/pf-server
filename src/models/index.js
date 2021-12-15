@@ -10,6 +10,7 @@ const Module = require('./Module')
 const Action = require('./Action')
 const Role = require('./Role')
 const Publication = require('./Publication')
+const Like = require('./Like')
 
 module.exports = {
   Task,
@@ -23,5 +24,6 @@ module.exports = {
   User,
   StudentTask,
   Role,
-  Publication
+  Publication,
+  Like
 }

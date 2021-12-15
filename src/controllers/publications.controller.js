@@ -1,4 +1,4 @@
-const { Publication } = require('../models')
+const { Publication, Like } = require('../models')
 const { Op } = require('sequelize')
 const Joi = require('joi')
 
@@ -21,10 +21,13 @@ const updatePubliSchema = Joi.object({
 const getPublications = async (req, res, next) => {
   try {
     const publications = await Publication.findAll({
-      include: {
-        association: 'publisher',
-        attributes: ['id', 'firstName', 'lastName', 'avatar', 'status'],
-      },
+      include: [
+        {
+          association: 'publisher',
+          attributes: ['id', 'firstName', 'lastName', 'avatar', 'status'],
+        },
+        { model: Like },
+      ],
     })
 
     res.json(publications)
@@ -114,30 +117,34 @@ const deletePublication = async (req, res, next) => {
 const likePublication = async (req, res, next) => {
   try {
     const { id } = req.params
-    const { like = true } = req.body
+    const userId = res.locals.userId
 
-    const { error } = Joi.boolean().required().validate(like)
+    const publication = await Publication.findByPk(id)
 
-    if (error) return res.status(400).json({ error: error.details[0].message })
+    if (!publication)
+      return res
+        .status(400)
+        .json({ error: 'There is not any publication with that ID' })
 
-    // Incremento o disminuyo por 1 los likes, si los likes son mayores o iguales a 0
-    let conditional = {
-      where: {
-        id,
-        likes: {
-          // Si like es true entonces busca una publicacion con >= 0 likes, sino >= 1 likes. Esto es para evitar likes = -1
-          [Op.gte]: like ? 0 : 1,
-        },
-      },
-      // Si like es false entones resto 1
-      by: like ? 1 : -1,
+    const [like, created] = await Like.findOrCreate({
+      where: { user_id: userId, post_id: publication.id },
+    })
+
+    // Si crea el like entonces devuelvo un mensaje de creado
+    if (created) {
+      await publication.addLike?.(like)
+      return res.json({ message: 'Publication liked' })
     }
 
-    await Publication.increment('likes', conditional)
+    // Sino lo crea entonces actualizo su status a false si ya esta seteado y si pues a true
+    if (like.status) {
+      await like.update({ status: false })
+      return res.json({ message: 'Publication disliked' })
+    }
 
-    return like
-      ? res.json({ message: 'Publication liked' })
-      : res.json({ message: 'Publication disliked' })
+    await like.update({ status: true })
+
+    return res.json({ message: 'Publication liked' })
   } catch (error) {
     console.error(error)
     next(error)
