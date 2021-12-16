@@ -54,12 +54,16 @@ const getOnePublication = async (req, res, next) => {
     const { id } = req.params
     const userId = res.locals.userId
 
-    let publication = await Publication.findByPk(id)
+    let post = await Publication.findByPk(id, {
+      include: Like
+    })
+
+    post = post.toJSON()
 
     // Aqui compruebo si el usuario dio like o no
-    publication.madeLike = userMadeLike(userId, post)
+    post.madeLike = userMadeLike(userId, post)
 
-    return res.json(publication)
+    return res.json(post)
   } catch (error) {
     console.error(error)
     next(error)
