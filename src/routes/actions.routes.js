@@ -10,12 +10,12 @@ const {
 } = require('../controllers/action.controller')
 const { verifyToken, esSuperUser, esSuperUserOrAdmin } = require('../middlewares/auth');
 
+router.use(verifyToken)
 
-
-router.get('/', esSuperUserOrAdmin, getActions)  //admin y sUser
-router.get('/:id', esSuperUserOrAdmin, getActionById)  //admin y sUser
-router.post('/', esSuperUser, createAction) // sUser
-router.put('/:id', esSuperUser, updateActionById) //sUser
-router.delete('/:id', esSuperUser, deleteActionById) //sUser
+router.get('/', esSuperUserOrAdmin, getActions)  
+router.get('/:id', esSuperUserOrAdmin, getActionById) 
+router.post('/', esSuperUser, createAction)
+router.put('/:id', esSuperUser, updateActionById) 
+router.delete('/:id', esSuperUser, deleteActionById) 
 
 module.exports = router

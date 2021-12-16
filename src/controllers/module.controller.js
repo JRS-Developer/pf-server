@@ -5,7 +5,7 @@ const { Module, Action } = require('../models')
 const creaModuleSchema = Joi.object({
   name: Joi.string().required(),
   url: Joi.string(),
-  icon: Joi.string().required(),
+  icon: Joi.string(),
   module_id: Joi.string(),
 })
 

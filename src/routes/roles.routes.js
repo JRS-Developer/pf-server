@@ -6,14 +6,14 @@ const {
   createRole,
   deleteRole
 } = require('../controllers/roles.controller')
-const { verifyToken } = require('../middlewares/auth')
+const { verifyToken, esSuperUser, esSuperUserOrAdmin } = require('../middlewares/auth');
 
 router.use(verifyToken)
 
-router.get('/', getRoles) //sUser, admin,
-router.get('/:id', getRoleById) //sUser, admin,
-router.post('/', createRole) //sUser, admin,
-router.put('/:id', updateRole) //sUser, admin,
-router.delete('/:id', deleteRole) //sUser, admin,
+router.get('/', esSuperUserOrAdmin, getRoles) 
+router.get('/:id', esSuperUserOrAdmin, getRoleById)
+router.post('/', esSuperUserOrAdmin, createRole) 
+router.put('/:id', esSuperUserOrAdmin, updateRole)
+router.delete('/:id', esSuperUserOrAdmin, deleteRole) 
 
 module.exports = router
