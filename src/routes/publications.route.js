@@ -1,16 +1,18 @@
 const router = require('express').Router()
 const {
   getPublications,
+  getOnePublication,
   updatePublication,
   createPublication,
   deletePublication,
-  likePublication
+  likePublication,
 } = require('../controllers/publications.controller')
 const { verifyToken } = require('../middlewares/auth')
 
 router.use(verifyToken)
 
 router.get('/', getPublications)
+router.get('/:id', getOnePublication)
 router.post('/', createPublication)
 
 router.put('/:id/', updatePublication)
