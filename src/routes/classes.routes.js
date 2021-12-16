@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { aulas } = require('../datos/datos')
 const { puedeVerClass, puedeVerClasses, puedeEliminarClass, authUser } = require('../permisos/auths')
-const {verifyToken} = require('../middlewares/auth')
+const { verifyToken, esSuperUser, esSuperUserOrAdmin } = require('../middlewares/auth');
 
 const {
   updateClassById,
@@ -13,13 +13,13 @@ const {
 
 router.use(verifyToken)
 
-router.get('/', verifyToken, (req, res) =>{
+router.get('/', esSuperUserOrAdmin, (req, res) =>{
   res.json(getClasses)
-})
-router.post('/', verifyToken, createClass)
+}) //sUser, admin y los participantes
+router.post('/', esSuperUserOrAdmin, createClass) 
 
-router.get('/:id', verifyToken, getClassById)
-router.put('/:id', verifyToken, updateClassById)
-router.delete('/:id', verifyToken, deleteClassById)
+router.get('/:id', esSuperUserOrAdmin, getClassById)  //sUser, admin y los participantes
+router.put('/:id', esSuperUserOrAdmin, updateClassById) //sUser, admin y los participantes(profesor participante, verificar q sea profesor en el rol)
+router.delete('/:id', esSuperUserOrAdmin, deleteClassById)
 
 module.exports = router

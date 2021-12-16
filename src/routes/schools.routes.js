@@ -5,14 +5,14 @@ const {
   createSchool,
   getSchools,
 } = require('../controllers/schools.controller')
-const { verifyToken } = require('../middlewares/auth')
+const { verifyToken, esSuperUser } = require('../middlewares/auth');
 
 router.use(verifyToken)
 
-router.get('/', getSchools)
-router.post('/', createSchool)
+router.get('/', esSuperUser, getSchools) 
+router.post('/', esSuperUser, createSchool) 
 
-router.put('/:id', updateSchoolById)
-router.delete('/:id', deleteSchoolById)
+router.put('/:id', esSuperUser, updateSchoolById) 
+router.delete('/:id', esSuperUser, deleteSchoolById) 
 
 module.exports = router

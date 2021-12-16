@@ -9,6 +9,8 @@ const Access = require('./Access')
 const Module = require('./Module')
 const Action = require('./Action')
 const Role = require('./Role')
+const Publication = require('./Publication')
+const Like = require('./Like')
 
 module.exports = {
   Task,
@@ -21,5 +23,7 @@ module.exports = {
   Access,
   User,
   StudentTask,
-  Role
+  Role,
+  Publication,
+  Like
 }

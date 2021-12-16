@@ -1,24 +1,20 @@
 const { DataTypes } = require('sequelize')
 const { conn: sequelize } = require('../db')
+const User = require('./User')
 
-const Materias = sequelize.define('materias', {
+const Like = sequelize.define('likes', {
   id: {
     type: DataTypes.UUID,
-    primaryKey: true,
     defaultValue: DataTypes.UUIDV4,
-  },
-  name: {
-    type: DataTypes.STRING,
-    allowNull: false
+    primaryKey: true,
   },
   status: {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
-  description: {
-    type: DataTypes.STRING,
-    defaultValue: true,
-  },
 })
 
-module.exports = Materias
+User.hasMany(Like, { foreignKey: 'user_id' })
+Like.belongsTo(User, { foreignKey: 'user_id' })
+
+module.exports = Like
