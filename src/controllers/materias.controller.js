@@ -1,4 +1,4 @@
-const Materias = require('../models/Materias')
+const { Materias, Classes } = require('../models/')
 const Joi = require('joi')
 
 const getMateriaSchema = Joi.object({
@@ -17,7 +17,14 @@ const updateMateriaSchema = Joi.object({
 
 const get_materias = async (req, res, next) => {
   try {
-    const materias = await Materias.findAll()
+    const materias = await Materias.findAll({
+      include: {
+        model: Classes,
+        through: {
+          attributes: [],
+        },
+      },
+    })
 
     //se envia la respuesta como un arreglo de objetos
     res.json(materias)
@@ -32,7 +39,14 @@ const get_one_materia = async (req, res, next) => {
   try {
     const { id } = req.params
 
-    const materia_found = await Materias.findByPk(id)
+    const materia_found = await Materias.findByPk(id, {
+      include: {
+        model: Classes,
+        through: {
+          attributes: [],
+        },
+      },
+    })
 
     //se verifica si se encontró coincidencia y se retorna el objeto sino se envia error
     if (!materia_found)

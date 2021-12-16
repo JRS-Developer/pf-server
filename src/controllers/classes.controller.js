@@ -78,7 +78,7 @@ const getClassById = async (req, res, next) => {
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     const foundClass = await Classes.findByPk(id, {
-      include: Materias,
+      include: { model: Materias, through: { attributes: [] } },
     })
 
     if (foundClass) return res.json(foundClass)
