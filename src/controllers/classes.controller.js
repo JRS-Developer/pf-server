@@ -1,5 +1,6 @@
 const { Classes, Schools } = require('../models/')
 const Joi = require('joi')
+const { conn: sequelize } = require('../db')
 
 const getClassesSchema = Joi.object({
   school_id: Joi.string().guid().required(),
@@ -131,10 +132,37 @@ const deleteClassById = async (req, res, next) => {
   }
 }
 
+const addMaterias = async (req, res, next) => {
+  //console.log(sequelize.models)
+  try {
+    const { materias } = req.body
+    const { id } = req.params
+
+    const { error } = updateClassSchema.validate({ id })
+
+    if (error) return res.status(400).json({ error: error.details[0].message })
+
+    const materiasAsignadas = materias.map((materia) =>
+      sequelize.models.materias_classes.create({
+        materiaId: materia,
+        classId: id,
+      })
+    )
+
+    await Promise.all(materiasAsignadas)
+
+    return res.json({ message: 'Materias agregadas satisfactoriamente' })
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
 module.exports = {
   getClasses,
   createClass,
   getClassById,
   deleteClassById,
   updateClassById,
+  addMaterias,
 }
