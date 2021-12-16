@@ -13,18 +13,23 @@ const { access } = require("./src/datos/access")
 const defaultRoles = async () => {
   const rolesPorDefault = [
     {
+      id: 'b74ca8ab-025d-4998-8ed6-823c1b761379',
       name: 'sUser',
     },
     {
+      id: '0760edbd-4bad-416d-be6f-b7c9bf5bcfcb',
       name: 'Admin',
     },
     {
+      id: '00fb931a-96b4-492b-9425-7a1ebe9e2386',
       name: 'Profesor',
     },
     {
+      id: '850d46ea-4e5a-4ac5-9106-9bf1fae8545f',
       name: 'Alumno',
     },
     {
+      id: 'd09dd9bd-1eb2-48f6-af3f-e46f8cc9831f',
       name: 'Tutor',
     },
   ]
@@ -33,14 +38,14 @@ const defaultRoles = async () => {
   console.log('Cargado los roles')
 }
 
-conn.sync({ force: true }).then(() => {
+conn.sync({ force: false }).then(() => {
   app.listen(port,async () => {
     console.log(`The server is running on port ${port}`)
-    await initialActions()
-    await initialModules()
-    await initialUsers()
-    await defaultRoles()
-    await initialAccess()
+    //await initialActions()
+    //await initialModules()
+    //await initialUsers()
+    //await defaultRoles()
+    //await initialAccess()
   })
 
   async function initialActions() {

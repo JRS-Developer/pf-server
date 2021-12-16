@@ -6,6 +6,7 @@ const access = [
   {user_id : '1742ea0a-115e-4c4b-9017-8e2bf9776b18', module_id: 'd63411ce-54ef-4671-ba83-6e1db5bb7750', action_id: '30fe307d-363c-46d3-8cf5-184254e45198'},
   {user_id : '1742ea0a-115e-4c4b-9017-8e2bf9776b18', module_id: 'd63411ce-54ef-4671-ba83-6e1db5bb7750', action_id: '318caf13-5c64-4aec-91fb-26abca03c348'},
   {user_id : '1742ea0a-115e-4c4b-9017-8e2bf9776b18', module_id: 'd63411ce-54ef-4671-ba83-6e1db5bb7750', action_id: 'f33c5435-9cb2-4d18-8530-e37f28fd231d'},
+  {user_id : '1742ea0a-115e-4c4b-9017-8e2bf9776b18', module_id: 'd63411ce-54ef-4671-ba83-6e1db5bb7750', action_id: '94a37cc3-7ac3-4b2f-8020-2bd8ef4af9b5'},
   {user_id : '1742ea0a-115e-4c4b-9017-8e2bf9776b18', module_id: '313630df-4951-42df-860e-6ec7ad857f4f', action_id: '30fe307d-363c-46d3-8cf5-184254e45198'},
   {user_id : '1742ea0a-115e-4c4b-9017-8e2bf9776b18', module_id: '313630df-4951-42df-860e-6ec7ad857f4f', action_id: '318caf13-5c64-4aec-91fb-26abca03c348'},
   {user_id : '1742ea0a-115e-4c4b-9017-8e2bf9776b18', module_id: '313630df-4951-42df-860e-6ec7ad857f4f', action_id: 'f33c5435-9cb2-4d18-8530-e37f28fd231d'},
@@ -20,6 +21,16 @@ const access = [
   {user_id : '1742ea0a-115e-4c4b-9017-8e2bf9776b18', module_id: '4c8f8e25-63e5-46b4-b11d-309ff6666e11', action_id: '30fe307d-363c-46d3-8cf5-184254e45198'},
   {user_id : '1742ea0a-115e-4c4b-9017-8e2bf9776b18', module_id: '4c8f8e25-63e5-46b4-b11d-309ff6666e11', action_id: '318caf13-5c64-4aec-91fb-26abca03c348'},
   {user_id : '1742ea0a-115e-4c4b-9017-8e2bf9776b18', module_id: '4c8f8e25-63e5-46b4-b11d-309ff6666e11', action_id: 'f33c5435-9cb2-4d18-8530-e37f28fd231d'},
+  /*ROL TUTOR => CLASSROM*/
+  {user_id : '2e9e4070-2d42-41ed-8c6b-a018f40c7757', module_id: 'd544b900-a077-483e-b335-8a52c2fde399', action_id: null},
+  {user_id : '2e9e4070-2d42-41ed-8c6b-a018f40c7757', module_id: '4c8f8e25-63e5-46b4-b11d-309ff6666e11', action_id: '30fe307d-363c-46d3-8cf5-184254e45198'},
+  {user_id : '2e9e4070-2d42-41ed-8c6b-a018f40c7757', module_id: '4c8f8e25-63e5-46b4-b11d-309ff6666e11', action_id: '318caf13-5c64-4aec-91fb-26abca03c348'},
+  {user_id : '2e9e4070-2d42-41ed-8c6b-a018f40c7757', module_id: '4c8f8e25-63e5-46b4-b11d-309ff6666e11', action_id: 'f33c5435-9cb2-4d18-8530-e37f28fd231d'},
+  /*ADMINISTRATIVO => USERS*/
+  {user_id : '32c00bdf-a19f-48b1-bc5c-de123567c18a', module_id: 'c9e0712e-c2f3-4891-93dc-4d89c60bfc91', action_id: null},
+  {user_id : '32c00bdf-a19f-48b1-bc5c-de123567c18a', module_id: 'd63411ce-54ef-4671-ba83-6e1db5bb7750', action_id: '30fe307d-363c-46d3-8cf5-184254e45198'},
+  {user_id : '32c00bdf-a19f-48b1-bc5c-de123567c18a', module_id: 'd63411ce-54ef-4671-ba83-6e1db5bb7750', action_id: '318caf13-5c64-4aec-91fb-26abca03c348'},
+  {user_id : '32c00bdf-a19f-48b1-bc5c-de123567c18a', module_id: 'd63411ce-54ef-4671-ba83-6e1db5bb7750', action_id: 'f33c5435-9cb2-4d18-8530-e37f28fd231d'},
 ];
 
 module.exports = {

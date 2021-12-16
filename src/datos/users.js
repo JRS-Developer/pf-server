@@ -8,6 +8,7 @@ const users = [
     identification: '1231233',
     email: 'wilmer@hotmail.com',
     password: '1234',
+    roleId: 'b74ca8ab-025d-4998-8ed6-823c1b761379',
     country: 'Peru'
   },
   {
@@ -19,6 +20,7 @@ const users = [
     identification: '11231234',
     email: 'nico@hotmail.com',
     password: '12345',
+    roleId: 'd09dd9bd-1eb2-48f6-af3f-e46f8cc9831f',
     country: 'Argentina'
   },
   {
@@ -30,6 +32,7 @@ const users = [
     identification: '12312335',
     email: 'vale@hotmail.com',
     password: '12346',
+    roleId: '00fb931a-96b4-492b-9425-7a1ebe9e2386',
     country: 'Argentina'
   },
   {
@@ -41,6 +44,7 @@ const users = [
     identification: '12312336',
     email: 'luan@hotmail.com',
     password: '12347',
+    roleId: '00fb931a-96b4-492b-9425-7a1ebe9e2386',
     country: 'Argentina'
   },
   {
@@ -52,6 +56,7 @@ const users = [
     identification: '12312337',
     email: 'jose@hotmail.com',
     password: '12347',
+    roleId: '850d46ea-4e5a-4ac5-9106-9bf1fae8545f',
     country: 'Venezuela'
   },
   {
@@ -63,6 +68,7 @@ const users = [
     identification: '12312338',
     email: 'edwin@hotmail.com',
     password: '12348',
+    roleId: '0760edbd-4bad-416d-be6f-b7c9bf5bcfcb',
     country: 'Colombia'
   },
   {
@@ -74,6 +80,7 @@ const users = [
     identification: '12312339',
     email: 'leandro@hotmail.com',
     password: '12349',
+    roleId: '00fb931a-96b4-492b-9425-7a1ebe9e2386',
     country: 'Argentina'
   },
 ]
