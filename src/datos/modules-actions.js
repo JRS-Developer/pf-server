@@ -1,7 +1,8 @@
 const actions = [
   { id:'30fe307d-363c-46d3-8cf5-184254e45198', name: 'Nuevo', onclick: 'handleClickOpen', action_param: 'add', icon: 'add_circle' },
   { id:'318caf13-5c64-4aec-91fb-26abca03c348', name: 'Editar', onclick: 'handleClickOpen', action_param: 'edit', icon: 'edit' },
-  { id:'f33c5435-9cb2-4d18-8530-e37f28fd231d', name: 'Eliminar', onclick: 'handleOpenConfirm', action_param: '', icon: 'delete' },
+  { id:'f33c5435-9cb2-4d18-8530-e37f28fd231d', name: 'Eliminar', onclick: 'handleOpenConfirm', action_param: 'delete', icon: 'delete' },
+  {id: '94a37cc3-7ac3-4b2f-8020-2bd8ef4af9b5', name: 'Asignar Accesos', onclick: 'handleClickOpen', action_param: 'access', icon: 'admin_panel_settings'}
 ];
 
 const modules = [
