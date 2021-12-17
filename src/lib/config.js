@@ -9,7 +9,7 @@ const config = {
   dbHost: process.env.DB_HOST || 'localhost',
   dbName: process.env.DB_NAME || 'gaia',
   dbPort: process.env.DB_PORT || '5432',
-  dev: process.env.NODE_ENV !== 'production',
+  isProduction: process.env.NODE_ENV,
   port: process.env.API_PORT || '3001',
   host: process.env.API_HOST || 'localhost',
   cors: process.env.CORS || 'http://localhost:3000',
