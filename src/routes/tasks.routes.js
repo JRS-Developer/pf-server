@@ -6,12 +6,7 @@ const {
   deleteTaskById,
   updateTaskById,
 } = require('../controllers/tasks.controller')
-const {
-  verifyToken,
-  esSuperUser,
-  esSuperUserOrAdmin,
-  esProfesor,
-} = require('../middlewares/auth')
+const { verifyToken, esProfesor } = require('../middlewares/auth')
 
 router.use(verifyToken)
 
