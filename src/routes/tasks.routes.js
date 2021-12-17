@@ -6,15 +6,24 @@ const {
   deleteTaskById,
   updateTaskById,
 } = require('../controllers/tasks.controller')
-const { verifyToken } = require('../middlewares/auth')
+const {
+  verifyToken,
+  esSuperUser,
+  esSuperUserOrAdmin,
+  esProfesor,
+} = require('../middlewares/auth')
 
 router.use(verifyToken)
 
-router.get('/', getTasks) 
-router.post('/', createTask)
+//ANOTACIÓN: En este paso solo verificamos el role que tenga el usuario
+//            pero por otros medios vamos a verificar que solo pueda ver
+//            las tareas de las cuales es parte
 
-router.get('/:id', getTaskById)
-router.put('/:id', updateTaskById)
-router.delete('/:id', deleteTaskById)
+router.get('/', esProfesor, getTasks)
+router.post('/', esProfesor, createTask)
+
+router.get('/:id', esProfesor, getTaskById)
+router.put('/:id', esProfesor, updateTaskById)
+router.delete('/:id', esProfesor, deleteTaskById)
 
 module.exports = router
