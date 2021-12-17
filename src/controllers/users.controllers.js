@@ -1,4 +1,4 @@
-const { User, Role } = require('../models/')
+const { User, Role, Classes } = require('../models/')
 const Joi = require('joi')
 
 const NO_USER_FOUND = "There isn't any user with that id"
@@ -66,7 +66,10 @@ const getUserById = async (req, res, next) => {
     const { id } = req.params
     // Buscamos usuarios por ID (pasado por query) para acceder al detalle de uno en particular
     const user_found = await User.findByPk(id, {
-      include: { model: Role },
+      include: [
+        { model: Role},
+        { model: Classes},
+      ],
       attributes: {
         exclude: ['roleId'],
       },
