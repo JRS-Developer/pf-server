@@ -4,7 +4,7 @@ const router = express.Router();
 const user = require('../controllers/users.controllers');
 const { verifyToken, esSuperUser, esSuperUserOrAdmin } = require('../middlewares/auth');
 
-router.use(verifyToken)
+router.use(verifyToken);
 
 // User
 
