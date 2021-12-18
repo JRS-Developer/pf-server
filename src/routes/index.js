@@ -11,6 +11,8 @@ const modules = require('./modules.routes')
 const roles = require('./roles.routes')
 const access = require('./access.routes')
 const publications = require('./publications.route')
+const load = require('./load.routes')
+const file = require('./files.routes')
 
 router.use('/tasks', tasks)
 router.use('/users', users)
@@ -24,5 +26,7 @@ router.use('/actions', actions)
 router.use('/modules', modules)
 router.use('/access', access)
 router.use('/publications', publications)
+router.use('/load', load)
+router.use('/file', file)
 
 module.exports = router
