@@ -50,7 +50,10 @@ const User = conn.define('users', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  
+  clase_id: {
+    type: DataTypes.UUID,
+    allowNull: true
+  },
   //El estado es para cuando se lo "borre" al usuario cuando queremos dar de baja. Lo ponemos en estado "inactivo"
   status:{
     type: DataTypes.BOOLEAN,

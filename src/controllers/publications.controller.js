@@ -1,5 +1,4 @@
 const { Publication, Like } = require('../models')
-const { Op } = require('sequelize')
 const Joi = require('joi')
 
 const createPubliSchema = Joi.object({
@@ -18,9 +17,13 @@ const updatePubliSchema = Joi.object({
   status: Joi.bool(),
 })
 
+const userMadeLike = (userId, post) =>
+  post.likes.some((like) => like.user_id === userId && like.status)
+
 const getPublications = async (req, res, next) => {
   try {
-    const publications = await Publication.findAll({
+    const userId = res.locals.userId
+    let publications = await Publication.findAll({
       include: [
         {
           association: 'publisher',
@@ -30,7 +33,37 @@ const getPublications = async (req, res, next) => {
       ],
     })
 
+    // Aqui compruebo que el usuario dio like
+    publications = publications.map((post) => {
+      post = post.toJSON()
+      return {
+        ...post,
+        madeLike: userMadeLike(userId, post),
+      }
+    })
+
     res.json(publications)
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
+const getOnePublication = async (req, res, next) => {
+  try {
+    const { id } = req.params
+    const userId = res.locals.userId
+
+    let post = await Publication.findByPk(id, {
+      include: Like
+    })
+
+    post = post.toJSON()
+
+    // Aqui compruebo si el usuario dio like o no
+    post.madeLike = userMadeLike(userId, post)
+
+    return res.json(post)
   } catch (error) {
     console.error(error)
     next(error)
@@ -153,6 +186,7 @@ const likePublication = async (req, res, next) => {
 
 module.exports = {
   getPublications,
+  getOnePublication,
   createPublication,
   updatePublication,
   deletePublication,

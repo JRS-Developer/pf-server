@@ -18,7 +18,8 @@ const loginUser = async (req, res, next) => {
     const { error } = loginUserSchema.validate({ email, password })
 
     // Si hay algun error de validacion pues lo retorno
-    if (error) return res.status(400).json({ error: error.details[0].message })
+    if (error)
+      return res.status(400).json({ message: error.details[0].message })
 
     // Busco si el usuario existe
     const userFound = await User.findOne({
@@ -29,15 +30,15 @@ const loginUser = async (req, res, next) => {
     // Sino existe le retorno un error
     if (!userFound)
       return res
-        .status(401)
-        .json({ error: 'There is not any user registered with that email' })
+        .status(400)
+        .json({ message: 'No hay ningún usuario registrado con ese correo' })
 
     // Si existe entonces debo comparar las contraseñas.
     const passwordIsValid = bcrypt.compareSync(password, userFound.password)
 
     // Si el password no coincide, mando un error
     if (!passwordIsValid)
-      return res.status(401).json({ error: 'Invalid password' })
+      return res.status(400).json({ message: 'Contraseña inválida' })
 
     // Creo el token almacenandole el id del usuario y sus roles
     // INFO: Lo mas probable es que despues se quiera guardar tambien los access, pero falta gestionar esa tabla.
@@ -49,7 +50,7 @@ const loginUser = async (req, res, next) => {
       }
     )
 
-    res.json({ token })
+    res.json({ token, user: userFound.id, message: 'Sesión iniciada correctamente' })
   } catch (error) {
     console.error(error)
     next(error)

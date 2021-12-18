@@ -171,6 +171,7 @@ const getAccessUser = async (req, res, next) => {
   try {
 
     const { userId } = req.params
+    console.log(userId)
     //const userId = '1742ea0a-115e-4c4b-9017-8e2bf9776b18';
     //console.log(userId);
 
@@ -280,7 +281,7 @@ const getAccessUser = async (req, res, next) => {
       "FROM actions_modules am " +
       "INNER JOIN actions action ON action.id = "+'"actionId"'+" ",
       { type: QueryTypes.SELECT });
-    console.log('actions_modules', actions_modules)
+    // console.log('actions_modules', actions_modules)
 
     // Creamos un array con lo módulos padres e hijos
     let $modules = [];

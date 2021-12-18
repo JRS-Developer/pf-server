@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "nodemon index.js",
     "dev": "nodemon index.js",
     "test": "mocha",
     "seed": "node ./src/seed.js"
@@ -25,12 +25,12 @@
     "multer": "^1.4.4",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.12.0-alpha.1"
+    "sequelize": "^6.12.0-alpha.1",
+    "nodemon": "^2.0.15"
   },
   "devDependencies": {
     "chai": "^4.3.4",
     "mocha": "^9.1.3",
-    "nodemon": "^2.0.15",
     "supertest": "^6.1.6"
   },
   "prettier": {

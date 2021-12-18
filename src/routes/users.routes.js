@@ -16,7 +16,7 @@ router.delete('/:id', esSuperUser, user.deleteUser);
 
 
 // User Role
-router.get('/role', esSuperUserOrAdmin, user.getUsersByRole );
+router.post('/role', esSuperUserOrAdmin, user.getUsersByRole );
 router.put('/role/:id', esSuperUserOrAdmin, user.setUserRole);
 
 module.exports = router;

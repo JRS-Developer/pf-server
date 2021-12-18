@@ -30,6 +30,4 @@ Materias.belongsToMany(Classes, { through: 'materias_classes' })
 Classes.belongsToMany(User, { through: 'users_classes'})
 User.belongsToMany(Classes, { through: 'users_classes'})
 
-
-
 module.exports = Classes

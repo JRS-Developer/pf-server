@@ -1,6 +1,5 @@
 const router = require('express').Router()
 const { aulas } = require('../datos/datos')
-const { puedeVerClass, puedeVerClasses, puedeEliminarClass, authUser } = require('../permisos/auths')
 const { verifyToken, esSuperUser, esSuperUserOrAdmin } = require('../middlewares/auth');
 
 const {
@@ -9,13 +8,12 @@ const {
   getClassById,
   getClasses,
   createClass,
-} = require('../controllers/classes.controller')
+} = require('../controllers/classes.controller');
+const { Classes } = require('../models');
 
 router.use(verifyToken)
 
-router.get('/', esSuperUserOrAdmin, (req, res) =>{
-  res.json(getClasses)
-}) //sUser, admin y los participantes
+router.get('/', esSuperUserOrAdmin, getClasses) //sUser, admin y los participantes
 router.post('/', esSuperUserOrAdmin, createClass) 
 
 router.get('/:id', esSuperUserOrAdmin, getClassById)  //sUser, admin y los participantes
@@ -23,3 +21,4 @@ router.put('/:id', esSuperUserOrAdmin, updateClassById) //sUser, admin y los par
 router.delete('/:id', esSuperUserOrAdmin, deleteClassById)
 
 module.exports = router
+

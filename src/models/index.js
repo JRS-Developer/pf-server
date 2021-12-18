@@ -11,6 +11,8 @@ const Action = require('./Action')
 const Role = require('./Role')
 const Publication = require('./Publication')
 const Like = require('./Like')
+const CicloElectivo = require('./CicloElectivo')
+const Matricula = require('./Matricula')
 
 module.exports = {
   Task,
@@ -25,5 +27,7 @@ module.exports = {
   StudentTask,
   Role,
   Publication,
-  Like
+  Like,
+  CicloElectivo,
+  Matricula
 }
