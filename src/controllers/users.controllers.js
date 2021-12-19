@@ -1,5 +1,8 @@
 const { User, Role, Classes } = require('../models/')
 const Joi = require('joi')
+const uploadImage = require('../utils')
+const fs = require('fs-extra')
+const path = require('path')
 
 const NO_USER_FOUND = "There isn't any user with that id"
 
@@ -13,7 +16,7 @@ const createUserSchema = Joi.object({
   birthdate: Joi.date(),
   identification: Joi.string().required(),
   country: Joi.string().required(),
-  roleId: Joi.string().guid().allow('', null)
+  roleId: Joi.string().guid().allow('', null),
 })
 
 const updateUserSchema = Joi.object({
@@ -27,7 +30,7 @@ const updateUserSchema = Joi.object({
   birthdate: Joi.date(),
   identification: Joi.string(),
   country: Joi.string(),
-  roleId: Joi.string().guid().allow('', null)
+  roleId: Joi.string().guid().allow('', null),
 })
 
 const deleteUserSchema = Joi.object({
@@ -116,7 +119,7 @@ const createUser = async (req, res, next) => {
       birthdate,
       identification,
       country,
-      role // El role tiene que ser un Id
+      role, // El role tiene que ser un Id
     } = req.body
 
     const data = {
@@ -129,7 +132,7 @@ const createUser = async (req, res, next) => {
       birthdate,
       identification,
       country,
-      roleId: role
+      roleId: role,
     }
 
     // Valido los datos
@@ -138,9 +141,9 @@ const createUser = async (req, res, next) => {
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     //se crea el nuevo objeto en la BD
-    const newUser = await User.create(data)
+    await User.create(data)
     //mensaje satisfactorio
-    res.json({message: 'User created successfully'})
+    res.json({ message: 'User created successfully' })
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
@@ -165,7 +168,7 @@ const updateUser = async (req, res, next) => {
       birthdate,
       identification,
       country,
-      role
+      role,
     } = req.body
 
     const data = {
@@ -178,11 +181,11 @@ const updateUser = async (req, res, next) => {
       birthdate,
       identification,
       country,
-      roleId: role
+      roleId: role,
     }
 
     // Valido datos, si el body esta vacio, retorno un error
-    if (!Object.keys(req.body).length)
+    if (!Object.keys(req.body).length && !req.file)
       return res.status(400).json({ error: 'Please provide some body data' })
 
     // Valido que los datos del body y el id sean validos
@@ -203,6 +206,21 @@ const updateUser = async (req, res, next) => {
     // Si la contraseña es la misma que la de la base de datos, entonces la borro del objeto data y asi evito volver a encriptarla.
     if (user?.password === password) {
       delete data.password
+    }
+
+    // Si se sube una imagen, la guardo en cloudinary y luego en la base de datos
+    if (req.file) {
+      const ext = path.extname(req.file.path)
+      // Si el archivo no es una imagen estatica, entonces devuelve un error
+      if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg')
+        return res
+          .status(400)
+          .json({ error: 'Solo se aceptan imagenes estaticas' })
+
+      const image = await uploadImage(req.file.path)
+      // Elimino la imagen del almacenamiento
+      fs.unlink(req.file.path)
+      data.avatar = image.url
     }
 
     await User.update(data, {

@@ -14,7 +14,8 @@ const config = {
   host: process.env.API_HOST || 'localhost',
   cors: process.env.CORS || 'http://localhost:3000',
   secret: process.env.SECRET,
-  dbURL: process.env.DATABASE_URL, // Heroku db url
+  dbURL: process.env.DATABASE_URL,
+  // Heroku db url
 }
 
 module.exports = config
