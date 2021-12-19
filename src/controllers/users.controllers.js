@@ -2,6 +2,7 @@ const { User, Role, Classes } = require('../models/')
 const Joi = require('joi')
 const uploadImage = require('../utils')
 const fs = require('fs-extra')
+const path = require('path')
 
 const NO_USER_FOUND = "There isn't any user with that id"
 
@@ -207,6 +208,13 @@ const updateUser = async (req, res, next) => {
 
     // Si se sube una imagen, la guardo en cloudinary y luego en la base de datos
     if (req.file) {
+      const ext = path.extname(req.file.path)
+      // Si el archivo no es una imagen estatica, entonces devuelve un error
+      if (ext !== '.png' && ext !== '.jpg' && ext !== '.jpeg')
+        return res
+          .status(400)
+          .json({ error: 'Solo se aceptan imagenes estaticas' })
+
       const image = await uploadImage(req.file.path)
       // Elimino la imagen del almacenamiento
       fs.unlink(req.file.path)
