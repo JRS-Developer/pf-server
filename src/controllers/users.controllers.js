@@ -69,7 +69,9 @@ const getUserById = async (req, res, next) => {
     const { id } = req.params
     // Buscamos usuarios por ID (pasado por query) para acceder al detalle de uno en particular
     const user_found = await User.findByPk(id, {
-      include: [{ model: Role }, { model: Classes }],
+      include: [
+        { model: Role}
+      ],
       attributes: {
         exclude: ['roleId'],
       },

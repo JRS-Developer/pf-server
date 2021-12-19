@@ -11,11 +11,12 @@ const modules = require('./modules.routes')
 const roles = require('./roles.routes')
 const access = require('./access.routes')
 const publications = require('./publications.route')
+const cicloElectivos = require('./cicloElectivos.routes')
+const matriculas = require('./matriculas.routes')
 
 const load = require('./load.routes')
 const file = require('./files.routes')
 const cicloFiscal = require('./cicloElectivos.routes')
-
 
 router.use('/tasks', tasks)
 router.use('/users', users)
@@ -29,9 +30,12 @@ router.use('/actions', actions)
 router.use('/modules', modules)
 router.use('/access', access)
 router.use('/publications', publications)
+
+router.use('/cicloElectivos', cicloElectivos)
+router.use('/matriculas', matriculas)
+
 router.use('/load', load)
 router.use('/file', file)
 router.use('/cicloElectivos', cicloFiscal)
-
 
 module.exports = router

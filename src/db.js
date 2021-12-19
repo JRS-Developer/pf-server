@@ -8,7 +8,7 @@ const conURI =
   dbURL || `postgres://${dbUser}:${dbPassword}@${dbHost}:${dbPort}/${dbName}`
 
 let seqConfig = {
-  logging: isProduction !== 'production' ? false : false,
+  logging: false,//isProduction !== 'production' ? false : false,
   native: false,
 }
 
