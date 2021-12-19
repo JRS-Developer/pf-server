@@ -11,6 +11,10 @@ const Matricula = conn.define('matriculas',
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
+    fecha: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
     student_id: {
       type: DataTypes.UUID,
       allowNull: false,
