@@ -7,12 +7,14 @@ const getMateriaSchema = Joi.object({
 
 const createMateriaSchema = Joi.object({
   name: Joi.string().required(),
-  classes: Joi.array().items(Joi.string().guid()).allow(null),
+  description: Joi.string().allow(null),
+  clase_ids: Joi.array().items(Joi.string().guid()).allow(null),
 })
 
 const updateMateriaSchema = Joi.object({
   name: Joi.string().allow(null),
-  classes: Joi.array().items(Joi.string().guid()).allow(null),
+  description: Joi.string().allow(null),
+  clase_ids: Joi.array().items(Joi.string().guid()).allow(null),
 })
 
 const get_materias = async (req, res, next) => {
@@ -62,13 +64,13 @@ const get_one_materia = async (req, res, next) => {
 //post para crear la materia
 const create_materia = async (req, res, next) => {
   try {
-    const { name, classes } = req.body //classes es un array de ids de clases
+    const { name, description, clase_ids } = req.body //clase_ids es un array de ids de clases
 
-    const { error } = createMateriaSchema.validate({ name })
+    const { error } = createMateriaSchema.validate({ name, description })
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     const [nuevaMateria, created] = await Materias.findOrCreate({
-      where: { name, status: true },
+      where: { name, description },
     })
 
     if (!created)
@@ -76,7 +78,7 @@ const create_materia = async (req, res, next) => {
         .status(400)
         .json({ error: 'Ya hay una materia con ese nombre' })
 
-    await nuevaMateria.addClasses(classes)
+    await nuevaMateria.addClasses(clase_ids)
 
     res.json({ message: 'materia successfully created' })
   } catch (error) {
@@ -87,17 +89,17 @@ const create_materia = async (req, res, next) => {
 const update_materia = async (req, res, next) => {
   try {
     const { id } = req.params // id de materia
-    const { name, classes } = req.body //name nombre de materia
+    const { name, description, clase_ids } = req.body //name nombre de materia
 
-    const { error } = updateMateriaSchema.validate({ name, classes })
+    const { error } = updateMateriaSchema.validate({ name, description, clase_ids })
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     const [count, updatedMaterias] = await Materias.update(
-      { name },
+      { name, description },
       { where: { id }, returning: true }
     )
 
-    updatedMaterias[0].setClasses?.(classes) //classes es un array de id de classes.
+    updatedMaterias[0].setClasses?.(clase_ids) //classes es un array de id de classes.
 
     if (count === 0)
       return res
