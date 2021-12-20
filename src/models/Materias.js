@@ -17,7 +17,7 @@ const Materias = sequelize.define('materias', {
   },
   description: {
     type: DataTypes.STRING,
-    defaultValue: true,
+    allowNull: true
   },
 })
 
