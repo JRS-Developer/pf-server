@@ -80,10 +80,22 @@ const users = [
     birthdate: '1999-11-02',
     identification: '12312339',
     email: 'leandro@hotmail.com',
-    password: '12349',
+    password: '1234',
     country: 'Argentina',
     roleId: "a83af560-8a48-4edd-83eb-6bd3f7e97861",
   },
+  {
+    id: "ab11729b-d0f1-4976-821d-8a30c3c178e8",
+    firstName: 'Juan',
+    lastName: 'Daniele',
+    userName: 'Juan.user',
+    birthdate: '1999-11-02',
+    identification: '12312340',
+    email: 'juan@hotmail.com',
+    password: '1234',
+    country: 'Argentina',
+    roleId: "a83af560-8a48-4edd-83eb-6bd3f7e97861",
+  }
 ]
 
 module.exports = { users }
