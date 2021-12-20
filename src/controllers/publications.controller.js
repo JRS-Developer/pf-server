@@ -1,6 +1,11 @@
 const { Publication, Like } = require('../models')
 const Joi = require('joi')
 
+const getPostSchema = Joi.object({
+  classId: Joi.string().guid(),
+  materiaId: Joi.string().guid(),
+})
+
 const createPubliSchema = Joi.object({
   title: Joi.string().required(),
   text: Joi.string().required(),
@@ -23,7 +28,14 @@ const userMadeLike = (userId, post) =>
 const getPublications = async (req, res, next) => {
   try {
     const userId = res.locals.userId
+    const { materiaId, classId } = req.query
+
+    const { error } = getPostSchema.validate()
+
+    if (error) return res.status(400).json({ error: error.details[0].message })
+
     let publications = await Publication.findAll({
+      where: { classId, materiaId },
       include: [
         {
           association: 'publisher',
@@ -55,7 +67,7 @@ const getOnePublication = async (req, res, next) => {
     const userId = res.locals.userId
 
     let post = await Publication.findByPk(id, {
-      include: Like
+      include: Like,
     })
 
     post = post.toJSON()
