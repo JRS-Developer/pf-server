@@ -2,6 +2,8 @@ const { DataTypes } = require('sequelize')
 const { conn } = require('../db')
 const User = require('./User')
 const Like = require('./Like')
+const Materia = require('./Materias')
+const Class = require('./Classes')
 
 const Publication = conn.define('publication', {
   id: {
@@ -40,5 +42,11 @@ User.hasMany(Publication, { foreignKey: 'publisher_id' })
 // Esto es para contar los likes
 Publication.hasMany(Like, { foreignKey: 'post_id' })
 Like.belongsTo(Publication, { foreignKey: 'post_id' })
+
+Class.hasMany(Publication)
+Publication.belongsTo(Class)
+
+Materia.hasMany(Publication)
+Publication.belongsTo(Publication)
 
 module.exports = Publication
