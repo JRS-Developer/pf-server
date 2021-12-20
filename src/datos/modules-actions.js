@@ -21,7 +21,7 @@ const modules = [
   { id:'c68b6501-ff66-4ed9-ade4-380bfc3f548f', name: 'School', url: '/schools', icon: 'apartment', module_id: '6d74b4b0-473a-48ed-97cf-154e53cd92c5' },
   { id:'6a0ecd53-8566-48ae-89c4-c9dbbf647091', name: 'Alumnos', url: '/students', icon: 'people', module_id: '6d74b4b0-473a-48ed-97cf-154e53cd92c5' },
   { id:'cebc1da6-3402-4d58-844e-2407b189c826', name: 'Clases', url: '/class', icon: 'people', module_id: '6d74b4b0-473a-48ed-97cf-154e53cd92c5' },
-  { id:'"f3e55d08-c004-4340-8f79-bcaf4b37608d"', name: 'Ciclo Lectivo', url: '/ciclo-lectivo', icon: 'event', module_id: '6d74b4b0-473a-48ed-97cf-154e53cd92c5' },
+  { id:'f3e55d08-c004-4340-8f79-bcaf4b37608d', name: 'Ciclo Lectivo', url: '/ciclo-lectivo', icon: 'event', module_id: '6d74b4b0-473a-48ed-97cf-154e53cd92c5' },
 
 ];
 
