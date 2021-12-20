@@ -1,6 +1,7 @@
 const { Classes, Schools, Materias } = require('../models/')
 const Joi = require('joi')
 const { conn: sequelize } = require('../db')
+const {materias} = require("../datos/materias");
 
 const getClassesSchema = Joi.object({
   school_id: Joi.string().guid().required(),
@@ -15,12 +16,13 @@ const createClassSchema = Joi.object({
 const updateClassSchema = Joi.object({
   id: Joi.string().guid(),
   name: Joi.string().allow(''),
+  school_id: Joi.string().guid().required(),
   materia_ids: Joi.array().items(Joi.string().guid()).allow(null),
 })
 
 const validateId = (id) => Joi.string().guid().required().validate(id)
 
-const getClasses = async (req, res, next) => {
+const getClassesBySchoolId = async (req, res, next) => {
   try {
     const { school_id } = req.params
 
@@ -35,6 +37,47 @@ const getClasses = async (req, res, next) => {
     })
 
     res.json(classes)
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
+const getClasses = async (req, res, next) => {
+  try {
+    const classes = await Classes.findAll({
+      include: [
+        {
+          model: Materias,
+          through: { attributes: [] }
+        },{
+          model: Schools,
+          attributes: ['id', 'name']
+        }
+      ],
+    })
+
+    let listClases = [];
+    classes.map(clase => {
+      let obj = {
+        id: clase.id,
+        name: clase.name,
+        school_id: clase.school_id,
+        status: clase.status,
+        school: clase.school.name,
+        materias: []
+      };
+
+      clase.materias?.map(mt => {
+        obj.materias.push(mt)
+      })
+
+      listClases.push(obj);
+
+    })
+
+    //res.json(classes)
+    res.json(listClases)
   } catch (error) {
     console.error(error)
     next(error)
@@ -79,7 +122,12 @@ const getClassById = async (req, res, next) => {
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     const foundClass = await Classes.findByPk(id, {
-      include: { model: Materias, through: { attributes: [] } },
+      include: [
+        {
+          model: Materias,
+          through: { attributes: [] }
+        }
+      ],
     })
 
     if (foundClass) return res.json(foundClass)
@@ -96,14 +144,15 @@ const getClassById = async (req, res, next) => {
 const updateClassById = async (req, res, next) => {
   try {
     const { id } = req.params // id de clase
-    const { name, materia_ids } = req.body //name nombre de clase
+    const { name, materia_ids, school_id } = req.body //name nombre de clase
 
-    const { error } = updateClassSchema.validate({ id, name, materia_ids })
+    const { error } = updateClassSchema.validate({ id, name, materia_ids, school_id })
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     const condicional = {}
-    //creo condicional por si no pasan name
+    //creo condicional por si no pasan name o school_id
     name && (condicional.name = name)
+    school_id && (condicional.school_id = school_id)
 
     const [count, updatedClasses] = await Classes.update(condicional, {
       where: { id },
@@ -149,6 +198,7 @@ const deleteClassById = async (req, res, next) => {
 
 module.exports = {
   getClasses,
+  getClassesBySchoolId,
   createClass,
   getClassById,
   deleteClassById,

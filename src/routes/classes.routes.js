@@ -7,13 +7,15 @@ const {
   deleteClassById,
   getClassById,
   getClasses,
+  getClassesBySchoolId,
   createClass,
 } = require('../controllers/classes.controller');
 const { Classes } = require('../models');
 
 router.use(verifyToken)
 
-router.get('/:school_id', esSuperUserOrAdmin, getClasses) //sUser, admin y los participantes
+router.get('/', esSuperUserOrAdmin, getClasses) //sUser, admin y los participantes
+router.get('/:school_id', esSuperUserOrAdmin, getClassesBySchoolId) //sUser, admin y los participantes
 router.post('/', esSuperUserOrAdmin, createClass)
 router.get('/clase/:id', esSuperUserOrAdmin, getClassById)  //sUser, admin y los participantes
 router.put('/:id', esSuperUserOrAdmin, updateClassById) //sUser, admin y los participantes(profesor participante, verificar q sea profesor en el rol)

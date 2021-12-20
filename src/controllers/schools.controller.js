@@ -1,5 +1,6 @@
 const Joi = require('joi')
 const Schools = require('../models/Schools')
+const {Role} = require("../models");
 
 const createSchoolSchema = Joi.object({
   name: Joi.string().required(),
@@ -22,6 +23,21 @@ const getSchools = async (_req, res, next) => {
     next(error)
   }
 }
+
+const getSchoolById = async (req, res, next) => {
+  const { id } = req.params
+  try {
+
+    const school = await Schools.findByPk(id)
+
+    res.json(school)
+
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
 
 const createSchool = async (req, res, next) => {
   try {
@@ -98,6 +114,7 @@ const deleteSchoolById = async (req, res, next) => {
 
 module.exports = {
   getSchools,
+  getSchoolById,
   createSchool,
   updateSchoolById,
   deleteSchoolById,
