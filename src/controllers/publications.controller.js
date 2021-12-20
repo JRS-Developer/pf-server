@@ -12,6 +12,8 @@ const createPubliSchema = Joi.object({
   images: Joi.array().items(Joi.string()),
   files: Joi.array().items(Joi.string()),
   publisher_id: Joi.string().uuid().required(),
+  classId: Joi.string().guid(),
+  materiaId: Joi.string().guid(),
 })
 
 const updatePubliSchema = Joi.object({
@@ -34,8 +36,7 @@ const getPublications = async (req, res, next) => {
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    let publications = await Publication.findAll({
-      where: { classId, materiaId },
+    const options = {
       include: [
         {
           association: 'publisher',
@@ -43,7 +44,11 @@ const getPublications = async (req, res, next) => {
         },
         { model: Like },
       ],
-    })
+    }
+
+    if (materiaId && classId) options.where({ materiaId, classId })
+
+    let publications = await Publication.findAll(options)
 
     // Aqui compruebo que el usuario dio like
     publications = publications.map((post) => {
@@ -85,7 +90,8 @@ const getOnePublication = async (req, res, next) => {
 const createPublication = async (req, res, next) => {
   try {
     // Obtengo la data del body
-    const { title, text, images, files, publisher_id } = req.body
+    const { title, text, images, files, publisher_id, materiaId, classId } =
+      req.body
     const data = { title, text, images, files, publisher_id }
 
     // Valido datos
