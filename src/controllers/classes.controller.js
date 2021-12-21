@@ -64,7 +64,7 @@ const getClasses = async (req, res, next) => {
         name: clase.name,
         school_id: clase.school_id,
         status: clase.status,
-        school: clase.school.name,
+        school: clase.school?.name,
         materias: []
       };
 
@@ -76,7 +76,7 @@ const getClasses = async (req, res, next) => {
 
     })
 
-    //res.json(classes)
+    // res.json(classes)
     res.json(listClases)
   } catch (error) {
     console.error(error)

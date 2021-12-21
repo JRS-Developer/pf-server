@@ -133,21 +133,10 @@ conn.sync({ force: true }).then(async () => {
   }
 
   async function initialClasses() {
-    let $saveData = []
-    classes.map((dt) => {
-      let $data = Classes.create({
-        id: dt.id,
-        name: dt.name,
-      })
-
-      $saveData.push($data)
-    })
-
-    await Promise.all($saveData).then(() => {
-      console.log('algunas clases pre cargadas')
-    })
+    await Classes.bulkCreate(classes)
+    console.log('clases cargadas')
   }
-
+  
   async function initialMaterias() {
     let $saveData = []
     materias.map((dt) => {
