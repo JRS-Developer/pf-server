@@ -10,6 +10,7 @@ const {
   Task,
   Classes,
   Materias,
+  Schools,
 } = require('./models')
 //Datos
 const { modules, actions } = require('./datos/modules-actions')
@@ -20,8 +21,10 @@ const { tasks } = require('./datos/tasks')
 const { classes } = require('./datos/classes')
 const { materias } = require('./datos/materias')
 const { roles } = require('./datos/roles')
+const { schools } = require('./datos/schools')
 
 conn.sync({ force: true }).then(async () => {
+  await initialSchools()
   await initialActions()
   await initialModules()
   await initialRoles()
@@ -180,4 +183,10 @@ conn.sync({ force: true }).then(async () => {
       console.log('algunas tareas pre cargadas')
     })
   }
+  async function initialSchools() {
+    await Schools.bulkCreate(schools)
+    console.log('Escuelas cargadas')
+  }
+
+  
 })
