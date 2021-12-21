@@ -1,19 +1,25 @@
-const { Publication, Like } = require('../models')
+const { Publication, Like, File } = require('../models')
 const Joi = require('joi')
+const path = require('path')
+const uploadImage = require('../utils')
+const fs = require('fs-extra')
+
+const getPostSchema = Joi.object({
+  classId: Joi.string().guid(),
+  materiaId: Joi.string().guid(),
+})
 
 const createPubliSchema = Joi.object({
   title: Joi.string().required(),
   text: Joi.string().required(),
-  images: Joi.array().items(Joi.string()),
-  files: Joi.array().items(Joi.string()),
   publisher_id: Joi.string().uuid().required(),
+  classId: Joi.string().guid(),
+  materiaId: Joi.string().guid(),
 })
 
 const updatePubliSchema = Joi.object({
   title: Joi.string().allow('', null),
   text: Joi.string().allow('', null),
-  images: Joi.array().items(Joi.string().allow(null)).allow(null),
-  files: Joi.array().items(Joi.string().allow(null)).allow(null),
   status: Joi.bool(),
 })
 
@@ -23,15 +29,39 @@ const userMadeLike = (userId, post) =>
 const getPublications = async (req, res, next) => {
   try {
     const userId = res.locals.userId
-    let publications = await Publication.findAll({
+    const { materiaId, classId } = req.query
+
+    const { error } = getPostSchema.validate()
+
+    if (error) return res.status(400).json({ error: error.details[0].message })
+
+    const options = {
       include: [
         {
           association: 'publisher',
           attributes: ['id', 'firstName', 'lastName', 'avatar', 'status'],
         },
         { model: Like },
+        {
+          model: File,
+          as: 'images',
+          attributes: {
+            exclude: ['createdAt', 'updatedAt'],
+          },
+        },
+        {
+          model: File,
+          as: 'documents',
+          attributes: {
+            exclude: ['createdAt', 'updatedAt'],
+          },
+        },
       ],
-    })
+    }
+
+    if (materiaId && classId) options.where = { materiaId, classId }
+
+    let publications = await Publication.findAll(options)
 
     // Aqui compruebo que el usuario dio like
     publications = publications.map((post) => {
@@ -55,7 +85,7 @@ const getOnePublication = async (req, res, next) => {
     const userId = res.locals.userId
 
     let post = await Publication.findByPk(id, {
-      include: Like
+      include: Like,
     })
 
     post = post.toJSON()
@@ -73,16 +103,76 @@ const getOnePublication = async (req, res, next) => {
 const createPublication = async (req, res, next) => {
   try {
     // Obtengo la data del body
-    const { title, text, images, files, publisher_id } = req.body
-    const data = { title, text, images, files, publisher_id }
+    const { title, text, publisher_id, materiaId, classId } = req.body
+    let data = { title, text, publisher_id }
+
+    if (materiaId && classId)
+      data = {
+        ...data,
+        materiaId,
+        classId,
+      }
 
     // Valido datos
     const { error } = createPubliSchema.validate(data)
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    // Creo la publicacion
-    await Publication.create(data)
+    let images = []
+    let documents = []
+    // Si hay algun archivo subido entonces la añado
+    if (req.files?.length) {
+      // Compruebo el tipo de archivo, si es imagen, entonces lo
+      // Si es una imagen, lo guardo como una imagen, sino entonces como un documento.
+      for (let file of req.files) {
+        const ext = path.extname(file.path)
+        const name = file.filename
+        const type = file.mimetype
+
+        // Si es una imagen, entonces lo guardo en una promesa para subir a cloudinary
+        if (
+          ext === '.jpg' ||
+          ext === '.png' ||
+          ext === '.jpeg' ||
+          ext === '.svg'
+        ) {
+          images.push({
+            name,
+            url: uploadImage(file.path),
+            type,
+            path: file.path,
+          })
+        } else {
+          // Si es un documento entonces lo guardo en documentos
+          documents.push({
+            name,
+            url: file.path,
+            type,
+          })
+        }
+      }
+    }
+
+    // Si hay imagenes, los subo a cloudinary para obtener el url
+    images = await Promise.all(
+      images.map((img) =>
+        img.url.then(async ({ url }) => {
+          // Elimino el archivo del sistema de archivos y retorno el url de cloudinary
+          await fs.unlink(img.path)
+          delete img.path
+          return { ...img, url }
+        })
+      )
+    )
+
+    // Si al final hubieron imagenes y documentos, entonces lo guardo en la base de datos
+    const imgsDB = await File.bulkCreate(images)
+    const docsDB = await File.bulkCreate(documents)
+
+		// Creo la publicacion y coloco sus documentos e imagenes
+    const newPost = await Publication.create(data)
+    await newPost?.setDocuments(docsDB)
+		await newPost?.setImages(imgsDB)
 
     res.json({ message: 'Publication created successfully' })
   } catch (error) {
@@ -93,7 +183,7 @@ const createPublication = async (req, res, next) => {
 
 const updatePublication = async (req, res, next) => {
   try {
-    const { title, text, images, files, status } = req.body
+    const { title, text, image, status } = req.body
     const { id } = req.params
 
     // Chequeo el body
@@ -101,7 +191,7 @@ const updatePublication = async (req, res, next) => {
       return res.status(400).json({ error: 'Please provide some body data' })
 
     // Guardo los datos del body
-    const data = { title, text, images, files, status }
+    const data = { title, text, image, status }
 
     // Valido los datos
     const { error } = updatePubliSchema.validate(data)
