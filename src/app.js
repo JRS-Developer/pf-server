@@ -17,6 +17,7 @@ app.use(
   })
 )
 app.use(helmet())
+app.use('/files', express.static('files'))
 
 app.use('/api', routes)
 
