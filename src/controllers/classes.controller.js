@@ -61,6 +61,7 @@ const getClasses = async (req, res, next) => {
       ],
     })
 
+
     let listClases = classes.map((clase) => {
       clase = clase.toJSON()
       return {
