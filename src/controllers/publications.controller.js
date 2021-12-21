@@ -21,10 +21,61 @@ const updatePubliSchema = Joi.object({
   title: Joi.string().allow('', null),
   text: Joi.string().allow('', null),
   status: Joi.bool(),
+  images: Joi.array().items(Joi.string()).allow(null),
+  documents: Joi.array().items(Joi.string()).allow(null),
 })
 
 const userMadeLike = (userId, post) =>
   post.likes.some((like) => like.user_id === userId && like.status)
+
+const separateImgsAndDocs = (files) => {
+  const images = []
+  const documents = []
+  // Si files es undefined o es === 0 entonces retorno los array vacios
+  if (!files?.length) return [images, documents]
+
+  // Compruebo el tipo de archivo
+  // Si es una imagen, lo guardo como una imagen, sino entonces como un documento.
+
+  for (let file of files) {
+    const ext = path.extname(file.path)
+    const name = file.filename
+    const type = file.mimetype
+
+    // Si es una imagen, entonces lo guardo en una promesa para subir a cloudinary
+    if (ext === '.jpg' || ext === '.png' || ext === '.jpeg' || ext === '.svg') {
+      images.push({
+        name,
+        url: uploadImage(file.path),
+        type,
+        path: file.path,
+      })
+    } else {
+      // Si es un documento entonces lo guardo en documentos
+      documents.push({
+        name,
+        url: file.path,
+        type,
+      })
+    }
+  }
+  // Retorno los resultados
+  return [images, documents]
+}
+
+const uploadImagesAndUnlink = async (images) => {
+  // Si hay imagenes, los subo a cloudinary para obtener el url
+  return await Promise.all(
+    images.map((img) =>
+      img.url.then(async ({ url }) => {
+        // Elimino el archivo del sistema de archivos y retorno el url de cloudinary
+        await fs.unlink(img.path)
+        delete img.path
+        return { ...img, url }
+      })
+    )
+  )
+}
 
 const getPublications = async (req, res, next) => {
   try {
@@ -85,7 +136,27 @@ const getOnePublication = async (req, res, next) => {
     const userId = res.locals.userId
 
     let post = await Publication.findByPk(id, {
-      include: Like,
+      include: [
+        {
+          association: 'publisher',
+          attributes: ['id', 'firstName', 'lastName', 'avatar', 'status'],
+        },
+        { model: Like },
+        {
+          model: File,
+          as: 'images',
+          attributes: {
+            exclude: ['createdAt', 'updatedAt'],
+          },
+        },
+        {
+          model: File,
+          as: 'documents',
+          attributes: {
+            exclude: ['createdAt', 'updatedAt'],
+          },
+        },
+      ],
     })
 
     post = post.toJSON()
@@ -118,61 +189,19 @@ const createPublication = async (req, res, next) => {
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    let images = []
-    let documents = []
-    // Si hay algun archivo subido entonces la añado
-    if (req.files?.length) {
-      // Compruebo el tipo de archivo, si es imagen, entonces lo
-      // Si es una imagen, lo guardo como una imagen, sino entonces como un documento.
-      for (let file of req.files) {
-        const ext = path.extname(file.path)
-        const name = file.filename
-        const type = file.mimetype
+    // Separo los archivos
+    let [images, documents] = separateImgsAndDocs(req.files)
 
-        // Si es una imagen, entonces lo guardo en una promesa para subir a cloudinary
-        if (
-          ext === '.jpg' ||
-          ext === '.png' ||
-          ext === '.jpeg' ||
-          ext === '.svg'
-        ) {
-          images.push({
-            name,
-            url: uploadImage(file.path),
-            type,
-            path: file.path,
-          })
-        } else {
-          // Si es un documento entonces lo guardo en documentos
-          documents.push({
-            name,
-            url: file.path,
-            type,
-          })
-        }
-      }
-    }
-
-    // Si hay imagenes, los subo a cloudinary para obtener el url
-    images = await Promise.all(
-      images.map((img) =>
-        img.url.then(async ({ url }) => {
-          // Elimino el archivo del sistema de archivos y retorno el url de cloudinary
-          await fs.unlink(img.path)
-          delete img.path
-          return { ...img, url }
-        })
-      )
-    )
+    images = await uploadImagesAndUnlink(images)
 
     // Si al final hubieron imagenes y documentos, entonces lo guardo en la base de datos
     const imgsDB = await File.bulkCreate(images)
     const docsDB = await File.bulkCreate(documents)
 
-		// Creo la publicacion y coloco sus documentos e imagenes
+    // Creo la publicacion y coloco sus documentos e imagenes
     const newPost = await Publication.create(data)
-    await newPost?.setDocuments(docsDB)
-		await newPost?.setImages(imgsDB)
+    await newPost?.setDocuments?.(docsDB)
+    await newPost?.setImages?.(imgsDB)
 
     res.json({ message: 'Publication created successfully' })
   } catch (error) {
@@ -183,7 +212,7 @@ const createPublication = async (req, res, next) => {
 
 const updatePublication = async (req, res, next) => {
   try {
-    const { title, text, image, status } = req.body
+    let { title, text, images, documents, status } = req.body // Images y documents deben ser un array de ids
     const { id } = req.params
 
     // Chequeo el body
@@ -191,7 +220,7 @@ const updatePublication = async (req, res, next) => {
       return res.status(400).json({ error: 'Please provide some body data' })
 
     // Guardo los datos del body
-    const data = { title, text, image, status }
+    const data = { title, text, images, documents, status }
 
     // Valido los datos
     const { error } = updatePubliSchema.validate(data)
@@ -200,13 +229,41 @@ const updatePublication = async (req, res, next) => {
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     // Actualizo
-    const [count] = await Publication.update(data, { where: { id } })
+    let [count, post] = await Publication.update(data, {
+      where: { id },
+      returning: true,
+    })
 
     // Cheque que haya cambios, sino entonces no existe la publi
     if (!count)
       return res
         .status(400)
         .json({ error: 'Not found any publication with that ID' })
+
+    let [imgsReq, docsReq] = separateImgsAndDocs(req.files)
+    imgsReq = await uploadImagesAndUnlink(imgsReq)
+
+    // Si imgSReq y docsReq tienen valores entonces los añado al DB
+    const imgsDB = await File.bulkCreate(imgsReq)
+    const docsDB = await File.bulkCreate(docsReq)
+
+    // Si imgSReq y docsReq tienen valores entonces los añado al array images y documents
+    if (imgsDB.length) {
+      // Si images no es mandado, da un error de que no es array, asi que debo hacer una comprobacion
+      if (Array.isArray(images)) images = [...images, imgsDB]
+      else {
+        images = imgsDB
+      }
+    }
+    if (docsDB.length) {
+      if (Array.isArray(documents)) documents = [...documents, docsDB]
+      else {
+        documents = docsDB
+      }
+    }
+
+    await post[0]?.setImages?.(images)
+    await post[0]?.setDocuments?.(documents)
 
     return res.json({ message: 'Publication updated sucessfully' })
   } catch (error) {
