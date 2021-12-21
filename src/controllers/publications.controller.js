@@ -51,7 +51,6 @@ const separateImgsAndDocs = (files, req) => {
         path: file.path,
       })
     } else {
-      console.log(file)
       const filePath = encodeURI(
         `${req.protocol}://${req.get('host')}/files/${file.filename}`
       )
