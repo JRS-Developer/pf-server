@@ -28,7 +28,7 @@ const updatePubliSchema = Joi.object({
 const userMadeLike = (userId, post) =>
   post.likes.some((like) => like.user_id === userId && like.status)
 
-const separateImgsAndDocs = (files) => {
+const separateImgsAndDocs = (files, req) => {
   const images = []
   const documents = []
   // Si files es undefined o es === 0 entonces retorno los array vacios
@@ -51,10 +51,14 @@ const separateImgsAndDocs = (files) => {
         path: file.path,
       })
     } else {
+      console.log(file)
+      const filePath = encodeURI(
+        `${req.protocol}://${req.get('host')}/files/${file.filename}`
+      )
       // Si es un documento entonces lo guardo en documentos
       documents.push({
         name,
-        url: file.path,
+        url: filePath,
         type,
       })
     }
@@ -190,7 +194,7 @@ const createPublication = async (req, res, next) => {
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     // Separo los archivos
-    let [images, documents] = separateImgsAndDocs(req.files)
+    let [images, documents] = separateImgsAndDocs(req.files, req)
 
     images = await uploadImagesAndUnlink(images)
 
@@ -240,7 +244,7 @@ const updatePublication = async (req, res, next) => {
         .status(400)
         .json({ error: 'Not found any publication with that ID' })
 
-    let [imgsReq, docsReq] = separateImgsAndDocs(req.files)
+    let [imgsReq, docsReq] = separateImgsAndDocs(req.files, req)
     imgsReq = await uploadImagesAndUnlink(imgsReq)
 
     // Si imgSReq y docsReq tienen valores entonces los añado al DB
