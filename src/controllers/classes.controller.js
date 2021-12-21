@@ -1,7 +1,7 @@
 const { Classes, Schools, Materias } = require('../models/')
 const Joi = require('joi')
 const { conn: sequelize } = require('../db')
-const {materias} = require("../datos/materias");
+const { materias } = require('../datos/materias')
 
 const getClassesSchema = Joi.object({
   school_id: Joi.string().guid().required(),
@@ -46,37 +46,29 @@ const getClassesBySchoolId = async (req, res, next) => {
 const getClasses = async (req, res, next) => {
   try {
     const classes = await Classes.findAll({
+      attributes: {
+        exclude: ['createdAt', 'updatedAt'],
+      },
       include: [
         {
           model: Materias,
-          through: { attributes: [] }
-        },{
+          through: { attributes: [] },
+        },
+        {
           model: Schools,
-          attributes: ['id', 'name']
-        }
+          attributes: ['id', 'name'],
+        },
       ],
     })
 
-    let listClases = [];
-    classes.map(clase => {
-      let obj = {
-        id: clase.id,
-        name: clase.name,
-        school_id: clase.school_id,
-        status: clase.status,
+    let listClases = classes.map((clase) => {
+      clase = clase.toJSON()
+      return {
+        ...clase,
         school: clase.school?.name,
-        materias: []
-      };
-
-      clase.materias?.map(mt => {
-        obj.materias.push(mt)
-      })
-
-      listClases.push(obj);
-
+      }
     })
 
-    // res.json(classes)
     res.json(listClases)
   } catch (error) {
     console.error(error)
@@ -102,7 +94,7 @@ const createClass = async (req, res, next) => {
         .json({ error: 'There is not any school with that ID' })
 
     // Creo la clase
-    const newClase =  await Classes.create({ name, school_id })
+    const newClase = await Classes.create({ name, school_id })
 
     newClase.addMaterias(materia_ids)
 
@@ -125,8 +117,8 @@ const getClassById = async (req, res, next) => {
       include: [
         {
           model: Materias,
-          through: { attributes: [] }
-        }
+          through: { attributes: [] },
+        },
       ],
     })
 
@@ -146,7 +138,12 @@ const updateClassById = async (req, res, next) => {
     const { id } = req.params // id de clase
     const { name, materia_ids, school_id } = req.body //name nombre de clase
 
-    const { error } = updateClassSchema.validate({ id, name, materia_ids, school_id })
+    const { error } = updateClassSchema.validate({
+      id,
+      name,
+      materia_ids,
+      school_id,
+    })
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     const condicional = {}

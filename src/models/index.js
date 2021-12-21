@@ -13,6 +13,7 @@ const Publication = require('./Publication')
 const Like = require('./Like')
 const CicloElectivo = require('./CicloElectivo')
 const Matricula = require('./Matricula')
+const File = require('./File')
 
 module.exports = {
   Task,
@@ -29,5 +30,6 @@ module.exports = {
   Publication,
   Like,
   CicloElectivo,
-  Matricula
+  Matricula,
+	File
 }
