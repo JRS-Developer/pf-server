@@ -95,7 +95,13 @@ const getPublications = async (req, res, next) => {
           association: 'publisher',
           attributes: ['id', 'firstName', 'lastName', 'avatar', 'status'],
         },
-        { model: Like },
+        {
+          model: Like,
+          where: {
+            status: true,
+          },
+          required: false,
+        },
         {
           model: File,
           as: 'images',
@@ -144,7 +150,13 @@ const getOnePublication = async (req, res, next) => {
           association: 'publisher',
           attributes: ['id', 'firstName', 'lastName', 'avatar', 'status'],
         },
-        { model: Like },
+        {
+          model: Like,
+          where: {
+            status: true,
+          },
+          required: false,
+        },
         {
           model: File,
           as: 'images',
