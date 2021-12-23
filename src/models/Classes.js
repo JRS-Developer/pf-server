@@ -21,8 +21,8 @@ const Classes = sequelize.define('classes', {
 })
 
 // School - Class (one-to-many)
-Schools.hasMany(Classes, { foreignKey: 'school_id' })
-Classes.belongsTo(Schools, { foreignKey: 'school_id' })
+Schools.belongsToMany(Classes, { through: 'schools_classes' })
+Classes.belongsToMany(Schools, { through: 'schools_classes' })
 // Classes - Materias (many-to-many)
 Classes.belongsToMany(Materias, { through: 'materias_classes' })
 Materias.belongsToMany(Classes, { through: 'materias_classes' })
