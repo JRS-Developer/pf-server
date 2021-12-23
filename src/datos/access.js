@@ -1,3 +1,30 @@
+const { users } = require('./users')
+
+function userIdsByRole(role) {
+  const array = users
+    .filter((user) => user.roleId === role)
+    .map((user) => user.id)
+  return array
+}
+
+function setUserAccesses(filteredUserIdsByRole, accessesToSet) {
+  const dataAccess = []
+  filteredUserIdsByRole.forEach((user) => {
+    accessesToSet.forEach((element) => {
+      element.user_id = user
+      dataAccess.push({
+        user_id: element.user_id,
+        module_id: element.module_id,
+        action_id: element.action_id,
+      })
+    })
+  })
+  return dataAccess
+}
+
+const sUsers = userIdsByRole('a83af560-8a48-4edd-83eb-6bd3f7e97861')
+const alumnos = userIdsByRole('5d3709ba-3a27-48cc-8a75-256338684cee')
+
 const sUserAccess = [
   //Seguridad (MODULO PADRE)
   { module_id: 'c9e0712e-c2f3-4891-93dc-4d89c60bfc91', action_id: null },
@@ -168,34 +195,24 @@ const sUserAccess = [
     action_id: 'f33c5435-9cb2-4d18-8530-e37f28fd231d',
   },
 ]
-
-const sUsers = [
-  /* Wilmer */ '1742ea0a-115e-4c4b-9017-8e2bf9776b18',
-  /* Nico */ '2e9e4070-2d42-41ed-8c6b-a018f40c7757',
-  /* Vale */ '6c1c7391-1290-471d-8932-96196cc2fcef',
-  /* Luan */ '47dd3757-29e2-4736-bc42-38e115cba2ed',
-  /* Jose */ 'd490f704-1b12-44e2-8a61-48267ecd98b0',
-  /* Edwin */ '32c00bdf-a19f-48b1-bc5c-de123567c18a',
-  /* Leandro */ 'ab11729b-d0f1-4976-821d-8a30c3c178e7',
-  /* Juan */ 'ab11729b-d0f1-4976-821d-8a30c3c178e8',
+const alumnosAccess = [
+  //Comunicación (Módulo Padre)
+  { module_id: 'cc2b3043-a35d-425e-963a-b4936e91c6c8', action_id: null },
+  //  Noticias
+  {
+    //le agrego la acción "add" por ahora para que pueda ver este modulo
+    module_id: '9c137ea3-5958-47c9-bd91-91766d322141',
+    action_id: '30fe307d-363c-46d3-8cf5-184254e45198',
+  },
+  //Aula Virtual (Módulo Padre)
+  { module_id: 'd544b900-a077-483e-b335-8a52c2fde399', action_id: null },
+  //  Classroom
+  {
+    //le agrego la acción "add" por ahora para que pueda ver este modulo
+    module_id: '45388d9e-23c1-4c01-96de-7270769ce278',
+    action_id: '30fe307d-363c-46d3-8cf5-184254e45198',
+  },
 ]
-
-function setSUserAccesses() {
-  const sUsersDataAccess = []
-  sUsers.forEach((user) => {
-    sUserAccess.forEach((element) => {
-      element.user_id = user
-      sUsersDataAccess.push({
-        user_id: element.user_id,
-        module_id: element.module_id,
-        action_id: element.action_id,
-      })
-    })
-  })
-  return sUsersDataAccess
-}
-const sUsersdata = setSUserAccesses()
-
 const access = [
   /*ROL TUTOR => CLASSROM*/
   //Aula Virtual (Módulo Padre)
@@ -245,8 +262,12 @@ const access = [
   },
 ]
 
-access.push(...sUsersdata)
+const sUsersdata = setUserAccesses(sUsers, sUserAccess)
+const alumnosdata = setUserAccesses(alumnos, alumnosAccess)
+
+access.push(...sUsersdata, ...alumnosdata)
 
 module.exports = {
   access,
+  alumnosAccess,
 }

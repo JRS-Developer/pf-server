@@ -1,8 +1,10 @@
-const { User, Role, Classes } = require('../models/')
+const { User, Role, Classes, Access } = require('../models/')
+const { alumnosAccess } = require('../datos/access')
 const Joi = require('joi')
 const uploadImage = require('../utils')
 const fs = require('fs-extra')
 const path = require('path')
+const { access } = require('fs')
 
 const NO_USER_FOUND = "There isn't any user with that id"
 
@@ -69,9 +71,7 @@ const getUserById = async (req, res, next) => {
     const { id } = req.params
     // Buscamos usuarios por ID (pasado por query) para acceder al detalle de uno en particular
     const user_found = await User.findByPk(id, {
-      include: [
-        { model: Role}
-      ],
+      include: [{ model: Role }],
       attributes: {
         exclude: ['roleId'],
       },
@@ -141,9 +141,25 @@ const createUser = async (req, res, next) => {
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     //se crea el nuevo objeto en la BD
-    await User.create(data)
+    const usuario = await User.create(data)
     //mensaje satisfactorio
     res.json({ message: 'User created successfully' })
+
+    //Si el user es Alumno le genero accesos por default.
+    const findrole = await Role.findByPk(data.roleId)
+
+    if (findrole && findrole.dataValues.name === 'Alumno') {
+      const alumno = []
+      //alumnosaccess es un array con modulos y acciones importado de datos/access.js
+      alumnosAccess.forEach((element) =>
+        alumno.push({
+          user_id: usuario.dataValues.id,
+          module_id: element.module_id,
+          action_id: element.action_id,
+        })
+      )
+      await Access.bulkCreate(alumno)
+    }
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
