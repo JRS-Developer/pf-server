@@ -9,14 +9,14 @@ const getClassesSchema = Joi.object({
 })
 
 const createClassSchema = Joi.object({
-  school_id: Joi.string().guid().required(),
+  school_ids: Joi.array().items(Joi.string().guid()).allow(null),
   name: Joi.string().required(),
 })
 
 const updateClassSchema = Joi.object({
   id: Joi.string().guid(),
   name: Joi.string().allow(''),
-  school_id: Joi.string().guid().required(),
+  school_ids: Joi.array().items(Joi.string().guid()).allow(null),
   materia_ids: Joi.array().items(Joi.string().guid()).allow(null),
 })
 
@@ -32,8 +32,7 @@ const getClassesBySchoolId = async (req, res, next) => {
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     const classes = await Classes.findAll({
-      where: { school_id },
-      include: { model: Materias, through: { attributes: [] } },
+      include: [{ model: Materias, through: { attributes: [] } },{model:Schools, through:{where:{schoolId:school_id},attributes:[]},right: true} ],
     })
 
     res.json(classes)
@@ -78,27 +77,20 @@ const getClasses = async (req, res, next) => {
 
 const createClass = async (req, res, next) => {
   try {
-    const { name, school_id, materia_ids } = req.body // materia_ids = [] de ids de materias
+    const { name, school_ids , materia_ids } = req.body // materia_ids = [] de ids de materias
 
     // Validacion de los parametros del body
-    const { error } = createClassSchema.validate({ name, school_id })
+    const { error } = createClassSchema.validate({ name, school_ids })
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    // Valido que la escuela exista.
-    const schoolFound = await Schools.findByPk(school_id)
-
-    if (!schoolFound)
-      return res
-        .status(400)
-        .json({ error: 'There is not any school with that ID' })
-
     // Creo la clase
-    const newClase = await Classes.create({ name, school_id })
+    const newClase = await Classes.create({ name })
 
     newClase.addMaterias(materia_ids)
+    newClase.addSchools(school_ids)
 
-    return res.json({ message: 'Classs created successfully' })
+    return res.json({ message: 'Class created successfully' })
   } catch (error) {
     console.error(error)
     next(error)
@@ -136,20 +128,19 @@ const getClassById = async (req, res, next) => {
 const updateClassById = async (req, res, next) => {
   try {
     const { id } = req.params // id de clase
-    const { name, materia_ids, school_id } = req.body //name nombre de clase
+    const { name, materia_ids, school_ids } = req.body //name nombre de clase
 
     const { error } = updateClassSchema.validate({
       id,
       name,
       materia_ids,
-      school_id,
+      school_ids,
     })
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     const condicional = {}
     //creo condicional por si no pasan name o school_id
     name && (condicional.name = name)
-    school_id && (condicional.school_id = school_id)
 
     const [count, updatedClasses] = await Classes.update(condicional, {
       where: { id },
@@ -160,12 +151,14 @@ const updateClassById = async (req, res, next) => {
     const foundClass = !updatedClasses && (await Classes.findByPk(id))
 
     if (foundClass) {
-      foundClass.setMaterias?.(materia_ids)
+      materia_ids && foundClass.setMaterias?.(materia_ids)
+      school_ids && foundClass.setSchools?.(school_ids)
       return res.json({ message: 'class updated' })
     }
 
-    updatedClasses && updatedClasses[0]?.setMaterias?.(materia_ids) //materia_ids es un array de id de materias.
-
+    materia_ids && updatedClasses && updatedClasses[0]?.setMaterias?.(materia_ids) //materia_ids es un array de id de materias.
+    school_ids && updatedClasses && updatedClasses[0]?.setSchools?.(school_ids)
+    
     if (count === 0)
       return res.status(400).json({ error: 'No se pudo actualizar la clase.' })
 

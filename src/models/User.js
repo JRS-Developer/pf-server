@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize')
 const { conn } = require('../db')
 const Role = require('./Role')
-const School = require('./Schools')
 const bcrypt = require('bcryptjs')
 
 const User = conn.define('users', {
@@ -50,10 +49,6 @@ const User = conn.define('users', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  clase_id: {
-    type: DataTypes.UUID,
-    allowNull: true
-  },
   //El estado es para cuando se lo "borre" al usuario cuando queremos dar de baja. Lo ponemos en estado "inactivo"
   status:{
     type: DataTypes.BOOLEAN,
@@ -66,8 +61,6 @@ const User = conn.define('users', {
 // Roles
 User.belongsTo(Role)
 Role.hasMany(User)
-// School - OPCIONAL PORQUE DEPENDE DEL ROL
-School.hasMany(User)
-User.belongsTo(School)
+
 
 module.exports = User
