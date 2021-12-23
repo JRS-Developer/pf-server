@@ -117,9 +117,13 @@ const getPublications = async (req, res, next) => {
           },
         },
       ],
+      where: {
+        status: true,
+      },
     }
 
-    if (materiaId && classId) options.where = { materiaId, classId }
+    if (materiaId && classId)
+      options.where = { ...options.where, materiaId, classId }
 
     let publications = await Publication.findAll(options)
 
