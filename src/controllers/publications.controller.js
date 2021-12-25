@@ -21,8 +21,14 @@ const updatePubliSchema = Joi.object({
   title: Joi.string().allow('', null),
   text: Joi.string().allow('', null),
   status: Joi.bool(),
-  images: Joi.array().items(Joi.string()).allow(null),
-  documents: Joi.array().items(Joi.string()).allow(null),
+  images: Joi.alternatives(
+    Joi.array().items(Joi.string().guid()).allow(null),
+    Joi.string().guid()
+  ),
+  documents: Joi.alternatives(
+    Joi.array().items(Joi.string().guid()).allow(null),
+    Joi.string().guid()
+  ),
 })
 
 const userMadeLike = (userId, post) =>
@@ -117,9 +123,13 @@ const getPublications = async (req, res, next) => {
           },
         },
       ],
+      where: {
+        status: true,
+      },
     }
 
-    if (materiaId && classId) options.where = { materiaId, classId }
+    if (materiaId && classId)
+      options.where = { ...options.where, materiaId, classId }
 
     let publications = await Publication.findAll(options)
 
@@ -265,15 +275,16 @@ const updatePublication = async (req, res, next) => {
     // Si imgSReq y docsReq tienen valores entonces los añado al array images y documents
     if (imgsDB.length) {
       // Si images no es mandado, da un error de que no es array, asi que debo hacer una comprobacion
-      if (Array.isArray(images)) images = [...images, imgsDB]
+      if (Array.isArray(images)) images = [...images, ...imgsDB]
       else {
-        images = imgsDB
+        // Ya que images puede ser un string, si es un string entonces lo guardo en un array junto a imgsDB e igual con los documentos
+        images = images ? [images, ...imgsDB] : imgsDB
       }
     }
     if (docsDB.length) {
-      if (Array.isArray(documents)) documents = [...documents, docsDB]
+      if (Array.isArray(documents)) documents = [...documents, ...docsDB]
       else {
-        documents = docsDB
+        documents = documents ? [documents, ...docsDB] : docsDB
       }
     }
 
