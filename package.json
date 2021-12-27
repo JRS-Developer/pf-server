@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon index.js",
     "dev": "nodemon index.js",
-    "test": "mocha",
+    "test": "mocha -w tests/**/*.js",
     "seed": "node ./src/seed.js"
   },
   "keywords": [],
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "chai": "^4.3.4",
+    "faker": "^5.5.3",
     "mocha": "^9.1.3",
     "supertest": "^6.1.6"
   },
@@ -45,7 +46,8 @@
     "env": {
       "es6": true,
       "browser": true,
-      "node": true
+      "node": true,
+      "mocha": true
     },
     "parserOptions": {
       "ecmaVersion": 2020,

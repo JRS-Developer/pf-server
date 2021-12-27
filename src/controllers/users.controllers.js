@@ -13,7 +13,7 @@ const createUserSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
   avatar: Joi.string().allow('', null),
-  birthdate: Joi.date(),
+  birthdate: Joi.date().required(),
   identification: Joi.string().required(),
   country: Joi.string().required(),
   roleId: Joi.string().guid().allow('', null),
@@ -69,9 +69,7 @@ const getUserById = async (req, res, next) => {
     const { id } = req.params
     // Buscamos usuarios por ID (pasado por query) para acceder al detalle de uno en particular
     const user_found = await User.findByPk(id, {
-      include: [
-        { model: Role}
-      ],
+      include: [{ model: Role }],
       attributes: {
         exclude: ['roleId'],
       },
@@ -88,7 +86,7 @@ const getUserById = async (req, res, next) => {
 }
 
 //get para obtener datos de usuarios por roles
-const getUsersByRole = async (req, res) => {
+const getUsersByRole = async (req, res, next) => {
   try {
     const { role_id } = req.body
 
@@ -143,7 +141,7 @@ const createUser = async (req, res, next) => {
     //se crea el nuevo objeto en la BD
     await User.create(data)
     //mensaje satisfactorio
-    res.json({ message: 'User created successfully' })
+    res.status(201).json({ message: 'User created successfully' })
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
