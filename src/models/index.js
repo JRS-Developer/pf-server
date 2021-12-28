@@ -1,6 +1,6 @@
 const Task = require('./Task/Task')
 const StudentTask = require('./Task/StudentTask')
-const Notes = require('./Notes')
+const HomeworkGrade = require('./HomeworkGrade')
 const Schools = require('./Schools')
 const Classes = require('./Classes')
 const Materias = require('./Materias')
@@ -17,7 +17,7 @@ const File = require('./File')
 
 module.exports = {
   Task,
-  Notes,
+  HomeworkGrade,
   Classes,
   Schools,
   Materias,
