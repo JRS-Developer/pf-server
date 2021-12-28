@@ -1,7 +1,9 @@
 const { Classes, Schools, Materias } = require('../models/')
 const Joi = require('joi')
 const { conn: sequelize } = require('../db')
+
 const { materias } = require('../datos/materias')
+
 
 const getClassesSchema = Joi.object({
   school_id: Joi.string().guid().required(),
@@ -59,6 +61,7 @@ const getClasses = async (req, res, next) => {
         },
       ],
     })
+
 
     let listClases = classes.map((clase) => {
       clase = clase.toJSON()
