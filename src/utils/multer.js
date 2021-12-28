@@ -25,7 +25,12 @@ const storage = multer.diskStorage({
   },
 })
 
-const upload = multer({ storage })
+const upload = multer({
+  storage,
+  limits: {
+    fieldSize: 5000, // Esto es para limitar el tamaaño de los archivos
+  },
+})
 
 const file = upload.single('myFile')
 const multiFiles = upload.array('myFile')

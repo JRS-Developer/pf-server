@@ -10,6 +10,8 @@ const {
   Task,
   Classes,
   Materias,
+  Schools,
+  CicloElectivo,
 } = require('./models')
 //Datos
 const { modules, actions } = require('./datos/modules-actions')
@@ -20,8 +22,10 @@ const { tasks } = require('./datos/tasks')
 const { classes } = require('./datos/classes')
 const { materias } = require('./datos/materias')
 const { roles } = require('./datos/roles')
+const { schools } = require('./datos/schools')
 
 conn.sync({ force: true }).then(async () => {
+  await initialSchools()
   await initialActions()
   await initialModules()
   await initialRoles()
@@ -30,6 +34,7 @@ conn.sync({ force: true }).then(async () => {
   await initialClasses()
   await initialMaterias()
   await initialTasks()
+  await initialCiclosLectivos()
   console.log('Cargado los datos default en la base de datos! :D')
 
   async function initialRoles() {
@@ -130,35 +135,15 @@ conn.sync({ force: true }).then(async () => {
   }
 
   async function initialClasses() {
-    let $saveData = []
-    classes.map((dt) => {
-      let $data = Classes.create({
-        id: dt.id,
-        name: dt.name,
-      })
-
-      $saveData.push($data)
-    })
-
-    await Promise.all($saveData).then(() => {
-      console.log('algunas clases pre cargadas')
-    })
+    await Classes.bulkCreate(classes)
+    console.log('clases cargadas')
   }
 
   async function initialMaterias() {
-    let $saveData = []
-    materias.map((dt) => {
-      let $data = Materias.create({
-        id: dt.id,
-        name: dt.name,
-      })
-
-      $saveData.push($data)
-    })
-
-    await Promise.all($saveData).then(() => {
-      console.log('algunas Materias pre cargadas')
-    })
+    const classesId = classes.map(el => el.id)
+    const materiasCreadas = await Materias.bulkCreate(materias)
+    materiasCreadas.forEach(mat => mat.addClasses(classesId))
+    console.log('Materias cargadas')
   }
 
   async function initialTasks() {
@@ -180,4 +165,14 @@ conn.sync({ force: true }).then(async () => {
       console.log('algunas tareas pre cargadas')
     })
   }
+  async function initialSchools() {
+    await Schools.bulkCreate(schools)
+    console.log('Escuelas cargadas')
+  }
+
+  async function initialCiclosLectivos() {
+    await CicloElectivo.bulkCreate([{name:"2021"},{name:"2022"}])
+    console.log('Ciclos Lectivos Cargados')
+  }
+  
 })
