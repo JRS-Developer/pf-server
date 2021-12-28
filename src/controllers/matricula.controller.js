@@ -1,7 +1,7 @@
 const { Sequelize , Op, QueryTypes } = require("sequelize");
 const { secret } = require("../lib/config");
 const { conn } = require('../db');
-const { User, CicloElectivo, Classes, Matricula } = require('../models')
+const { User, CicloElectivo, Classes, Matricula, Materias} = require('../models')
 
 const getMatriculas = async (req, res, next) => {
   try {
@@ -135,9 +135,48 @@ const updateMatriculaById = async (req, res, next) => {
   }
 }
 
+const getDatosMatricula =  async (req, res, next) => {
+  try {
+    const studentId = res.locals.userId;
+    const datos = await Matricula.findOne({
+      where: {
+        student_id: studentId
+      },
+      order: [
+        ['fecha', 'DESC']
+      ],
+      limit: 1,
+      include: [
+        {
+          model: User,
+          attributes: ['lastName', 'firstName', 'identification']
+        }, {
+          model: Classes,
+          attributes: ['name', 'school_id'],
+          include: [
+            {
+              model: Materias
+            }
+          ]
+        }, {
+          model: CicloElectivo,
+          attributes: ['name']
+        }
+      ]
+    })
+
+    return res.json(datos);
+  }catch (error) {
+    console.error(error)
+    next(error)
+  }
+
+}
+
 module.exports = {
   getMatriculas,
   createMatricula,
   getMatriculaById,
-  updateMatriculaById
+  updateMatriculaById,
+  getDatosMatricula
 }

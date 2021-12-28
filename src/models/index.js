@@ -13,6 +13,9 @@ const Publication = require('./Publication')
 const Like = require('./Like')
 const CicloElectivo = require('./CicloElectivo')
 const Matricula = require('./Matricula')
+
+const TeachersMaterias = require('./TeachersMaterias')
+
 const File = require('./File')
 
 module.exports = {
@@ -31,5 +34,6 @@ module.exports = {
   Like,
   CicloElectivo,
   Matricula,
+  TeachersMaterias,
 	File
 }
