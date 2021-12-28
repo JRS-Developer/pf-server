@@ -171,7 +171,7 @@ const getAccessUser = async (req, res, next) => {
   try {
 
     const { userId } = req.params
-    console.log(userId)
+    //console.log(userId)
     //const userId = '1742ea0a-115e-4c4b-9017-8e2bf9776b18';
     //console.log(userId);
 

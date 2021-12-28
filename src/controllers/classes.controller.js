@@ -1,7 +1,6 @@
 const { Classes, Schools, Materias } = require('../models/')
 const Joi = require('joi')
 const { conn: sequelize } = require('../db')
-const {materias} = require("../datos/materias");
 
 const getClassesSchema = Joi.object({
   school_id: Joi.string().guid().required(),
@@ -58,23 +57,25 @@ const getClasses = async (req, res, next) => {
     })
 
     let listClases = [];
-    classes.map(clase => {
-      let obj = {
-        id: clase.id,
-        name: clase.name,
-        school_id: clase.school_id,
-        status: clase.status,
-        school: clase.school.name,
-        materias: []
-      };
+    if(classes.length > 0){
+      classes.map(clase => {
+        let obj = {
+          id: clase.id,
+          name: clase.name,
+          school_id: clase.school_id,
+          status: clase.status,
+          school: clase?.school?.name,
+          materias: []
+        };
 
-      clase.materias?.map(mt => {
-        obj.materias.push(mt)
+        clase.materias?.map(mt => {
+          obj.materias.push(mt)
+        })
+
+        listClases.push(obj);
+
       })
-
-      listClases.push(obj);
-
-    })
+    }
 
     //res.json(classes)
     res.json(listClases)
