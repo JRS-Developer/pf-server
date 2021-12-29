@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize')
 const { conn: sequelize } = require('../db')
 const StudentTask = require('./Task/StudentTask')
 
-const Notes = sequelize.define('notes', {
+const HomeworkGrade = sequelize.define('homeworkgrade', {
   id: {
     type: DataTypes.UUID,
     primaryKey: true,
@@ -17,9 +17,9 @@ const Notes = sequelize.define('notes', {
   },
 })
 
-// NOTES
-// Notes - StudentsTasks (one-to-one)
-Notes.hasOne(StudentTask)
-StudentTask.belongsTo(Notes)
+// HomeworkGrade
+// HomeworkGrade - StudentsTasks (one-to-one)
+HomeworkGrade.hasOne(StudentTask)
+StudentTask.belongsTo(HomeworkGrade)
 
-module.exports = Notes
+module.exports = HomeworkGrade
