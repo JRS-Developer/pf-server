@@ -3,7 +3,7 @@ const { conn } = require('../db')
 const Classes = require("./Classes");
 const User = require("./User");
 const CicloElectivo = require("./CicloElectivo")
-
+const Schools = require("./Schools");
 const Matricula = conn.define('matriculas',
   {
     id: {
@@ -19,11 +19,15 @@ const Matricula = conn.define('matriculas',
       type: DataTypes.UUID,
       allowNull: false,
     },
+    school_id: {
+      type: DataTypes.UUID,
+      allowNull: false,
+    },
     clase_id: {
       type: DataTypes.UUID,
       allowNull: false,
     },
-    ciclo_electivo_id: {
+    ciclo_lectivo_id: {
       type: DataTypes.UUID,
       allowNull: true
     },
@@ -54,11 +58,20 @@ Classes.hasMany(Matricula, {
 })
 
 Matricula.belongsTo(CicloElectivo, {
-  foreignKey: 'ciclo_electivo_id',
+  foreignKey: 'ciclo_lectivo_id',
   sourceKey: 'id'
 })
 CicloElectivo.hasMany(Matricula, {
-  foreignKey: 'ciclo_electivo_id',
+  foreignKey: 'ciclo_lectivo_id',
+  sourceKey: 'id'
+})
+
+Matricula.belongsTo(Schools, {
+  foreignKey: 'school_id',
+  sourceKey: 'id'
+})
+Schools.hasMany(Matricula, {
+  foreignKey: 'school_id',
   sourceKey: 'id'
 })
 

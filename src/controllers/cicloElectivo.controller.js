@@ -7,9 +7,19 @@ const creaCicloElectivoSchema = Joi.object({
 })
 
 const getCicloElectivos = async (req, res, next) => {
+  const { status } = req.query
+  console.log(typeof status);
   try {
-
-    const cicloElectivos = await CicloElectivo.findAll()
+    let cicloElectivos;
+    if(status === 'true'){
+      cicloElectivos = await CicloElectivo.findAll({
+        where: {
+          status : true
+        }
+      })
+    }else{
+      cicloElectivos = await CicloElectivo.findAll()
+    }
 
     return res.json(cicloElectivos);
 

@@ -171,7 +171,7 @@ conn.sync({ force: true }).then(async () => {
   }
 
   async function initialCiclosLectivos() {
-    await CicloElectivo.bulkCreate([{name:"2021"},{name:"2022"}])
+    await CicloElectivo.bulkCreate([{'id': '8387a420-ae5f-425d-9a19-6fc689f75f0b',name:"2021"},{'id': '0444e7eb-4aa2-4378-8287-cd93d55fa655', name:"2022"}])
     console.log('Ciclos Lectivos Cargados')
   }
   

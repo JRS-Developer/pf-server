@@ -17,6 +17,9 @@ const getMatriculas = async (req, res, next) => {
         },{
           model: CicloElectivo,
           attributes: ['name']
+        },{
+          model: Schools,
+          attributes: ['id', 'name']
         }
       ]
     })
@@ -28,11 +31,12 @@ const getMatriculas = async (req, res, next) => {
         fecha: matricula.fecha,
         student_id: matricula.student_id,
         clase_id: matricula.clase_id,
-        ciclo_electivo_id: matricula.ciclo_electivo_id,
+        ciclo_lectivo_id: matricula.ciclo_lectivo_id,
         student: `${matricula.user.firstName} ${matricula.user.lastName}`,
         identification: matricula.user.identification,
         class: matricula.class.name,
-        ciclo_electivo: matricula.ciclo_electivo.name
+        ciclo_electivo: matricula.ciclo_electivo.name,
+        school: matricula.school.name
       })
     })
 
@@ -60,6 +64,9 @@ const getMatriculaById = async (req, res, next) => {
         },{
           model: CicloElectivo,
           attributes: ['id', 'name']
+        },{
+          model: Schools,
+          attributes: ['id', 'name']
         }
       ]
     })
@@ -74,18 +81,19 @@ const getMatriculaById = async (req, res, next) => {
 
 const createMatricula = async (req, res, next) => {
   try {
-    const { fecha, student_id, clase_id, ciclo_electivo_id } = req.body
+    const { fecha, student_id, school_id, clase_id, ciclo_lectivo_id } = req.body
 
     await Matricula.create({
       fecha,
       student_id,
+      school_id,
       clase_id,
-      ciclo_electivo_id
+      ciclo_lectivo_id
     })
 
     return res.json({ message: 'Matrícula created successfully' })
   } catch (error) {
-    //console.error(error)
+    console.error(error)
     next(error)
   }
 }
@@ -93,7 +101,7 @@ const createMatricula = async (req, res, next) => {
 const updateMatriculaById = async (req, res, next) => {
   try {
 
-    const {fecha, clase_id, ciclo_electivo_id, student_id } = req.body
+    const {fecha, clase_id, school_id, ciclo_lectivo_id, student_id } = req.body
 
     const { id } = req.params
 
@@ -112,7 +120,7 @@ const updateMatriculaById = async (req, res, next) => {
       res.json({ message: 'Matrícula updated' })
     }else{
       const [count, updatedMatricula] = await Matricula.update(
-        { fecha, clase_id, ciclo_electivo_id, student_id },
+        { fecha, clase_id, school_id, ciclo_lectivo_id, student_id },
         {
           where: {
             id,
