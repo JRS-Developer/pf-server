@@ -28,9 +28,9 @@ const getTeachersMaterias = async (req, res, next) => {
 }
 
 const asignarMaterias = async (req, res, next) => {
-  console.log(req.body)
+  //console.log(req.body)
   try {
-    const { school_id, clase_id, materia_id, teacher_id, status } =
+    const { school_id, clase_id, materia_id, teacher_id, ciclo_lectivo_id, status } =
       req.body
     // TODO: añadir validaciones de datos
     if(status){
@@ -38,7 +38,8 @@ const asignarMaterias = async (req, res, next) => {
         school_id,
         clase_id,
         materia_id,
-        teacher_id
+        teacher_id,
+        ciclo_lectivo_id
       })
     }else{
       await TeachersMaterias.destroy({
@@ -46,7 +47,8 @@ const asignarMaterias = async (req, res, next) => {
           school_id,
           clase_id,
           materia_id,
-          teacher_id
+          teacher_id,
+          ciclo_lectivo_id
         }
       })
     }
