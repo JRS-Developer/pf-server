@@ -43,7 +43,7 @@ const loginUser = async (req, res, next) => {
     // Creo el token almacenandole el id del usuario y sus roles
     // INFO: Lo mas probable es que despues se quiera guardar tambien los access, pero falta gestionar esa tabla.
     const token = jwt.sign(
-      { id: userFound.id, roles: userFound.roleId, email: userFound.email },
+      { id: userFound.id, roleId: userFound.roleId, email: userFound.email },
       secret,
       {
         expiresIn: '24h',
