@@ -1,7 +1,7 @@
 const { Sequelize , Op, QueryTypes } = require("sequelize");
 const { secret } = require("../lib/config");
 const { conn } = require('../db');
-const { User, CicloElectivo, Classes, Matricula, Materias} = require('../models')
+const { User, CicloElectivo, Classes, Matricula, Materias, Schools} = require('../models')
 
 const getMatriculas = async (req, res, next) => {
   try {
@@ -152,10 +152,14 @@ const getDatosMatricula =  async (req, res, next) => {
           attributes: ['lastName', 'firstName', 'identification']
         }, {
           model: Classes,
-          attributes: ['name', 'school_id'],
+          attributes: ['name'],
           include: [
             {
-              model: Materias
+              model: Materias,
+            },
+            {
+              model:Schools,
+              attributes:['name','id'],
             }
           ]
         }, {
