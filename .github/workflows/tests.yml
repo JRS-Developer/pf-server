@@ -23,7 +23,7 @@ jobs:
         image: postgres
         env:
           POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: 1234
+          POSTGRES_PASSWORD: postgres
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -43,7 +43,14 @@ jobs:
     
     # Install dependencies
     - run: npm ci
+    - name: Connect PostgreSQL
     # Seed the DB data
     - run: npm run seed
+    - env: 
+        DB_USER: postgres
+        DB_PASSWORD: postgres
+        DB_HOST: localhost
+        DB_NAME: postgres
+        DB_PORT: 5432
     - run: npm run build --if-present
     - run: npm test
