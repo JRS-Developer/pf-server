@@ -68,15 +68,7 @@ const getClasses = async (req, res, next) => {
       ],
     })
 
-    let listClases = classes.map((clase) => {
-      clase = clase.toJSON()
-      return {
-        ...clase,
-        school: clase.school?.name,
-      }
-    })
-
-    res.json(listClases)
+    res.json(classes)
   } catch (error) {
     console.error(error)
     next(error)
