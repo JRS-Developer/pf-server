@@ -42,11 +42,8 @@ jobs:
         cache: 'npm'
     
     # Install dependencies
-    - name: Install dependencies
     - run: npm ci
     # Seed the DB data
-    - name: Set default data on the database (seed)
     - run: npm run seed
-    
     - run: npm run build --if-present
     - run: npm test
