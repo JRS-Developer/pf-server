@@ -55,10 +55,3 @@ jobs:
         SECRET: secret
     - run: npm run build --if-present
     - run: npm test
-    - env:
-        DB_USER: postgres
-        DB_PASSWORD: postgres
-        DB_HOST: localhost
-        DB_NAME: postgres
-        DB_PORT: 5432
-        SECRET: secret
