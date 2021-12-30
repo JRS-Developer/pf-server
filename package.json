@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon index.js",
     "dev": "nodemon index.js",
-    "test": "mocha -w tests/**/*.js",
+    "test": "mocha -w tests/**/*.js --timeout 10000",
     "seed": "node ./src/seed.js"
   },
   "keywords": [],
