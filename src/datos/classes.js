@@ -39,16 +39,16 @@ let classes = [
     name: 'Cuarto año B',
     school_id: '36ba79e8-30cb-4b91-8424-bd2f634917e8',
   },
-  {
-    id: 'b2279cda-3192-4b52-9ead-5e74920fe3b9',
-    name: 'Primer año sucursal 1',
-    school_id: '5db18bbe-0e6c-434e-8977-523f22e9818c',
-  },
-  {
-    id: 'db8a4b5a-4607-40a4-96cc-5a28555aad55',
-    name: 'Primer año sucursal 2',
-    school_id: '91f7918b-6337-41d6-ab95-1fe2c72c005c',
-  },
+  // {
+  //   id: 'b2279cda-3192-4b52-9ead-5e74920fe3b9',
+  //   name: 'Primer año sucursal 1',
+  //   school_id: '5db18bbe-0e6c-434e-8977-523f22e9818c',
+  // },
+  // {
+  //   id: 'db8a4b5a-4607-40a4-96cc-5a28555aad55',
+  //   name: 'Primer año sucursal 2',
+  //   school_id: '91f7918b-6337-41d6-ab95-1fe2c72c005c',
+  // },
 ]
 
 module.exports = { classes }

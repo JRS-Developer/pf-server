@@ -138,7 +138,14 @@ conn.sync({ force: true }).then(async () => {
   }
 
   async function initialClasses() {
-    await Classes.bulkCreate(classes)
+    const escuelasAAgregar = classes.map((el)=> el.school_id)
+    const clasesAAgregar = classes.map((el)=> {
+     return {id:el.id,name:el.name}
+    })
+    const clasesCreadas = await Classes.bulkCreate(clasesAAgregar)
+    clasesCreadas.forEach((clase,i)=>clase.addSchools(escuelasAAgregar[i]))
+    const otrasSucursales = [ '5db18bbe-0e6c-434e-8977-523f22e9818c','91f7918b-6337-41d6-ab95-1fe2c72c005c']
+    clasesCreadas[0].addSchools(otrasSucursales)
     console.log('clases cargadas')
   }
 
