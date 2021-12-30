@@ -45,8 +45,8 @@ jobs:
     - run: npm ci
     - name: Connect PostgreSQL
     # Seed the DB data
-    - run: npm run seed
-    - env: 
+      run: npm run seed
+      env: 
         DB_USER: postgres
         DB_PASSWORD: postgres
         DB_HOST: localhost
