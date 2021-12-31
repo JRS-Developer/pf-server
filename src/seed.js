@@ -24,8 +24,8 @@ const { materias } = require('./datos/materias')
 const { roles } = require('./datos/roles')
 const { schools } = require('./datos/schools')
 
-conn.sync({ force: true }).then(async () => {
-  await initialSchools()
+conn.sync({ force: false }).then(async () => {
+  /*await initialSchools()
   await initialActions()
   await initialModules()
   await initialRoles()
@@ -34,7 +34,7 @@ conn.sync({ force: true }).then(async () => {
   await initialClasses()
   await initialMaterias()
   await initialTasks()
-  await initialCiclosLectivos()
+  await initialCiclosLectivos()*/
   console.log('Cargado los datos default en la base de datos! :D')
 
   async function initialRoles() {
