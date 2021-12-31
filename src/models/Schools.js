@@ -6,7 +6,6 @@ const Schools = sequelize.define('schools', {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
-    defaultValue: DataTypes.UUIDV4,
   },
   status: {
     type: DataTypes.BOOLEAN,
