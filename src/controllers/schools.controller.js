@@ -1,6 +1,6 @@
 const Joi = require('joi')
 const Schools = require('../models/Schools')
-const {Role} = require("../models");
+const { Classes, Materias } = require('../models')
 
 const createSchoolSchema = Joi.object({
   name: Joi.string().required(),
@@ -17,7 +17,19 @@ const validateId = (id) => Joi.string().guid().required().validate(id)
 
 const getSchools = async (_req, res, next) => {
   try {
-    const schools = await Schools.findAll()
+    const schools = await Schools.findAll({
+      include: [
+        {
+          model: Classes,
+          attributes: ['id', 'name'],
+          through: { attributes: [] },
+          include: {
+            model: Materias,
+            attributes: ['id', 'name'],
+          },
+        },
+      ],
+    })
 
     res.json(schools)
   } catch (error) {
@@ -29,37 +41,47 @@ const getSchools = async (_req, res, next) => {
 const getSchoolById = async (req, res, next) => {
   const { id } = req.params
   try {
-
-    const school = await Schools.findByPk(id)
+    const school = await Schools.findByPk(id, {
+      include: [
+        {
+          model: Classes,
+          attributes: ['id', 'name'],
+          through: { attributes: [] },
+          include: {
+            model: Materias,
+            attributes: ['id', 'name'],
+          },
+        },
+      ],
+    })
 
     res.json(school)
-
   } catch (error) {
     console.error(error)
     next(error)
   }
 }
 
-
 const createSchool = async (req, res, next) => {
   try {
-    const { name , class_ids } = req.body
+    const { name, class_ids } = req.body
 
-    const { error } = createSchoolSchema.validate({ name , class_ids })
+    const { error } = createSchoolSchema.validate({ name, class_ids })
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    const [ school, created ] = await Schools.findOrCreate({
+    const [school, created] = await Schools.findOrCreate({
       where: { name },
       defaults: { name },
     })
 
-    if (!created){
+    if (!created) {
       return res
         .status(400)
-        .json({ error: 'There is already a school with that data' })}
-    
-    if(class_ids){
+        .json({ error: 'There is already a school with that data' })
+    }
+
+    if (class_ids) {
       school.addClasses(class_ids)
     }
 
@@ -73,7 +95,7 @@ const createSchool = async (req, res, next) => {
 const updateSchoolById = async (req, res, next) => {
   try {
     const { id } = req.params
-    const { name , class_ids } = req.body
+    const { name, class_ids } = req.body
 
     // Si el body esta vacio, entonces retorno un error
     if (!Object.keys(req.body)) {
@@ -81,7 +103,7 @@ const updateSchoolById = async (req, res, next) => {
     }
 
     // Valido los parametros mandados por body
-    const { error } = updateSchoolSchema.validate({ id, name , class_ids })
+    const { error } = updateSchoolSchema.validate({ id, name, class_ids })
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
@@ -90,14 +112,16 @@ const updateSchoolById = async (req, res, next) => {
     name && (condicional.name = name)
 
     // Actualizo la escuela
-    const [count , updatedSchool] = await Schools.update(condicional, { where: { id },returning:true })
+    const [count, updatedSchool] = await Schools.update(condicional, {
+      where: { id },
+      returning: true,
+    })
 
     //si no pasan name entonces updatedSchool es undefineed, entonces busco por id
     const foundSchool = !updatedSchool && (await Schools.findByPk(id))
 
-    class_ids && foundSchool.setClasses?.(class_ids);
+    class_ids && foundSchool.setClasses?.(class_ids)
     class_ids && updatedSchool && updatedSchool[0]?.setClasses(class_ids)
-
 
     if (count === 0)
       return res
