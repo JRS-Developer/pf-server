@@ -16,6 +16,6 @@ router.get('/:id', esSuperUser, getSchoolById)
 router.post('/', esSuperUser, createSchool) 
 
 router.put('/:id', esSuperUser, updateSchoolById) 
-router.delete('/:id', esSuperUser, deleteSchoolById) 
+router.patch('/:id', esSuperUser, deleteSchoolById) 
 
 module.exports = router

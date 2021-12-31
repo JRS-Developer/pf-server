@@ -15,7 +15,7 @@ const createUserSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
   avatar: Joi.string().allow('', null),
-  birthdate: Joi.date(),
+  birthdate: Joi.date().required(),
   identification: Joi.string().required(),
   country: Joi.string().required(),
   roleId: Joi.string().guid().allow('', null),
@@ -88,7 +88,7 @@ const getUserById = async (req, res, next) => {
 }
 
 //get para obtener datos de usuarios por roles
-const getUsersByRole = async (req, res) => {
+const getUsersByRole = async (req, res, next) => {
   try {
     const { role_id } = req.body
 
@@ -143,7 +143,7 @@ const createUser = async (req, res, next) => {
     //se crea el nuevo objeto en la BD
     const usuario = await User.create(data)
     //mensaje satisfactorio
-    res.json({ message: 'User created successfully' })
+    res.status(201).json({ message: 'User created successfully' })
 
     //Si el user es Alumno le genero accesos por default.
     const findrole = await Role.findByPk(data.roleId)

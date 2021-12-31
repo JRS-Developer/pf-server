@@ -12,6 +12,7 @@ const {
   Materias,
   Schools,
   CicloElectivo,
+  Matricula,
 } = require('./models')
 //Datos
 const { modules, actions } = require('./datos/modules-actions')
@@ -23,9 +24,10 @@ const { classes } = require('./datos/classes')
 const { materias } = require('./datos/materias')
 const { roles } = require('./datos/roles')
 const { schools } = require('./datos/schools')
+const { matricula } = require('./datos/matriculas')
 
-conn.sync({ force: false }).then(async () => {
-  /*await initialSchools()
+conn.sync({ force: true }).then(async () => {
+  await initialSchools()
   await initialActions()
   await initialModules()
   await initialRoles()
@@ -34,7 +36,11 @@ conn.sync({ force: false }).then(async () => {
   await initialClasses()
   await initialMaterias()
   await initialTasks()
-  await initialCiclosLectivos()*/
+  await initialCiclosLectivos()
+
+  await initialCiclosLectivos()
+  await intialMatriculas()
+
   console.log('Cargado los datos default en la base de datos! :D')
 
   async function initialRoles() {
@@ -135,14 +141,21 @@ conn.sync({ force: false }).then(async () => {
   }
 
   async function initialClasses() {
-    await Classes.bulkCreate(classes)
+    const escuelasAAgregar = classes.map((el)=> el.school_id)
+    const clasesAAgregar = classes.map((el)=> {
+     return {id:el.id,name:el.name}
+    })
+    const clasesCreadas = await Classes.bulkCreate(clasesAAgregar)
+    clasesCreadas.forEach((clase,i)=>clase.addSchools(escuelasAAgregar[i]))
+    const otrasSucursales = [ '5db18bbe-0e6c-434e-8977-523f22e9818c','91f7918b-6337-41d6-ab95-1fe2c72c005c']
+    clasesCreadas[0].addSchools(otrasSucursales)
     console.log('clases cargadas')
   }
 
   async function initialMaterias() {
-    const classesId = classes.map(el => el.id)
+    const classesId = classes.map((el) => el.id)
     const materiasCreadas = await Materias.bulkCreate(materias)
-    materiasCreadas.forEach(mat => mat.addClasses(classesId))
+    materiasCreadas.forEach((mat) => mat.addClasses(classesId))
     console.log('Materias cargadas')
   }
 
@@ -171,8 +184,15 @@ conn.sync({ force: false }).then(async () => {
   }
 
   async function initialCiclosLectivos() {
-    await CicloElectivo.bulkCreate([{'id': '8387a420-ae5f-425d-9a19-6fc689f75f0b',name:"2021"},{'id': '0444e7eb-4aa2-4378-8287-cd93d55fa655', name:"2022"}])
+    await CicloElectivo.bulkCreate([
+      { id: '8387a420-ae5f-425d-9a19-6fc689f75f0b', name: '2021', status: false },
+      { id: '0444e7eb-4aa2-4378-8287-cd93d55fa655', name: '2022' },
+    ])
     console.log('Ciclos Lectivos Cargados')
   }
-  
+
+  async function intialMatriculas() {
+    await Matricula.bulkCreate(matricula)
+    console.log('matriculas cargadas')
+  }
 })
