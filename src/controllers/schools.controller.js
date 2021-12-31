@@ -137,16 +137,35 @@ const updateSchoolById = async (req, res, next) => {
 
 const deleteSchoolById = async (req, res, next) => {
   try {
+    const { status } = req.body    
     const { id } = req.params
+
+    console.log("status", status)
+
+    if(status === "false"){status = false}
 
     const { error } = validateId(id)
     if (error) {
       return res.status(400).json({ error: error.details[0].message })
     }
+    // const school = await Schools.findByPk(id)
+    // const status = !school.dataValues.status
+    const count = await Schools.update({status:status},{ where: { id },returning:true } )
+    
+    // esto va a pasar a true o false, sin importar el estado
+    // pero por ahora lo vamos a dejar asi
+    if(status == true){
+      return res.status(400).json({ message: 'No puedes eliminar una escuela en false' })
+    }
+    
 
-    await Schools.destroy({ where: { id } })
+    if(count[0] > 0){
+      return res.status(201).json({ message: 'School deleted successfully' })
+    }
+    else{
+      return res.status(400).json({ message: 'School not found' })
+    }
 
-    return res.status(201).json({ message: 'School deleted successfully' })
   } catch (error) {
     console.error(error)
     next(error)
