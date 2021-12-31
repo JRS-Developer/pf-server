@@ -18,6 +18,7 @@ const load = require('./load.routes')
 const file = require('./files.routes')
 const cicloLectivos = require('./cicloElectivos.routes')
 const teacherMaterias = require('./teacherMaterias.routes')
+const examenesNotas = require('./examenesNotas.routes')
 
 router.use('/tasks', tasks)
 router.use('/users', users)
@@ -37,5 +38,6 @@ router.use('/load', load)
 router.use('/file', file)
 router.use('/cicloElectivos', cicloLectivos)
 router.use('/teacherMaterias', teacherMaterias)
+router.use('/examenesNotas', examenesNotas)
 
 module.exports = router

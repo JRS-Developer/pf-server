@@ -2,8 +2,6 @@ const { Classes, Schools, Materias } = require('../models/')
 const Joi = require('joi')
 const { conn: sequelize } = require('../db')
 
-const { materias } = require('../datos/materias')
-
 const getClassesSchema = Joi.object({
   school_id: Joi.string().guid().required(),
   // name: Joi.string().allow(''),
