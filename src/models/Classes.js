@@ -20,7 +20,7 @@ const Classes = sequelize.define('classes', {
   },
 })
 
-// School - Class (one-to-many)
+// School - Class (many-to-many)
 Schools.belongsToMany(Classes, { through: 'schools_classes' })
 Classes.belongsToMany(Schools, { through: 'schools_classes' })
 // Classes - Materias (many-to-many)
