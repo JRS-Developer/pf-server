@@ -5,28 +5,30 @@ const { Task } = require('../models')
 const getTasksSchema = Joi.object({
   class_id: Joi.string().guid().required(),
   materia_id: Joi.string().guid().required(),
+  ciclo_lectivo_id: Joi.string().guid().required(),
 })
 
 const createTaskSchema = Joi.object({
   title: Joi.string().required(),
   description: Joi.string(),
-  end_date: Joi.date().required(),
-  teacher_id: Joi.string().guid().required(),
+  end_date: Joi.date(),
+  school_id: Joi.string().guid().required(),
   class_id: Joi.string().guid().required(),
   materia_id: Joi.string().guid().required(),
+  ciclo_lectivo_id:Joi.string().guid().required(),
 })
 
 const getTasks = async (req, res, next) => {
   try {
     // Obtengo las tareas en base de la clase y materia
-    const { class_id, materia_id } = req.query
+    const { class_id, materia_id, ciclo_lectivo_id } = req.query
 
     // Validar los datos
-    const { error } = getTasksSchema.validate({ class_id, materia_id })
+    const { error } = getTasksSchema.validate({ class_id, materia_id, ciclo_lectivo_id })
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    const tasks = await Task.findAll({ where: { class_id, materia_id } })
+    const tasks = await Task.findAll({ where: { class_id, materia_id, ciclo_lectivo_id } })
 
     return res.json(tasks)
   } catch (error) {
@@ -37,7 +39,7 @@ const getTasks = async (req, res, next) => {
 
 const createTask = async (req, res, next) => {
   try {
-    const { title, description, end_date, teacher_id, class_id, materia_id } =
+    const { title, description, end_date, school_id, class_id, materia_id , ciclo_lectivo_id} =
       req.body
 
     // Validar datos
@@ -45,9 +47,10 @@ const createTask = async (req, res, next) => {
       title,
       description,
       end_date,
-      teacher_id,
+      school_id,
       class_id,
       materia_id,
+      ciclo_lectivo_id
     })
 
     if (error) {
@@ -58,9 +61,10 @@ const createTask = async (req, res, next) => {
       title,
       description,
       end_date,
-      teacher_id,
+      school_id,
       class_id,
       materia_id,
+      ciclo_lectivo_id
     })
 
     return res.json({ message: 'Task created successfully' })
