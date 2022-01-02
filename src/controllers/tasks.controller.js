@@ -118,6 +118,32 @@ const getTaskById = async (req, res, next) => {
   }
 }
 
+const alumnoGetTaskById = async (req, res, next) => {
+  const userId = res.locals.userId
+  try {
+    const { id } = req.params
+
+    const taskFound = await Task.findByPk(id, {
+      include: {
+        model: Matricula,
+        where: { student_id: userId },
+        attributes: ['id'],
+      },
+    })
+
+    if (!taskFound) {
+      return res
+        .status(400)
+        .json({ error: 'There is not any task with that id' })
+    }
+
+    return res.json(taskFound)
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
 const updateTaskById = async (req, res, next) => {
   try {
     // Los unicos parametros que pueden ser cambiados son: title, description, y end_date
@@ -162,10 +188,15 @@ const changeTaskStatusById = async (req, res, next) => {
   const userId = res.locals.userId
   try {
     const { id } = req.params
-    const matriculaId = await Matricula.findOne({where:{student_id:userId}})
+    const matriculaId = await Matricula.findOne({
+      where: { student_id: userId },
+    })
     const [count] = await StudentTask.update(
       { status: 'submitted' },
-      { where: { task_id: id, matricula_id: matriculaId.dataValues.id }, returning: true }
+      {
+        where: { task_id: id, matricula_id: matriculaId.dataValues.id },
+        returning: true,
+      }
     )
 
     if (count === 0) return res.status(400).json({ error: 'Task not found' })
@@ -183,5 +214,6 @@ module.exports = {
   getTaskById,
   updateTaskById,
   deleteTaskById,
-  changeTaskStatusById
+  changeTaskStatusById,
+  alumnoGetTaskById,
 }
