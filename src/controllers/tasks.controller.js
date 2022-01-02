@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const { Task, Matricula } = require('../models')
+const { Task, Matricula, StudentTask } = require('../models')
 
 // Schemas
 const getTasksSchema = Joi.object({
@@ -158,10 +158,30 @@ const deleteTaskById = async (req, res, next) => {
   }
 }
 
+const changeTaskStatusById = async (req, res, next) => {
+  const userId = res.locals.userId
+  try {
+    const { id } = req.params
+    const matriculaId = await Matricula.findOne({where:{student_id:userId}})
+    const [count] = await StudentTask.update(
+      { status: 'submitted' },
+      { where: { task_id: id, matricula_id: matriculaId.dataValues.id }, returning: true }
+    )
+
+    if (count === 0) return res.status(400).json({ error: 'Task not found' })
+
+    return res.status(201).json({ message: 'Homework submitted' })
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
 module.exports = {
   getTasks,
   createTask,
   getTaskById,
   updateTaskById,
   deleteTaskById,
+  changeTaskStatusById
 }
