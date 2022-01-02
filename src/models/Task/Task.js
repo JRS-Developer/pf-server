@@ -2,10 +2,11 @@ const { DataTypes } = require('sequelize')
 const { conn: sequelize } = require('../../db')
 const Classes = require('../Classes')
 const Materias = require('../Materias')
-const User = require('../User')
+// const User = require('../User')
 const StudentTask = require('./StudentTask')
 const CicloElectivo = require('../CicloElectivo')
 const Schools = require('../Schools')
+const  Matricula  = require('../Matricula')
 
 const Task = sequelize.define('task', {
   id: {
@@ -54,8 +55,8 @@ Schools.hasMany(Task, {foreignKey: 'school_id',sourceKey:'id'})
 Task.belongsTo(Schools, {foreignKey: 'school_id',sourceKey:'id'})
 
 // Tasks - Students (many-to-many)
-User.belongsToMany(Task, { through: StudentTask, foreignKey: 'task_id' })
-Task.belongsToMany(User, { through: StudentTask, foreignKey: 'student_id' })
+Matricula.belongsToMany(Task, { through: StudentTask, foreignKey: 'matricula_id' })
+Task.belongsToMany(Matricula, { through: StudentTask, foreignKey: 'task_id' })
 
 
 module.exports = Task

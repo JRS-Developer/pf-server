@@ -1,11 +1,12 @@
 const Joi = require('joi')
-const { Task } = require('../models')
+const { Task, Matricula } = require('../models')
 
 // Schemas
 const getTasksSchema = Joi.object({
   class_id: Joi.string().guid().required(),
   materia_id: Joi.string().guid().required(),
   ciclo_lectivo_id: Joi.string().guid().required(),
+  school_id: Joi.string().guid().required(),
 })
 
 const createTaskSchema = Joi.object({
@@ -15,20 +16,27 @@ const createTaskSchema = Joi.object({
   school_id: Joi.string().guid().required(),
   class_id: Joi.string().guid().required(),
   materia_id: Joi.string().guid().required(),
-  ciclo_lectivo_id:Joi.string().guid().required(),
+  ciclo_lectivo_id: Joi.string().guid().required(),
 })
 
 const getTasks = async (req, res, next) => {
   try {
     // Obtengo las tareas en base de la clase y materia
-    const { class_id, materia_id, ciclo_lectivo_id } = req.query
+    const { class_id, materia_id, ciclo_lectivo_id, school_id } = req.query
 
     // Validar los datos
-    const { error } = getTasksSchema.validate({ class_id, materia_id, ciclo_lectivo_id })
+    const { error } = getTasksSchema.validate({
+      class_id,
+      materia_id,
+      ciclo_lectivo_id,
+      school_id,
+    })
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
-    const tasks = await Task.findAll({ where: { class_id, materia_id, ciclo_lectivo_id } })
+    const tasks = await Task.findAll({
+      where: { class_id, materia_id, ciclo_lectivo_id },
+    })
 
     return res.json(tasks)
   } catch (error) {
@@ -39,8 +47,15 @@ const getTasks = async (req, res, next) => {
 
 const createTask = async (req, res, next) => {
   try {
-    const { title, description, end_date, school_id, class_id, materia_id , ciclo_lectivo_id} =
-      req.body
+    const {
+      title,
+      description,
+      end_date,
+      school_id,
+      class_id,
+      materia_id,
+      ciclo_lectivo_id,
+    } = req.body
 
     // Validar datos
     const { error } = createTaskSchema.validate({
@@ -50,22 +65,32 @@ const createTask = async (req, res, next) => {
       school_id,
       class_id,
       materia_id,
-      ciclo_lectivo_id
+      ciclo_lectivo_id,
     })
 
     if (error) {
       return res.status(400).json({ error: error.details[0].message })
     }
 
-    await Task.create({
+    const task = await Task.create({
       title,
       description,
       end_date,
       school_id,
       class_id,
       materia_id,
-      ciclo_lectivo_id
+      ciclo_lectivo_id,
     })
+
+    const matriculas = await Matricula.findAll({
+      where: {
+        school_id: school_id,
+        clase_id: class_id,
+        ciclo_lectivo_id: ciclo_lectivo_id,
+      },
+    })
+    //Le asigno la tarea a los estudiantes mediante su matricula
+    task.setMatriculas(matriculas)
 
     return res.json({ message: 'Task created successfully' })
   } catch (error) {
