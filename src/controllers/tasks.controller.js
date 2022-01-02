@@ -44,6 +44,37 @@ const getTasks = async (req, res, next) => {
     next(error)
   }
 }
+const alumnoGetTasks = async (req, res, next) => {
+  try {
+    // Obtengo las tareas en base de la clase, materia, ciclo lectivo, school
+    const { class_id, materia_id, ciclo_lectivo_id, school_id } = req.query
+    const userId = res.locals.userId
+
+    // Validar los datos
+    const { error } = getTasksSchema.validate({
+      class_id,
+      materia_id,
+      ciclo_lectivo_id,
+      school_id,
+    })
+
+    if (error) return res.status(400).json({ error: error.details[0].message })
+
+    const tasks = await Task.findAll({
+      where: { class_id, materia_id, ciclo_lectivo_id },
+      include: {
+        model: Matricula,
+        where: { student_id: userId },
+        attributes: ['id'],
+      },
+    })
+
+    return res.json(tasks)
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
 
 const createTask = async (req, res, next) => {
   try {
@@ -216,4 +247,5 @@ module.exports = {
   deleteTaskById,
   changeTaskStatusById,
   alumnoGetTaskById,
+  alumnoGetTasks,
 }

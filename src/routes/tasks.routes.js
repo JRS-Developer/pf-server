@@ -6,7 +6,9 @@ const {
   deleteTaskById,
   updateTaskById,
   changeTaskStatusById,
-  alumnoGetTaskById
+  alumnoGetTaskById,
+  alumnoGetTasks
+
 } = require('../controllers/tasks.controller')
 const { verifyToken, esProfesor, esProfesorOrAlumno } = require('../middlewares/auth')
 
@@ -20,7 +22,8 @@ router.get('/', esProfesorOrAlumno, getTasks)
 router.post('/', esProfesor, createTask)
 
 router.patch('/:id',esProfesorOrAlumno,changeTaskStatusById)
-router.get('/tarea/:id',esProfesorOrAlumno,alumnoGetTaskById)
+router.get('/alumno/:id',esProfesorOrAlumno,alumnoGetTaskById)
+router.get('/alumno',esProfesorOrAlumno,alumnoGetTasks)
 router.get('/:id', esProfesor, getTaskById)
 router.put('/:id', esProfesor, updateTaskById)
 router.delete('/:id', esProfesor, deleteTaskById)
