@@ -6,7 +6,7 @@ const {
   deleteTaskById,
   updateTaskById,
 } = require('../controllers/tasks.controller')
-const { verifyToken, esProfesor } = require('../middlewares/auth')
+const { verifyToken, esProfesor, esProfesorOrAlumno } = require('../middlewares/auth')
 
 router.use(verifyToken)
 
@@ -14,7 +14,7 @@ router.use(verifyToken)
 //            pero por otros medios vamos a verificar que solo pueda ver
 //            las tareas de las cuales es parte
 
-router.get('/', esProfesor, getTasks)
+router.get('/', esProfesorOrAlumno, getTasks)
 router.post('/', esProfesor, createTask)
 
 router.get('/:id', esProfesor, getTaskById)
