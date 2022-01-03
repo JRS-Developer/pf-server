@@ -7,21 +7,18 @@ const {
   deletePublication,
   likePublication,
 } = require('../controllers/publications.controller')
-const {
-  verifyToken,
-  esSuperUserOrAdminOrProfesor,
-} = require('../middlewares/auth')
+const { verifyToken } = require('../middlewares/auth')
 const { multiFiles } = require('../utils/multer')
 
 router.use(verifyToken)
 
-router.get('/', esSuperUserOrAdminOrProfesor, getPublications)
-router.get('/:id', esSuperUserOrAdminOrProfesor, getOnePublication)
-router.post('/', esSuperUserOrAdminOrProfesor, multiFiles, createPublication)
+router.get('/', getPublications)
+router.get('/:id', getOnePublication)
+router.post('/', multiFiles, createPublication)
 
-router.put('/:id/', esSuperUserOrAdminOrProfesor, multiFiles, updatePublication)
-router.put('/:id/like', esSuperUserOrAdminOrProfesor, likePublication)
+router.put('/:id/', multiFiles, updatePublication)
+router.put('/:id/like', likePublication)
 
-router.delete('/:id', esSuperUserOrAdminOrProfesor, deletePublication)
+router.delete('/:id', deletePublication)
 
 module.exports = router
