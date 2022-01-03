@@ -170,6 +170,30 @@ const users = [
     country: 'Perú',
     roleId: '5d3709ba-3a27-48cc-8a75-256338684cee',
   },
+  {
+    id: 'eaa87959-b2ef-48f1-96fc-c1a071b34528',
+    firstName: 'Martin',
+    lastName: 'Rojas Administrativo',
+    userName: 'Administrativo1',
+    birthdate: '2021-12-10',
+    identification: '38755468',
+    email: 'administativo1@email.com',
+    password: '1234',
+    country: 'Argentina',
+    roleId: '633c2cda-d0f1-40f8-b07c-041a8cc217be',
+  },
+  {
+    id: '3927d889-6743-4f20-82cb-fb61c49d366b',
+    firstName: 'Araceli',
+    lastName: 'Diaz Profe',
+    userName: 'Profesora1',
+    birthdate: '2021-12-10',
+    identification: '31755468',
+    email: 'profesora1@email.com',
+    password: '1234',
+    country: 'Argentina',
+    roleId: '606c0802-5332-4531-9189-eac84e6fcceb',
+  },
 ]
 
 module.exports = { users }

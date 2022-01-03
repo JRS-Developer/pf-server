@@ -24,6 +24,7 @@ function setUserAccesses(filteredUserIdsByRole, accessesToSet) {
 
 const sUsers = userIdsByRole('a83af560-8a48-4edd-83eb-6bd3f7e97861')
 const alumnos = userIdsByRole('5d3709ba-3a27-48cc-8a75-256338684cee')
+const administrativo = userIdsByRole('633c2cda-d0f1-40f8-b07c-041a8cc217be')
 
 const sUserAccess = [
   //Seguridad (MODULO PADRE)
