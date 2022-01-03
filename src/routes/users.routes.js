@@ -15,8 +15,8 @@ router.use(verifyToken)
 
 router.get('/', esSuperUserOrAdmin, user.getUsers)
 router.post('/', esSuperUserOrAdmin, user.createUser)
-router.get('/:id', esSuperUserOrAdmin, user.getUserById)
-router.put('/:id', [esSuperUserOrAdmin, file], user.updateUser)
+router.get('/:id', user.getUserById)
+router.put('/:id', file, user.updateUser)
 router.delete('/:id', esSuperUser, user.deleteUser)
 
 // User Role
