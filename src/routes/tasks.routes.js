@@ -21,7 +21,7 @@ router.use(verifyToken)
 router.get('/', esProfesorOrAlumno, getTasks)
 router.post('/', esProfesor, createTask)
 
-router.patch('/:id',esProfesorOrAlumno,changeTaskStatusById)
+router.patch('/alumno/:id',esProfesorOrAlumno,changeTaskStatusById)
 router.get('/alumno/:id',esProfesorOrAlumno,alumnoGetTaskById)
 router.get('/alumno',esProfesorOrAlumno,alumnoGetTasks)
 router.get('/:id', esProfesor, getTaskById)
