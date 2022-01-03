@@ -1,7 +1,8 @@
 const { DataTypes } = require('sequelize')
 const { conn: sequelize } = require('../../db')
 const Task = require('./Task')
-const User = require('../User')
+// const User = require('../User')
+const { Matricula } = require('../Matricula')
 
 const StudentTask = sequelize.define('student_tasks', {
   task_id: {
@@ -11,10 +12,10 @@ const StudentTask = sequelize.define('student_tasks', {
       key: 'id'
     }
   },
-  student_id: {
+  matricula_id: {
     type: DataTypes.UUID,
     references: {
-      model: User,
+      model: Matricula,
       key: 'id'
     }
   },
