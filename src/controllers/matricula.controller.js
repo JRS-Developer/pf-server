@@ -1,6 +1,3 @@
-const { Sequelize, Op, QueryTypes } = require('sequelize')
-const { secret } = require('../lib/config')
-const { conn } = require('../db')
 const {
   User,
   CicloElectivo,
@@ -117,7 +114,7 @@ const updateMatriculaById = async (req, res, next) => {
     const { id } = req.params
 
     if (!req.body.student_id) {
-      const [count, updatedMatricula] = await Matricula.update(
+      const [count] = await Matricula.update(
         { status: req.body.status },
         {
           where: {
@@ -130,7 +127,7 @@ const updateMatriculaById = async (req, res, next) => {
 
       res.json({ message: 'Matrícula updated' })
     } else {
-      const [count, updatedMatricula] = await Matricula.update(
+      const [count] = await Matricula.update(
         { fecha, clase_id, school_id, ciclo_lectivo_id, student_id },
         {
           where: {
@@ -177,22 +174,22 @@ const getDatosMatricula = async (req, res, next) => {
             {
               model: Materias,
               through: {
-                attributes: []
-              }
+                attributes: [],
+              },
             },
             {
               model: Schools,
               attributes: ['name', 'id'],
               through: {
-                attributes: []
-              }
+                attributes: [],
+              },
             },
             {
               model: TeachersMaterias,
               include: {
                 model: User,
-                attributes: ['lastName', 'firstName', 'id', 'avatar']
-              }
+                attributes: ['lastName', 'firstName', 'id', 'avatar'],
+              },
             },
           ],
         },
