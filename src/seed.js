@@ -37,8 +37,6 @@ conn.sync({ force: true }).then(async () => {
   await initialMaterias()
   await initialTasks()
   await initialCiclosLectivos()
-
-  await initialCiclosLectivos()
   await intialMatriculas()
 
   console.log('Cargado los datos default en la base de datos! :D')
