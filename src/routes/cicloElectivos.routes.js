@@ -13,7 +13,7 @@ const { verifyToken, esSuperUser, esSuperUserOrAdmin } = require('../middlewares
 
 router.use(verifyToken)
 
-router.get('/', esSuperUserOrAdmin, getCicloElectivos)
+router.get('/', getCicloElectivos)
 router.get('/:id', esSuperUserOrAdmin, getCicloElectivoById)
 router.post('/', esSuperUser, createCicloElectivo)
 router.put('/:id', esSuperUser, updateCicloElectivoById)

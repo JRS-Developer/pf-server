@@ -9,11 +9,13 @@ const {
 const {
   getTeachersMaterias,
   asignarMaterias,
-} = require('../controllers/teacherMaterias.controller')
+  getTeacherMaterias
+} = require("../controllers/teacherMaterias.controller")
 
 router.use(verifyToken)
 
-router.post('/materias', esSuperUserOrAdmin, getTeachersMaterias)
+router.post('/materias', getTeachersMaterias)
+router.post('/getMaterias', getTeacherMaterias)
 router.post('/', esSuperUserOrAdmin, asignarMaterias)
 
 module.exports = router

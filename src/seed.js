@@ -35,7 +35,9 @@ conn.sync({ force: true }).then(async () => {
   await initialAccess()
   await initialClasses()
   await initialMaterias()
+
   // await initialTasks()
+
   await initialCiclosLectivos()
   await intialMatriculas()
 
