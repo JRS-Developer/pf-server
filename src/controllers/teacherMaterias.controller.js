@@ -1,4 +1,4 @@
-const { TeachersMaterias, Materias } = require('../models')
+const { TeachersMaterias, Materias, Schools, Classes } = require('../models')
 const Joi = require('joi')
 
 const asignarMateriasSchema = Joi.object({
@@ -30,6 +30,37 @@ const getTeachersMaterias = async (req, res, next) => {
           model: Materias,
           attributes: ['id', 'name'],
         },
+      ],
+    })
+
+    return res.json(materias)
+  } catch (error) {
+    next(error.message)
+  }
+}
+
+const getTeacherMaterias = async (req, res, next) => {
+  try {
+    const { teacher_id, ciclo_lectivo_id } = req.body
+
+    let where = {
+      teacher_id,
+      ciclo_lectivo_id
+    }
+
+    const materias = await TeachersMaterias.findAll({
+      where,
+      include: [
+        {
+          model: Materias,
+          attributes: ['id', 'name', 'description'],
+        },{
+          model: Schools,
+          attributes: ['id', 'name']
+        },{
+        model: Classes,
+          attributes: ['id', 'name']
+        }
       ],
     })
 
@@ -121,4 +152,5 @@ const asignarMaterias = async (req, res, next) => {
 module.exports = {
   getTeachersMaterias,
   asignarMaterias,
+  getTeacherMaterias
 }
