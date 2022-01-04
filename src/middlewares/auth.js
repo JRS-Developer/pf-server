@@ -92,10 +92,28 @@ const esProfesor = async (req, res, next) => {
   }
 }
 
+const esProfesorOrAlumno = async (req, res, next) => {
+  try {
+    const isProfesor = checkRole(res.locals.roleId, 'Profesor')
+    const isAlumno = checkRole(res.locals.roleId, 'Alumno')
+
+    if (isProfesor||isAlumno) {
+      return next()
+    }
+    res.status(403).json({ error: 'No tienes permisos para ingresar' })
+  } catch (error) {
+    // Si el token no es valido, entonces retorno un error 403.
+    res.status(403).json({ error: 'No tienes permisos para ingresar' })
+  }
+}
+
+
+
 module.exports = {
   verifyToken,
   esSuperUser,
   esSuperUserOrAdmin,
   esSuperUserOrAdminOrProfesor,
   esProfesor,
+  esProfesorOrAlumno,
 }

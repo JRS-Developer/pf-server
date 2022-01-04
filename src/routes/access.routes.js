@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router()
-const { verifyToken} = require('../middlewares/auth');
+const { verifyToken, esSuperUser } = require('../middlewares/auth')
 
 const {
   getAccess,
@@ -11,12 +11,11 @@ const {
 
 router.use(verifyToken)
 
-router.post('/', createAccess)
-router.get('/', getAccess)
-router.get('/:moduleId', getActionsByModulo)
-router.get('/user/:userId', getAccessUser)
+router.post('/', esSuperUser, createAccess)
+router.get('/', esSuperUser, getAccess)
+router.get('/:moduleId', esSuperUser, getActionsByModulo)
+router.get('/user/:userId', esSuperUser, getAccessUser)
 
 module.exports = router
-
 
 //No hace falta verificar esto, nadie podrá acceder a esto
