@@ -19,6 +19,11 @@ const createTaskSchema = Joi.object({
   ciclo_lectivo_id: Joi.string().guid().required(),
 })
 
+// edit task profesor Leandro yasta
+// get StundentTask tasks Nico yasta
+// edit StudentTask tasks  yasta
+// delete tasks tiene que borrar en cascada todo yasta
+
 const getTasks = async (req, res, next) => {
   try {
     // Obtengo las tareas en base de la clase y materia
@@ -35,7 +40,7 @@ const getTasks = async (req, res, next) => {
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     const tasks = await Task.findAll({
-      where: { class_id, materia_id, ciclo_lectivo_id },
+      where: { class_id, materia_id, ciclo_lectivo_id, school_id },
     })
 
     return res.json(tasks)
@@ -130,16 +135,18 @@ const createTask = async (req, res, next) => {
   }
 }
 
-const getTaskById = async (req, res, next) => {
+const profesorGetStudentsTask = async (req, res, next) => {
   try {
     const { id } = req.params
 
-    const taskFound = await Task.findByPk(id)
-
+    const taskFound = await Task.findByPk(id, {
+      include: {
+        model: Matricula,
+        attributes: ['id'],
+      },
+    })
     if (!taskFound) {
-      return res
-        .status(400)
-        .json({ error: 'There is no task with that id' })
+      return res.status(400).json({ error: 'Task not found' })
     }
 
     return res.json(taskFound)
@@ -202,6 +209,32 @@ const updateTaskById = async (req, res, next) => {
   }
 }
 
+const profesorUpdateStudentTaskById = async (req, res, next) => {
+  try {
+    const { devolucion, observation, grade } = req.body
+    const { matricula_id, id } = req.params
+
+    const [count] = await Task.update(
+      { devolucion, observation, grade },
+      {
+        where: {
+          matricula_id,
+          id,
+        },
+      }
+    )
+    if (count) {
+      return res.json({ message: 'Task updated successfully' })
+    }
+
+    return res
+      .status(400)
+      .json({ message: 'There is not any task with that ID' })
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
 const deleteTaskById = async (req, res, next) => {
   try {
     const { id } = req.params
@@ -239,13 +272,15 @@ const changeTaskStatusById = async (req, res, next) => {
   }
 }
 
+
 module.exports = {
   getTasks,
   createTask,
-  getTaskById,
   updateTaskById,
   deleteTaskById,
   changeTaskStatusById,
   alumnoGetTaskById,
   alumnoGetTasks,
+  profesorGetStudentsTask,
+  profesorUpdateStudentTaskById,
 }
