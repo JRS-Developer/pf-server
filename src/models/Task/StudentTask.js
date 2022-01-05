@@ -9,20 +9,23 @@ const StudentTask = sequelize.define('student_tasks', {
     type: DataTypes.UUID,
     references: {
       model: Task,
-      key: 'id'
-    }
+      key: 'id',
+    },
   },
   matricula_id: {
     type: DataTypes.UUID,
     references: {
       model: Matricula,
-      key: 'id'
-    }
+      key: 'id',
+    },
   },
-  status: {
+  status: {//la tarea puede estar pendiente o entregada
     type: DataTypes.STRING,
-    defaultValue: 'pending'
+    defaultValue: 'pending',
   },
+  devolucion: { type: DataTypes.STRING }, //la tarea puede estar rechazada, aprobada, rehacer, etc.
+  observation: { type: DataTypes.STRING },
+  grade: { type: DataTypes.INTEGER },
 })
 
 module.exports = StudentTask

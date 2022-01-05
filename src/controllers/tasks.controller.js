@@ -139,7 +139,7 @@ const getTaskById = async (req, res, next) => {
     if (!taskFound) {
       return res
         .status(400)
-        .json({ error: 'There is not any task with that id' })
+        .json({ error: 'There is no task with that id' })
     }
 
     return res.json(taskFound)
