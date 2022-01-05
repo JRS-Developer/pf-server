@@ -24,7 +24,7 @@ const StudentTask = sequelize.define('student_tasks', {
     defaultValue: 'pending',
   },
   devolucion: { type: DataTypes.STRING }, //la tarea puede estar rechazada, aprobada, rehacer, etc.
-  observation: { type: DataTypes.STRING },
+  observation: { type: DataTypes.TEXT },
   grade: { type: DataTypes.INTEGER },
 })
 
