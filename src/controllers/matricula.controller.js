@@ -1,31 +1,38 @@
-const { Sequelize , Op, QueryTypes } = require("sequelize");
-const { secret } = require("../lib/config");
-const { conn } = require('../db');
-const { User, CicloElectivo, Classes, Matricula, Materias, Schools} = require('../models')
+const {
+  User,
+  CicloElectivo,
+  Classes,
+  Matricula,
+  Materias,
+  Schools,
+  TeachersMaterias,
+} = require('../models')
 
 const getMatriculas = async (req, res, next) => {
   try {
-
     const matriculas = await Matricula.findAll({
       include: [
         {
           model: User,
-          attributes: ['lastName', 'firstName', 'identification']
-        }, {
+          attributes: ['lastName', 'firstName', 'identification'],
+        },
+        {
           model: Classes,
-          attributes: ['name']
-        },{
+          attributes: ['name'],
+        },
+        {
           model: CicloElectivo,
-          attributes: ['name']
-        },{
+          attributes: ['name'],
+        },
+        {
           model: Schools,
-          attributes: ['id', 'name']
-        }
-      ]
+          attributes: ['id', 'name'],
+        },
+      ],
     })
 
-    let listMatriculas = [];
-    matriculas.map(matricula =>{
+    let listMatriculas = []
+    matriculas.map((matricula) => {
       listMatriculas.push({
         id: matricula.id,
         fecha: matricula.fecha,
@@ -36,12 +43,11 @@ const getMatriculas = async (req, res, next) => {
         identification: matricula.user.identification,
         class: matricula.class.name,
         ciclo_electivo: matricula.ciclo_electivo.name,
-        school: matricula.school.name
+        school: matricula.school.name,
       })
     })
 
-    return res.json(listMatriculas);
-
+    return res.json(listMatriculas)
   } catch (error) {
     console.error(error)
     next(error)
@@ -49,30 +55,31 @@ const getMatriculas = async (req, res, next) => {
 }
 
 const getMatriculaById = async (req, res, next) => {
-  const { id } = req.params;
+  const { id } = req.params
 
   try {
-
     const matricula = await Matricula.findByPk(id, {
       include: [
         {
           model: User,
-          attributes: ['id', 'lastName', 'firstName', 'identification']
-        }, {
+          attributes: ['id', 'lastName', 'firstName', 'identification'],
+        },
+        {
           model: Classes,
-          attributes: ['id','name']
-        },{
+          attributes: ['id', 'name'],
+        },
+        {
           model: CicloElectivo,
-          attributes: ['id', 'name']
-        },{
+          attributes: ['id', 'name'],
+        },
+        {
           model: Schools,
-          attributes: ['id', 'name']
-        }
-      ]
+          attributes: ['id', 'name'],
+        },
+      ],
     })
 
-    return res.json(matricula);
-
+    return res.json(matricula)
   } catch (error) {
     console.error(error)
     next(error)
@@ -81,14 +88,15 @@ const getMatriculaById = async (req, res, next) => {
 
 const createMatricula = async (req, res, next) => {
   try {
-    const { fecha, student_id, school_id, clase_id, ciclo_lectivo_id } = req.body
+    const { fecha, student_id, school_id, clase_id, ciclo_lectivo_id } =
+      req.body
 
     await Matricula.create({
       fecha,
       student_id,
       school_id,
       clase_id,
-      ciclo_lectivo_id
+      ciclo_lectivo_id,
     })
 
     return res.json({ message: 'Matrícula created successfully' })
@@ -100,13 +108,13 @@ const createMatricula = async (req, res, next) => {
 
 const updateMatriculaById = async (req, res, next) => {
   try {
-
-    const {fecha, clase_id, school_id, ciclo_lectivo_id, student_id } = req.body
+    const { fecha, clase_id, school_id, ciclo_lectivo_id, student_id } =
+      req.body
 
     const { id } = req.params
 
-    if( !req.body.student_id ){
-      const [count, updatedMatricula] = await Matricula.update(
+    if (!req.body.student_id) {
+      const [count] = await Matricula.update(
         { status: req.body.status },
         {
           where: {
@@ -118,8 +126,8 @@ const updateMatriculaById = async (req, res, next) => {
         return res.json({ message: 'Status updated successfully' })
 
       res.json({ message: 'Matrícula updated' })
-    }else{
-      const [count, updatedMatricula] = await Matricula.update(
+    } else {
+      const [count] = await Matricula.update(
         { fecha, clase_id, school_id, ciclo_lectivo_id, student_id },
         {
           where: {
@@ -129,7 +137,9 @@ const updateMatriculaById = async (req, res, next) => {
       )
 
       if (count === 0)
-        return res.status(400).json({ error: 'No se pudo actualizar la matrícula.' })
+        return res
+          .status(400)
+          .json({ error: 'No se pudo actualizar la matrícula.' })
 
       res.json({ message: 'Matrícula updated' })
     }
@@ -143,46 +153,58 @@ const updateMatriculaById = async (req, res, next) => {
   }
 }
 
-const getDatosMatricula =  async (req, res, next) => {
+const getDatosMatricula = async (req, res, next) => {
   try {
-    const studentId = res.locals.userId;
+    const studentId = res.locals.userId
     const datos = await Matricula.findOne({
       where: {
-        student_id: studentId
+        student_id: studentId,
       },
-      order: [
-        ['fecha', 'DESC']
-      ],
+      order: [['fecha', 'DESC']],
       limit: 1,
       include: [
         {
           model: User,
-          attributes: ['lastName', 'firstName', 'identification']
-        }, {
+          attributes: ['lastName', 'firstName', 'identification'],
+        },
+        {
           model: Classes,
           attributes: ['name'],
           include: [
             {
               model: Materias,
+              through: {
+                attributes: [],
+              },
             },
             {
-              model:Schools,
-              attributes:['name','id'],
-            }
-          ]
-        }, {
+              model: Schools,
+              attributes: ['name', 'id'],
+              through: {
+                attributes: [],
+              },
+            },
+            {
+              model: TeachersMaterias,
+              include: {
+                model: User,
+                attributes: ['lastName', 'firstName', 'id', 'avatar'],
+              },
+            },
+          ],
+        },
+        {
           model: CicloElectivo,
-          attributes: ['name']
-        }
-      ]
+          attributes: ['name'],
+        },
+      ],
     })
 
-    return res.json(datos);
-  }catch (error) {
+    return res.json(datos)
+  } catch (error) {
     console.error(error)
     next(error)
   }
-
 }
 
 module.exports = {
@@ -190,5 +212,5 @@ module.exports = {
   createMatricula,
   getMatriculaById,
   updateMatriculaById,
-  getDatosMatricula
+  getDatosMatricula,
 }

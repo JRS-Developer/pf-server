@@ -20,6 +20,8 @@ const cicloLectivos = require('./cicloElectivos.routes')
 const teacherMaterias = require('./teacherMaterias.routes')
 const examenesNotas = require('./examenesNotas.routes')
 
+const chat = require('./chat.routes')
+
 router.use('/access', access)
 router.use('/actions', actions)
 router.use('/auth', auth)
@@ -39,5 +41,6 @@ router.use('/schools', schools)
 router.use('/tasks', tasks)
 router.use('/teacherMaterias', teacherMaterias)
 router.use('/users', users)
+router.use('/chat', chat)
 
 module.exports = router
