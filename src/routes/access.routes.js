@@ -16,7 +16,7 @@ router.post('/', esSuperUser, createAccess)
 router.get('/', getAccess)
 //router.get('/:moduleId', esSuperUser, getActionsByModulo)
 router.get('/:moduleId', getActionsByModulo)
-router.get('/user/:userId', esSuperUser, getAccessUser)
+router.get('/user/:userId', getAccessUser)
 
 module.exports = router
 

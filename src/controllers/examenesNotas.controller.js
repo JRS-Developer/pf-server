@@ -45,7 +45,7 @@ const getNotas = async (req, res, next) => {
         id: nt.id,
         fecha: nt.fecha,
         examen: nt.examen,
-        nota: nt.periodo,
+        nota: nt.nota,
         periodo: nt.periodo,
         school: nt?.matricula?.school.name,
         clase: nt?.matricula?.class.name,
