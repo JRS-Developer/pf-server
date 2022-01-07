@@ -3,14 +3,14 @@ const router = express.Router()
 
 const {
   verifyToken,
-  esSuperUserOrAdminOrProfesor,
+  // esSuperUserOrAdminOrProfesor,
   esSuperUserOrAdmin,
 } = require('../middlewares/auth')
 const {
   getTeachersMaterias,
   asignarMaterias,
-  getTeacherMaterias
-} = require("../controllers/teacherMaterias.controller")
+  getTeacherMaterias,
+} = require('../controllers/teacherMaterias.controller')
 
 router.use(verifyToken)
 
