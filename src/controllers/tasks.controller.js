@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const { Task, Matricula, StudentTask } = require('../models')
+const { Task, Matricula, StudentTask, User } = require('../models')
 
 // Schemas
 const getTasksSchema = Joi.object({
@@ -18,11 +18,6 @@ const createTaskSchema = Joi.object({
   materia_id: Joi.string().guid().required(),
   ciclo_lectivo_id: Joi.string().guid().required(),
 })
-
-// edit task profesor Leandro yasta
-// get StundentTask tasks Nico yasta
-// edit StudentTask tasks  yasta
-// delete tasks tiene que borrar en cascada todo yasta
 
 const getTasks = async (req, res, next) => {
   try {
@@ -143,6 +138,10 @@ const profesorGetStudentsTask = async (req, res, next) => {
       include: {
         model: Matricula,
         attributes: ['id'],
+        include: {
+          model: User,
+          attributes: ['id', 'firstName', 'lastName'],
+        },
       },
     })
     if (!taskFound) {
@@ -255,8 +254,11 @@ const changeTaskStatusById = async (req, res, next) => {
     const matriculaId = await Matricula.findOne({
       where: { student_id: userId },
     })
+    const date = new Date()
+
     const [count] = await StudentTask.update(
-      { status: 'submitted' },
+      { status: 'submitted', fecha_entregada: date },
+
       {
         where: { task_id: id, matricula_id: matriculaId.dataValues.id },
         returning: true,
@@ -271,7 +273,6 @@ const changeTaskStatusById = async (req, res, next) => {
     next(error)
   }
 }
-
 
 module.exports = {
   getTasks,
