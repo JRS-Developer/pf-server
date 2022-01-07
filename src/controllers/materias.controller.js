@@ -91,7 +91,11 @@ const update_materia = async (req, res, next) => {
     const { id } = req.params // id de materia
     const { name, description, clase_ids } = req.body //name nombre de materia
 
-    const { error } = updateMateriaSchema.validate({ name, description, clase_ids })
+    const { error } = updateMateriaSchema.validate({
+      name,
+      description,
+      clase_ids,
+    })
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     const [count, updatedMaterias] = await Materias.update(
