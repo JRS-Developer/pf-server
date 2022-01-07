@@ -25,6 +25,7 @@ function setUserAccesses(filteredUserIdsByRole, accessesToSet) {
 const sUsers = userIdsByRole('a83af560-8a48-4edd-83eb-6bd3f7e97861')
 const alumnos = userIdsByRole('5d3709ba-3a27-48cc-8a75-256338684cee')
 const administrativo = userIdsByRole('633c2cda-d0f1-40f8-b07c-041a8cc217be')
+const profesores = userIdsByRole('606c0802-5332-4531-9189-eac84e6fcceb')
 
 const sUserAccess = [
   //Seguridad (MODULO PADRE)
@@ -195,6 +196,19 @@ const sUserAccess = [
     module_id: 'f3e55d08-c004-4340-8f79-bcaf4b37608d',
     action_id: 'f33c5435-9cb2-4d18-8530-e37f28fd231d',
   },
+  // Asignar Materias
+  {
+    module_id: '92d8947d-42d8-4db9-a732-529a9532b2e6',
+    action_id: '30fe307d-363c-46d3-8cf5-184254e45198',
+  },
+  {
+    module_id: '92d8947d-42d8-4db9-a732-529a9532b2e6',
+    action_id: '318caf13-5c64-4aec-91fb-26abca03c348',
+  },
+  {
+    module_id: '92d8947d-42d8-4db9-a732-529a9532b2e6',
+    action_id: 'f33c5435-9cb2-4d18-8530-e37f28fd231d',
+  },
 ]
 const alumnosAccess = [
   //Comunicación (Módulo Padre)
@@ -214,6 +228,27 @@ const alumnosAccess = [
     action_id: '30fe307d-363c-46d3-8cf5-184254e45198',
   },
 ]
+
+const profesoresAccess = [
+  //Comunicación (Módulo Padre)
+  { module_id: 'cc2b3043-a35d-425e-963a-b4936e91c6c8', action_id: null },
+  //  Noticias
+  {
+    //le agrego la acción "add" por ahora para que pueda ver este modulo
+    module_id: '9c137ea3-5958-47c9-bd91-91766d322141',
+    action_id: '30fe307d-363c-46d3-8cf5-184254e45198',
+  },
+  //Aula Virtual (Módulo Padre)
+  { module_id: 'd544b900-a077-483e-b335-8a52c2fde399', action_id: null },
+  //  Classroom
+  {
+    //le agrego la acción "add" por ahora para que pueda ver este modulo
+    module_id: 'b3602ada-16bf-44b4-8c24-2a35a5539c58',
+    action_id: '30fe307d-363c-46d3-8cf5-184254e45198',
+  },
+]
+
+
 const access = [
   /*ROL TUTOR => CLASSROM*/
   //Aula Virtual (Módulo Padre)
@@ -263,12 +298,15 @@ const access = [
   },
 ]
 
+
 const sUsersdata = setUserAccesses(sUsers, sUserAccess)
 const alumnosdata = setUserAccesses(alumnos, alumnosAccess)
+const profesoresdata = setUserAccesses(profesores, profesoresAccess)
 
-access.push(...sUsersdata, ...alumnosdata)
+access.push(...sUsersdata, ...alumnosdata, ...profesoresdata)
 
 module.exports = {
   access,
   alumnosAccess,
+  profesoresAccess
 }
