@@ -308,4 +308,5 @@ access.push(...sUsersdata, ...alumnosdata, ...profesoresdata)
 module.exports = {
   access,
   alumnosAccess,
+  profesoresAccess
 }
