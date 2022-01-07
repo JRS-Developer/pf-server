@@ -5,29 +5,33 @@ const uploadImage = require('../utils')
 const fs = require('fs-extra')
 
 const getPostSchema = Joi.object({
-  classId: Joi.string().guid(),
-  materiaId: Joi.string().guid(),
-})
+  classId: Joi.string().uuid(),
+  materiaId: Joi.string().uuid(),
+  cicloLectivoId: Joi.string().uuid(),
+  schoolId: Joi.string().uuid(),
+}).and('classId', 'materiaId', 'cicloLectivoId', 'schoolId')
 
 const createPubliSchema = Joi.object({
   title: Joi.string().required(),
   text: Joi.string().required(),
   publisher_id: Joi.string().uuid().required(),
-  classId: Joi.string().guid(),
-  materiaId: Joi.string().guid(),
-})
+  classId: Joi.string().uuid(),
+  materiaId: Joi.string().uuid(),
+  cicloLectivoId: Joi.string().uuid(),
+  schoolId: Joi.string().uuid(),
+}).and('classId', 'materiaId', 'cicloLectivoId', 'schoolId')
 
 const updatePubliSchema = Joi.object({
   title: Joi.string().allow('', null),
   text: Joi.string().allow('', null),
   status: Joi.bool(),
   images: Joi.alternatives(
-    Joi.array().items(Joi.string().guid()).allow(null),
-    Joi.string().guid()
+    Joi.array().items(Joi.string().uuid()).allow(null),
+    Joi.string().uuid()
   ),
   documents: Joi.alternatives(
-    Joi.array().items(Joi.string().guid()).allow(null),
-    Joi.string().guid()
+    Joi.array().items(Joi.string().uuid()).allow(null),
+    Joi.string().uuid()
   ),
 })
 
@@ -89,9 +93,16 @@ const uploadImagesAndUnlink = async (images) => {
 const getPublications = async (req, res, next) => {
   try {
     const userId = res.locals.userId
-    const { materiaId, classId } = req.query
+    const { materiaId, classId, schoolId, cicloLectivoId } = req.query
 
-    const { error } = getPostSchema.validate()
+    const data = {
+      materiaId,
+      classId,
+      cicloLectivoId,
+      schoolId,
+    }
+
+    const { error } = getPostSchema.validate(data)
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
@@ -126,10 +137,10 @@ const getPublications = async (req, res, next) => {
       where: {
         status: true,
       },
+      order: [['createdAt', 'DESC']],
     }
 
-    if (materiaId && classId)
-      options.where = { ...options.where, materiaId, classId }
+    if (data.materiaId) options.where = { ...options.where, ...data }
 
     let publications = await Publication.findAll(options)
 
@@ -199,15 +210,25 @@ const getOnePublication = async (req, res, next) => {
 const createPublication = async (req, res, next) => {
   try {
     // Obtengo la data del body
-    const { title, text, publisher_id, materiaId, classId } = req.body
-    let data = { title, text, publisher_id }
+    const {
+      title,
+      text,
+      publisher_id,
+      materiaId,
+      classId,
+      cicloLectivoId,
+      schoolId,
+    } = req.body
 
-    if (materiaId && classId)
-      data = {
-        ...data,
-        materiaId,
-        classId,
-      }
+    const data = {
+      title,
+      text,
+      publisher_id,
+      materiaId,
+      classId,
+      cicloLectivoId,
+      schoolId,
+    }
 
     // Valido datos
     const { error } = createPubliSchema.validate(data)
