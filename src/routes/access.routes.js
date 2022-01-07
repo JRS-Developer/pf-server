@@ -12,8 +12,10 @@ const {
 router.use(verifyToken)
 
 router.post('/', esSuperUser, createAccess)
-router.get('/', esSuperUser, getAccess)
-router.get('/:moduleId', esSuperUser, getActionsByModulo)
+//router.get('/', esSuperUser, getAccess)
+router.get('/', getAccess)
+//router.get('/:moduleId', esSuperUser, getActionsByModulo)
+router.get('/:moduleId', getActionsByModulo)
 router.get('/user/:userId', esSuperUser, getAccessUser)
 
 module.exports = router

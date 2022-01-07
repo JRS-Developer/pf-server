@@ -11,6 +11,10 @@ const ExamenesNotas = sequelize.define('examenes_notas', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
+  fecha: {
+    type: DataTypes.DATEONLY,
+    allowNull: false
+  },
   nota: {
     type: DataTypes.DECIMAL(5, 2),
     allowNull: true,

@@ -5,11 +5,15 @@ const { verifyToken } = require('../middlewares/auth')
 const {
   getNotas,
   addNotas,
+  getExamenNotasById,
+  updateExamenNotasById
 } = require('../controllers/examenesNotas.controller')
 
 router.use(verifyToken)
 
-router.get('/', getNotas) // aclarar quien puede ver esto
-router.post('/', addNotas) // aclarar quien puede ver esto
+router.post('/', addNotas) // Profesores, Admin
+router.put('/:id', updateExamenNotasById) // Profesores, Admin
+router.post('/notas', getNotas) // Profesores, Alumnos, Admin
+router.get('/:id', getExamenNotasById) // Profesores, Admin
 
 module.exports = router
