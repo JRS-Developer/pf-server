@@ -7,7 +7,7 @@ const {
   Role,
   User,
   Access,
-  Task,
+  // Task,
   Classes,
   Materias,
   Schools,
@@ -19,7 +19,7 @@ const { modules, actions } = require('./datos/modules-actions')
 //Users
 const { users } = require('./datos/users')
 const { access } = require('./datos/access')
-const { tasks } = require('./datos/tasks')
+// const { tasks } = require('./datos/tasks')
 const { classes } = require('./datos/classes')
 const { materias } = require('./datos/materias')
 const { roles } = require('./datos/roles')
@@ -72,7 +72,7 @@ conn.sync({ force: true }).then(async () => {
     let arrayActionsIds = [actions[0].id, actions[1].id, actions[2].id]
     modules.map((dt) => {
       if (dt.module_id === 0) {
-        let newModule = Module.create({
+        Module.create({
           id: dt.id,
           name: dt.name,
           url: dt.url,
@@ -159,25 +159,26 @@ conn.sync({ force: true }).then(async () => {
     console.log('Materias cargadas')
   }
 
-  async function initialTasks() {
-    let $saveData = []
-    tasks.map((dt) => {
-      let $data = Task.create({
-        id: dt.id,
-        title: dt.title,
-        description: dt.description,
-        end_date: dt.end_date,
-        class_id: dt.class_id,
-        materia_id: dt.materia_id,
-      })
+  // async function initialTasks() {
+  //   let $saveData = []
+  //   tasks.map((dt) => {
+  //     let $data = Task.create({
+  //       id: dt.id,
+  //       title: dt.title,
+  //       description: dt.description,
+  //       end_date: dt.end_date,
+  //       class_id: dt.class_id,
+  //       materia_id: dt.materia_id,
+  //     })
 
-      $saveData.push($data)
-    })
+  //     $saveData.push($data)
+  //   })
 
-    await Promise.all($saveData).then(() => {
-      console.log('algunas tareas pre cargadas')
-    })
-  }
+  //   await Promise.all($saveData).then(() => {
+  //     console.log('algunas tareas pre cargadas')
+  //   })
+  // } 
+
   async function initialSchools() {
     await Schools.bulkCreate(schools)
     console.log('Escuelas cargadas')

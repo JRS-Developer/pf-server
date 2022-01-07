@@ -2,12 +2,14 @@ const router = require('express').Router()
 const {
   getTasks,
   createTask,
-  getTaskById,
+  // getTaskById,
   deleteTaskById,
   updateTaskById,
   changeTaskStatusById,
   alumnoGetTaskById,
-  alumnoGetTasks
+  alumnoGetTasks,
+  profesorUpdateStudentTaskById,
+  profesorGetStudentsTask
 
 } = require('../controllers/tasks.controller')
 const { verifyToken, esProfesor, esProfesorOrAlumno } = require('../middlewares/auth')
@@ -24,8 +26,10 @@ router.post('/', esProfesor, createTask)
 router.patch('/alumno/:id',esProfesorOrAlumno,changeTaskStatusById)
 router.get('/alumno/:id',esProfesorOrAlumno,alumnoGetTaskById)
 router.get('/alumno',esProfesorOrAlumno,alumnoGetTasks)
-router.get('/:id', esProfesor, getTaskById)
+// router.get('/:id', esProfesor, getTaskById)
 router.put('/:id', esProfesor, updateTaskById)
+router.put('/:matricula_id/:id', esProfesor, profesorUpdateStudentTaskById)
+router.get('/:id',esProfesor,profesorGetStudentsTask)
 router.delete('/:id', esProfesor, deleteTaskById)
 
 module.exports = router

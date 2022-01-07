@@ -1,5 +1,5 @@
 const Joi = require('joi')
-const { Task, Matricula, StudentTask } = require('../models')
+const { Task, Matricula, StudentTask, User } = require('../models')
 
 // Schemas
 const getTasksSchema = Joi.object({
@@ -35,7 +35,7 @@ const getTasks = async (req, res, next) => {
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     const tasks = await Task.findAll({
-      where: { class_id, materia_id, ciclo_lectivo_id },
+      where: { class_id, materia_id, ciclo_lectivo_id, school_id },
     })
 
     return res.json(tasks)
@@ -130,16 +130,22 @@ const createTask = async (req, res, next) => {
   }
 }
 
-const getTaskById = async (req, res, next) => {
+const profesorGetStudentsTask = async (req, res, next) => {
   try {
     const { id } = req.params
 
-    const taskFound = await Task.findByPk(id)
-
+    const taskFound = await Task.findByPk(id, {
+      include: {
+        model: Matricula,
+        attributes: ['id'],
+        include: {
+          model: User,
+          attributes: ['id', 'firstName', 'lastName'],
+        },
+      },
+    })
     if (!taskFound) {
-      return res
-        .status(400)
-        .json({ error: 'There is not any task with that id' })
+      return res.status(400).json({ error: 'Task not found' })
     }
 
     return res.json(taskFound)
@@ -202,6 +208,32 @@ const updateTaskById = async (req, res, next) => {
   }
 }
 
+const profesorUpdateStudentTaskById = async (req, res, next) => {
+  try {
+    const { devolucion, observation, grade } = req.body
+    const { matricula_id, id } = req.params
+
+    const [count] = await Task.update(
+      { devolucion, observation, grade },
+      {
+        where: {
+          matricula_id,
+          id,
+        },
+      }
+    )
+    if (count) {
+      return res.json({ message: 'Task updated successfully' })
+    }
+
+    return res
+      .status(400)
+      .json({ message: 'There is not any task with that ID' })
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
 const deleteTaskById = async (req, res, next) => {
   try {
     const { id } = req.params
@@ -222,8 +254,11 @@ const changeTaskStatusById = async (req, res, next) => {
     const matriculaId = await Matricula.findOne({
       where: { student_id: userId },
     })
+    const date = new Date()
+
     const [count] = await StudentTask.update(
-      { status: 'submitted' },
+      { status: 'submitted', fecha_entregada: date },
+
       {
         where: { task_id: id, matricula_id: matriculaId.dataValues.id },
         returning: true,
@@ -242,10 +277,11 @@ const changeTaskStatusById = async (req, res, next) => {
 module.exports = {
   getTasks,
   createTask,
-  getTaskById,
   updateTaskById,
   deleteTaskById,
   changeTaskStatusById,
   alumnoGetTaskById,
   alumnoGetTasks,
+  profesorGetStudentsTask,
+  profesorUpdateStudentTaskById,
 }
