@@ -13,6 +13,7 @@ const {
   Schools,
   CicloElectivo,
   Matricula,
+  TeachersMaterias,
 } = require('./models')
 //Datos
 const { modules, actions } = require('./datos/modules-actions')
@@ -25,6 +26,7 @@ const { materias } = require('./datos/materias')
 const { roles } = require('./datos/roles')
 const { schools } = require('./datos/schools')
 const { matricula } = require('./datos/matriculas')
+const {assignMaterias} = require('./datos/asignarmaterias')
 
 conn.sync({ force: true }).then(async () => {
   await initialSchools()
@@ -35,11 +37,10 @@ conn.sync({ force: true }).then(async () => {
   await initialAccess()
   await initialClasses()
   await initialMaterias()
-
   // await initialTasks()
-
   await initialCiclosLectivos()
   await intialMatriculas()
+  await intialMateriasAsignadasAProfe()
 
   console.log('Cargado los datos default en la base de datos! :D')
 
@@ -195,5 +196,10 @@ conn.sync({ force: true }).then(async () => {
   async function intialMatriculas() {
     await Matricula.bulkCreate(matricula)
     console.log('matriculas cargadas')
+  }
+
+  async function intialMateriasAsignadasAProfe() {
+    await TeachersMaterias.bulkCreate(assignMaterias)
+    console.log('Materias asignadas a profesores')
   }
 })

@@ -16,12 +16,14 @@ const modules = [
   { id:'d544b900-a077-483e-b335-8a52c2fde399', name: 'AULA VIRTUAL', url: '#', icon: '', module_id: 0 },
   { id:'4c8f8e25-63e5-46b4-b11d-309ff6666e11', name: 'Materias', url: '/materias', icon: 'text_snippet', module_id: 'd544b900-a077-483e-b335-8a52c2fde399' },
   { id:'45388d9e-23c1-4c01-96de-7270769ce278', name: 'Classroom', url: '/classroom', icon: 'school', module_id: 'd544b900-a077-483e-b335-8a52c2fde399' },
+  { id:'b3602ada-16bf-44b4-8c24-2a35a5539c58', name: 'Classroom', url: '/classroom-teacher', icon: 'school', module_id: 'd544b900-a077-483e-b335-8a52c2fde399' },
   { id:'6d74b4b0-473a-48ed-97cf-154e53cd92c5', name: 'ADMINISTRACION', url: '#', icon: '', module_id: 0 },
   { id:'2a3f2402-3559-42ae-a9f7-b467df3a6b10', name: 'Matrículas', url: '/matriculas', icon: 'note_alt', module_id: '6d74b4b0-473a-48ed-97cf-154e53cd92c5' },
   { id:'c68b6501-ff66-4ed9-ade4-380bfc3f548f', name: 'School', url: '/schools', icon: 'apartment', module_id: '6d74b4b0-473a-48ed-97cf-154e53cd92c5' },
   { id:'6a0ecd53-8566-48ae-89c4-c9dbbf647091', name: 'Alumnos', url: '/students', icon: 'people', module_id: '6d74b4b0-473a-48ed-97cf-154e53cd92c5' },
   { id:'cebc1da6-3402-4d58-844e-2407b189c826', name: 'Clases', url: '/class', icon: 'people', module_id: '6d74b4b0-473a-48ed-97cf-154e53cd92c5' },
   { id:'f3e55d08-c004-4340-8f79-bcaf4b37608d', name: 'Ciclo Lectivo', url: '/ciclo-lectivo', icon: 'event', module_id: '6d74b4b0-473a-48ed-97cf-154e53cd92c5' },
+  { id:'92d8947d-42d8-4db9-a732-529a9532b2e6', name: 'Asignar Materias', url: '/teachers', icon: 'assignmentindicon', module_id: '6d74b4b0-473a-48ed-97cf-154e53cd92c5' },
 
 ];
 
