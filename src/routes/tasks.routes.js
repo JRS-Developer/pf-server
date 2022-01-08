@@ -9,10 +9,13 @@ const {
   alumnoGetTaskById,
   alumnoGetTasks,
   profesorUpdateStudentTaskById,
-  profesorGetStudentsTask
-
+  profesorGetStudentsTask,
 } = require('../controllers/tasks.controller')
-const { verifyToken, esProfesor, esProfesorOrAlumno } = require('../middlewares/auth')
+const {
+  verifyToken,
+  esProfesor,
+  esProfesorOrAlumno,
+} = require('../middlewares/auth')
 
 router.use(verifyToken)
 
@@ -23,13 +26,13 @@ router.use(verifyToken)
 router.get('/', esProfesorOrAlumno, getTasks)
 router.post('/', esProfesor, createTask)
 
-router.patch('/alumno/:id',esProfesorOrAlumno,changeTaskStatusById)
-router.get('/alumno/:id',esProfesorOrAlumno,alumnoGetTaskById)
-router.get('/alumno',esProfesorOrAlumno,alumnoGetTasks)
+router.patch('/alumno/:id', esProfesorOrAlumno, changeTaskStatusById)
+router.get('/alumno/:id', esProfesorOrAlumno, alumnoGetTaskById)
+router.get('/alumno', esProfesorOrAlumno, alumnoGetTasks)
 // router.get('/:id', esProfesor, getTaskById)
 router.put('/:id', esProfesor, updateTaskById)
 router.put('/:matricula_id/:id', esProfesor, profesorUpdateStudentTaskById)
-router.get('/:id',esProfesor,profesorGetStudentsTask)
+router.get('/:id', esProfesorOrAlumno, profesorGetStudentsTask)
 router.delete('/:id', esProfesor, deleteTaskById)
 
 module.exports = router

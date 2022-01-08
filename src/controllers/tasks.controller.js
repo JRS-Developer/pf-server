@@ -211,14 +211,14 @@ const updateTaskById = async (req, res, next) => {
 const profesorUpdateStudentTaskById = async (req, res, next) => {
   try {
     const { devolucion, observation, grade } = req.body
-    const { matricula_id, id } = req.params
+    const { matricula_id, id } = req.params //(task_id)
 
-    const [count] = await Task.update(
+    const [count] = await StudentTask.update(
       { devolucion, observation, grade },
       {
         where: {
           matricula_id,
-          id,
+          task_id: id,
         },
       }
     )
