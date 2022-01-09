@@ -6,7 +6,7 @@ const {
   getNotas,
   addNotas,
   getExamenNotasById,
-  updateExamenNotasById
+  updateExamenNotasById,
 } = require('../controllers/examenesNotas.controller')
 
 router.use(verifyToken)

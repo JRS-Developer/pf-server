@@ -7,9 +7,13 @@ const {
   getCicloElectivoById,
   updateCicloElectivoById,
   deleteCicloElectivoById,
-} = require('../controllers/cicloElectivo.controller');
+} = require('../controllers/cicloElectivo.controller')
 
-const { verifyToken, esSuperUser, esSuperUserOrAdmin } = require('../middlewares/auth');
+const {
+  verifyToken,
+  esSuperUser,
+  esSuperUserOrAdmin,
+} = require('../middlewares/auth')
 
 router.use(verifyToken)
 

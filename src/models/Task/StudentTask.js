@@ -19,11 +19,12 @@ const StudentTask = sequelize.define('student_tasks', {
       key: 'id',
     },
   },
-  status: {//la tarea puede estar pendiente o entregada
+  status: {
+    //la tarea puede estar pendiente o entregada
     type: DataTypes.STRING,
     defaultValue: 'Pendiente',
   },
-  fecha_entregada: {type: DataTypes.DATE},
+  fecha_entregada: { type: DataTypes.DATE },
   devolucion: { type: DataTypes.STRING }, //la tarea puede estar rechazada, aprobada, rehacer, etc.
   observation: { type: DataTypes.TEXT },
   grade: { type: DataTypes.INTEGER },

@@ -162,7 +162,7 @@ const createUser = async (req, res, next) => {
     }
 
     // Si es profesor le asigno los accesos por default
-    if(findrole && findrole.dataValues.name === 'Profesor'){
+    if (findrole && findrole.dataValues.name === 'Profesor') {
       const profesor = []
       //profesorAccess es un array con modulos y acciones importado de datos/access.js
       profesoresAccess.forEach((element) =>
@@ -174,8 +174,6 @@ const createUser = async (req, res, next) => {
       )
       await Access.bulkCreate(profesor)
     }
-
-
 
     //en caso de haber error es manejado por el catch
   } catch (error) {
