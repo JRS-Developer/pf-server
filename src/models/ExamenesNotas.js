@@ -1,9 +1,8 @@
-const { DataTypes, STRING} = require('sequelize')
+const { DataTypes, STRING } = require('sequelize')
 const Matricula = require('./Matricula')
 const Materias = require('./Materias')
 const { conn: sequelize } = require('../db')
-const User = require("./User");
-
+const User = require('./User')
 
 const ExamenesNotas = sequelize.define('examenes_notas', {
   id: {
@@ -13,13 +12,13 @@ const ExamenesNotas = sequelize.define('examenes_notas', {
   },
   fecha: {
     type: DataTypes.DATEONLY,
-    allowNull: false
+    allowNull: false,
   },
   nota: {
     type: DataTypes.DECIMAL(5, 2),
     allowNull: true,
   },
-  examen : {
+  examen: {
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -29,8 +28,8 @@ const ExamenesNotas = sequelize.define('examenes_notas', {
   },
   periodo: {
     type: DataTypes.STRING,
-    allowNull: false
-  }
+    allowNull: false,
+  },
 })
 
 Matricula.hasMany(ExamenesNotas)
@@ -38,11 +37,11 @@ ExamenesNotas.belongsTo(Matricula)
 
 ExamenesNotas.belongsTo(Materias, {
   foreignKey: 'materia_id',
-  sourceKey: 'id'
+  sourceKey: 'id',
 })
 Materias.hasMany(ExamenesNotas, {
   foreignKey: 'materia_id',
-  sourceKey: 'id'
+  sourceKey: 'id',
 })
 
 module.exports = ExamenesNotas

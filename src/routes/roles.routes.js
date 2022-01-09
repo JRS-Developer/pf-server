@@ -4,16 +4,20 @@ const {
   getRoleById,
   updateRole,
   createRole,
-  deleteRole
+  deleteRole,
 } = require('../controllers/roles.controller')
-const { verifyToken, esSuperUser, esSuperUserOrAdmin } = require('../middlewares/auth');
+const {
+  verifyToken,
+  esSuperUser,
+  esSuperUserOrAdmin,
+} = require('../middlewares/auth')
 
 router.use(verifyToken)
 
-router.get('/', esSuperUserOrAdmin, getRoles) 
+router.get('/', esSuperUserOrAdmin, getRoles)
 router.get('/:id', esSuperUserOrAdmin, getRoleById)
-router.post('/', esSuperUserOrAdmin, createRole) 
+router.post('/', esSuperUserOrAdmin, createRole)
 router.put('/:id', esSuperUserOrAdmin, updateRole)
-router.delete('/:id', esSuperUserOrAdmin, deleteRole) 
+router.delete('/:id', esSuperUserOrAdmin, deleteRole)
 
 module.exports = router

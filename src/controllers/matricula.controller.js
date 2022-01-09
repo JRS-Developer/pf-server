@@ -207,27 +207,27 @@ const getDatosMatricula = async (req, res, next) => {
   }
 }
 
-const getStudentMatricula =  async (req, res, next) => {
+const getStudentMatricula = async (req, res, next) => {
   try {
-    const {school_id, clase_id, ciclo_lectivo_id} = req.body
+    const { school_id, clase_id, ciclo_lectivo_id } = req.body
     const matriculas = await Matricula.findAll({
       where: {
         school_id,
         clase_id,
-        ciclo_lectivo_id
+        ciclo_lectivo_id,
       },
       attributes: ['id', 'student_id'],
       include: [
         {
           model: User,
-          attributes: ['lastName', 'firstName', 'identification']
-        }
-      ]
+          attributes: ['lastName', 'firstName', 'identification'],
+        },
+      ],
     })
 
-    let students = [];
+    let students = []
 
-    matriculas.map(mt => {
+    matriculas.map((mt) => {
       students.push({
         matricula_id: mt.id,
         student_id: mt.student_id,
@@ -235,12 +235,11 @@ const getStudentMatricula =  async (req, res, next) => {
       })
     })
 
-    return res.json(students);
-  }catch (error) {
+    return res.json(students)
+  } catch (error) {
     console.error(error)
     next(error)
   }
-
 }
 
 module.exports = {
@@ -249,6 +248,5 @@ module.exports = {
   getMatriculaById,
   updateMatriculaById,
   getDatosMatricula,
-  getStudentMatricula
+  getStudentMatricula,
 }
-

@@ -104,5 +104,5 @@ module.exports = {
   getRoleById,
   createRole,
   updateRole,
-  deleteRole
+  deleteRole,
 }

@@ -97,7 +97,7 @@ const esProfesorOrAlumno = async (req, res, next) => {
     const isProfesor = checkRole(res.locals.roleId, 'Profesor')
     const isAlumno = checkRole(res.locals.roleId, 'Alumno')
 
-    if (isProfesor||isAlumno) {
+    if (isProfesor || isAlumno) {
       return next()
     }
     res.status(403).json({ error: 'No tienes permisos para ingresar' })
@@ -106,8 +106,6 @@ const esProfesorOrAlumno = async (req, res, next) => {
     res.status(403).json({ error: 'No tienes permisos para ingresar' })
   }
 }
-
-
 
 module.exports = {
   verifyToken,

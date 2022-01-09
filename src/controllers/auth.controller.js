@@ -50,7 +50,11 @@ const loginUser = async (req, res, next) => {
       }
     )
 
-    res.json({ token, user: userFound.id, message: 'Sesión iniciada correctamente' })
+    res.json({
+      token,
+      user: userFound.id,
+      message: 'Sesión iniciada correctamente',
+    })
   } catch (error) {
     console.error(error)
     next(error)

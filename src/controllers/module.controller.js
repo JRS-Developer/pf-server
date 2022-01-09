@@ -11,7 +11,6 @@ const creaModuleSchema = Joi.object({
 
 const getModules = async (req, res, next) => {
   try {
-
     const modules = await Module.findAll()
 
     return res.json(modules)
@@ -23,15 +22,14 @@ const getModules = async (req, res, next) => {
 
 const createModule = async (req, res, next) => {
   try {
-    const { name, url, icon, module_id, action_id } =
-      req.body
+    const { name, url, icon, module_id, action_id } = req.body
 
     // Validar datos
     const { error } = creaModuleSchema.validate({
       name,
       url,
       icon,
-      module_id
+      module_id,
     })
 
     if (error) return res.status(400).json({ error: error.details[0].message })
@@ -40,7 +38,7 @@ const createModule = async (req, res, next) => {
       name,
       url,
       icon,
-      module_id
+      module_id,
     })
     newModule.addActions(action_id)
     return res.json({ message: 'Module created successfully' })
@@ -56,11 +54,11 @@ const getModuleById = async (req, res, next) => {
 
     const moduleFound = await Module.findOne({
       where: {
-        id: id
+        id: id,
       },
       include: {
-        model: Action
-      }
+        model: Action,
+      },
     })
 
     if (!moduleFound) {
@@ -82,27 +80,27 @@ const updateModuleById = async (req, res, next) => {
     const { name, url, icon, module_id, action_id } = req.body
     const { id } = req.params
 
-    if( !name ){
+    if (!name) {
       let [count, updatedModule] = await Module.update(
         { status: req.body.status },
         {
           where: {
-            id
-          }
+            id,
+          },
         }
       )
 
       if (count) {
         return res.json({ message: 'Module updated successfully' })
       }
-    }else{
+    } else {
       let [count, updateModule] = await Module.update(
         { name, url, icon, module_id, action_id },
         {
           where: {
             id,
           },
-          returning :true
+          returning: true,
         }
       )
 

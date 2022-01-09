@@ -1,8 +1,17 @@
 const router = require('express').Router()
 const { classes } = require('../datos/datos')
-const { puedeVerClass, puedeVerClasses, puedeEliminarClass, authUser } = require('../permisos/auths')
-const {verifyToken} = require('../middlewares/auth')
-const { verifyToken, esSuperUser, esSuperUserOrAdmin } = require('../middlewares/auth');
+const {
+  puedeVerClass,
+  puedeVerClasses,
+  puedeEliminarClass,
+  authUser,
+} = require('../permisos/auths')
+const { verifyToken } = require('../middlewares/auth')
+const {
+  verifyToken,
+  esSuperUser,
+  esSuperUserOrAdmin,
+} = require('../middlewares/auth')
 
 router.get('/', verifyToken, (req, res) => {
   res.json(puedeVerClasses(req.user, classes))
@@ -10,25 +19,29 @@ router.get('/', verifyToken, (req, res) => {
 // listo
 
 router.get('/:classId', verifyToken, setClass, puedeVerClass, (req, res) => {
-
-  res.json("Puede ver el class señor")
+  res.json('Puede ver el class señor')
   //mostrar el ula
-
 })
 
-router.delete('/:classId', setClass, verifyToken, puedeEliminarClass, (req, res) => {
-  res.send('Class eliminada')
-})
+router.delete(
+  '/:classId',
+  setClass,
+  verifyToken,
+  puedeEliminarClass,
+  (req, res) => {
+    res.send('Class eliminada')
+  }
+)
 
 function setClass(req, res, next) {
   const classId = parseInt(req.params.classId)
-  req.class = classes.find(Class => Class.id === classId)
+  req.class = classes.find((Class) => Class.id === classId)
 
   if (req.class == null) {
     res.status(404)
     return res.send('Class no encontrada')
   }
-  console.log("setClass")
+  console.log('setClass')
   next()
 }
 

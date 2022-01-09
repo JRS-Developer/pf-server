@@ -11,7 +11,6 @@ const {
 
 router.use(verifyToken)
 
-
 router.post('/', esSuperUser, createAccess)
 router.get('/:moduleId', getActionsByModulo)
 router.get('/', getAccess)

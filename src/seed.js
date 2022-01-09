@@ -26,7 +26,7 @@ const { materias } = require('./datos/materias')
 const { roles } = require('./datos/roles')
 const { schools } = require('./datos/schools')
 const { matricula } = require('./datos/matriculas')
-const {assignMaterias} = require('./datos/asignarmaterias')
+const { assignMaterias } = require('./datos/asignarmaterias')
 
 conn.sync({ force: true }).then(async () => {
   await initialSchools()
@@ -142,13 +142,16 @@ conn.sync({ force: true }).then(async () => {
   }
 
   async function initialClasses() {
-    const escuelasAAgregar = classes.map((el)=> el.school_id)
-    const clasesAAgregar = classes.map((el)=> {
-     return {id:el.id,name:el.name}
+    const escuelasAAgregar = classes.map((el) => el.school_id)
+    const clasesAAgregar = classes.map((el) => {
+      return { id: el.id, name: el.name }
     })
     const clasesCreadas = await Classes.bulkCreate(clasesAAgregar)
-    clasesCreadas.forEach((clase,i)=>clase.addSchools(escuelasAAgregar[i]))
-    const otrasSucursales = [ '5db18bbe-0e6c-434e-8977-523f22e9818c','91f7918b-6337-41d6-ab95-1fe2c72c005c']
+    clasesCreadas.forEach((clase, i) => clase.addSchools(escuelasAAgregar[i]))
+    const otrasSucursales = [
+      '5db18bbe-0e6c-434e-8977-523f22e9818c',
+      '91f7918b-6337-41d6-ab95-1fe2c72c005c',
+    ]
     clasesCreadas[0].addSchools(otrasSucursales)
     console.log('clases cargadas')
   }
@@ -178,7 +181,7 @@ conn.sync({ force: true }).then(async () => {
   //   await Promise.all($saveData).then(() => {
   //     console.log('algunas tareas pre cargadas')
   //   })
-  // } 
+  // }
 
   async function initialSchools() {
     await Schools.bulkCreate(schools)
@@ -187,7 +190,11 @@ conn.sync({ force: true }).then(async () => {
 
   async function initialCiclosLectivos() {
     await CicloElectivo.bulkCreate([
-      { id: '8387a420-ae5f-425d-9a19-6fc689f75f0b', name: '2021', status: false },
+      {
+        id: '8387a420-ae5f-425d-9a19-6fc689f75f0b',
+        name: '2021',
+        status: false,
+      },
       { id: '0444e7eb-4aa2-4378-8287-cd93d55fa655', name: '2022' },
     ])
     console.log('Ciclos Lectivos Cargados')
