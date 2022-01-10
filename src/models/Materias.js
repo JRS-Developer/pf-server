@@ -9,7 +9,7 @@ const Materias = sequelize.define('materias', {
   },
   name: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   status: {
     type: DataTypes.BOOLEAN,
@@ -17,7 +17,7 @@ const Materias = sequelize.define('materias', {
   },
   description: {
     type: DataTypes.STRING,
-    allowNull: true
+    allowNull: true,
   },
 })
 

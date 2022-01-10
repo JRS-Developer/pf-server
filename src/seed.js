@@ -7,24 +7,26 @@ const {
   Role,
   User,
   Access,
-  Task,
+  // Task,
   Classes,
   Materias,
   Schools,
   CicloElectivo,
   Matricula,
+  TeachersMaterias,
 } = require('./models')
 //Datos
 const { modules, actions } = require('./datos/modules-actions')
 //Users
 const { users } = require('./datos/users')
 const { access } = require('./datos/access')
-const { tasks } = require('./datos/tasks')
+// const { tasks } = require('./datos/tasks')
 const { classes } = require('./datos/classes')
 const { materias } = require('./datos/materias')
 const { roles } = require('./datos/roles')
 const { schools } = require('./datos/schools')
 const { matricula } = require('./datos/matriculas')
+const { assignMaterias } = require('./datos/asignarmaterias')
 
 conn.sync({ force: true }).then(async () => {
   await initialSchools()
@@ -35,11 +37,10 @@ conn.sync({ force: true }).then(async () => {
   await initialAccess()
   await initialClasses()
   await initialMaterias()
-
   // await initialTasks()
-
   await initialCiclosLectivos()
   await intialMatriculas()
+  await intialMateriasAsignadasAProfe()
 
   console.log('Cargado los datos default en la base de datos! :D')
 
@@ -72,7 +73,7 @@ conn.sync({ force: true }).then(async () => {
     let arrayActionsIds = [actions[0].id, actions[1].id, actions[2].id]
     modules.map((dt) => {
       if (dt.module_id === 0) {
-        let newModule = Module.create({
+        Module.create({
           id: dt.id,
           name: dt.name,
           url: dt.url,
@@ -141,13 +142,16 @@ conn.sync({ force: true }).then(async () => {
   }
 
   async function initialClasses() {
-    const escuelasAAgregar = classes.map((el)=> el.school_id)
-    const clasesAAgregar = classes.map((el)=> {
-     return {id:el.id,name:el.name}
+    const escuelasAAgregar = classes.map((el) => el.school_id)
+    const clasesAAgregar = classes.map((el) => {
+      return { id: el.id, name: el.name }
     })
     const clasesCreadas = await Classes.bulkCreate(clasesAAgregar)
-    clasesCreadas.forEach((clase,i)=>clase.addSchools(escuelasAAgregar[i]))
-    const otrasSucursales = [ '5db18bbe-0e6c-434e-8977-523f22e9818c','91f7918b-6337-41d6-ab95-1fe2c72c005c']
+    clasesCreadas.forEach((clase, i) => clase.addSchools(escuelasAAgregar[i]))
+    const otrasSucursales = [
+      '5db18bbe-0e6c-434e-8977-523f22e9818c',
+      '91f7918b-6337-41d6-ab95-1fe2c72c005c',
+    ]
     clasesCreadas[0].addSchools(otrasSucursales)
     console.log('clases cargadas')
   }
@@ -159,25 +163,26 @@ conn.sync({ force: true }).then(async () => {
     console.log('Materias cargadas')
   }
 
-  async function initialTasks() {
-    let $saveData = []
-    tasks.map((dt) => {
-      let $data = Task.create({
-        id: dt.id,
-        title: dt.title,
-        description: dt.description,
-        end_date: dt.end_date,
-        class_id: dt.class_id,
-        materia_id: dt.materia_id,
-      })
+  // async function initialTasks() {
+  //   let $saveData = []
+  //   tasks.map((dt) => {
+  //     let $data = Task.create({
+  //       id: dt.id,
+  //       title: dt.title,
+  //       description: dt.description,
+  //       end_date: dt.end_date,
+  //       class_id: dt.class_id,
+  //       materia_id: dt.materia_id,
+  //     })
 
-      $saveData.push($data)
-    })
+  //     $saveData.push($data)
+  //   })
 
-    await Promise.all($saveData).then(() => {
-      console.log('algunas tareas pre cargadas')
-    })
-  }
+  //   await Promise.all($saveData).then(() => {
+  //     console.log('algunas tareas pre cargadas')
+  //   })
+  // }
+
   async function initialSchools() {
     await Schools.bulkCreate(schools)
     console.log('Escuelas cargadas')
@@ -185,7 +190,11 @@ conn.sync({ force: true }).then(async () => {
 
   async function initialCiclosLectivos() {
     await CicloElectivo.bulkCreate([
-      { id: '8387a420-ae5f-425d-9a19-6fc689f75f0b', name: '2021', status: false },
+      {
+        id: '8387a420-ae5f-425d-9a19-6fc689f75f0b',
+        name: '2021',
+        status: false,
+      },
       { id: '0444e7eb-4aa2-4378-8287-cd93d55fa655', name: '2022' },
     ])
     console.log('Ciclos Lectivos Cargados')
@@ -194,5 +203,10 @@ conn.sync({ force: true }).then(async () => {
   async function intialMatriculas() {
     await Matricula.bulkCreate(matricula)
     console.log('matriculas cargadas')
+  }
+
+  async function intialMateriasAsignadasAProfe() {
+    await TeachersMaterias.bulkCreate(assignMaterias)
+    console.log('Materias asignadas a profesores')
   }
 })

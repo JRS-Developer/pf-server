@@ -45,7 +45,7 @@ const getTeacherMaterias = async (req, res, next) => {
 
     let where = {
       teacher_id,
-      ciclo_lectivo_id
+      ciclo_lectivo_id,
     }
 
     const materias = await TeachersMaterias.findAll({
@@ -54,13 +54,15 @@ const getTeacherMaterias = async (req, res, next) => {
         {
           model: Materias,
           attributes: ['id', 'name', 'description'],
-        },{
+        },
+        {
           model: Schools,
-          attributes: ['id', 'name']
-        },{
-        model: Classes,
-          attributes: ['id', 'name']
-        }
+          attributes: ['id', 'name'],
+        },
+        {
+          model: Classes,
+          attributes: ['id', 'name'],
+        },
       ],
     })
 
@@ -152,5 +154,5 @@ const asignarMaterias = async (req, res, next) => {
 module.exports = {
   getTeachersMaterias,
   asignarMaterias,
-  getTeacherMaterias
+  getTeacherMaterias,
 }

@@ -1,5 +1,5 @@
 const { User, Role, Classes, Access } = require('../models/')
-const { alumnosAccess } = require('../datos/access')
+const { alumnosAccess, profesoresAccess } = require('../datos/access')
 const Joi = require('joi')
 const uploadImage = require('../utils')
 const fs = require('fs-extra')
@@ -159,6 +159,20 @@ const createUser = async (req, res, next) => {
         })
       )
       await Access.bulkCreate(alumno)
+    }
+
+    // Si es profesor le asigno los accesos por default
+    if (findrole && findrole.dataValues.name === 'Profesor') {
+      const profesor = []
+      //profesorAccess es un array con modulos y acciones importado de datos/access.js
+      profesoresAccess.forEach((element) =>
+        profesor.push({
+          user_id: usuario.dataValues.id,
+          module_id: element.module_id,
+          action_id: element.action_id,
+        })
+      )
+      await Access.bulkCreate(profesor)
     }
 
     //en caso de haber error es manejado por el catch

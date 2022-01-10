@@ -34,8 +34,8 @@ const User = conn.define('users', {
     type: DataTypes.STRING,
     allowNull: false,
     validate: {
-      isEmail: true
-    }
+      isEmail: true,
+    },
   },
   password: {
     type: DataTypes.STRING,
@@ -43,16 +43,16 @@ const User = conn.define('users', {
     // Guardo la contra encriptada
     set(value) {
       this.setDataValue('password', bcrypt.hashSync(value, 10))
-    }
+    },
   },
   country: {
     type: DataTypes.STRING,
     allowNull: false,
   },
   //El estado es para cuando se lo "borre" al usuario cuando queremos dar de baja. Lo ponemos en estado "inactivo"
-  status:{
+  status: {
     type: DataTypes.BOOLEAN,
-    defaultValue: true
+    defaultValue: true,
   },
   avatar: DataTypes.STRING, // Opcional
 })
@@ -61,6 +61,5 @@ const User = conn.define('users', {
 // Roles
 User.belongsTo(Role)
 Role.hasMany(User)
-
 
 module.exports = User

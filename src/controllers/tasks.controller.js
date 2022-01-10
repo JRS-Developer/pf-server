@@ -1,5 +1,6 @@
 const Joi = require('joi')
-const { Task, Matricula, StudentTask } = require('../models')
+const { Task, Matricula, StudentTask, User, File } = require('../models')
+const crearRuta = require('../utils/crearRutaDoc')
 
 // Schemas
 const getTasksSchema = Joi.object({
@@ -18,11 +19,6 @@ const createTaskSchema = Joi.object({
   materia_id: Joi.string().guid().required(),
   ciclo_lectivo_id: Joi.string().guid().required(),
 })
-
-// edit task profesor Leandro yasta
-// get StundentTask tasks Nico yasta
-// edit StudentTask tasks  yasta
-// delete tasks tiene que borrar en cascada todo yasta
 
 const getTasks = async (req, res, next) => {
   try {
@@ -143,13 +139,44 @@ const profesorGetStudentsTask = async (req, res, next) => {
       include: {
         model: Matricula,
         attributes: ['id'],
+        include: {
+          model: User,
+          attributes: ['id', 'firstName', 'lastName'],
+        },
       },
     })
     if (!taskFound) {
       return res.status(400).json({ error: 'Task not found' })
     }
 
-    return res.json(taskFound)
+    const file_ids = taskFound?.matriculas?.map((matricula) => {
+      return {
+        matricula_id: matricula.id,
+        file_id: matricula.student_tasks.file_id,
+      }
+    })
+
+    let tasks = taskFound.toJSON()
+    let promises = tasks.matriculas.map(async (matricula) => {
+      let file_id = file_ids.filter(
+        (file_id) => file_id.matricula_id === matricula.id
+      )[0]
+
+      return File.findByPk(file_id.file_id, {
+        attributes: ['id', 'name', 'url'],
+      })
+    })
+
+    await Promise.all(promises).then((respuestas) => {
+      // Agrego el file a cada student task
+      tasks.matriculas.forEach((matricula, index) => {
+        matricula.student_tasks.file = respuestas[index]
+          ? respuestas[index].toJSON()
+          : null
+      })
+    })
+
+    return res.json(tasks)
   } catch (error) {
     console.error(error)
     next(error)
@@ -169,13 +196,21 @@ const alumnoGetTaskById = async (req, res, next) => {
       },
     })
 
+    const file_id = taskFound?.matriculas[0]?.student_tasks?.file_id
+
+    const fileFound = await File.findByPk(file_id)
+
+    const task = taskFound.toJSON()
+
+    task.file = fileFound
+
     if (!taskFound) {
       return res
         .status(400)
         .json({ error: 'There is not any task with that id' })
     }
 
-    return res.json(taskFound)
+    return res.json(task)
   } catch (error) {
     console.error(error)
     next(error)
@@ -212,14 +247,14 @@ const updateTaskById = async (req, res, next) => {
 const profesorUpdateStudentTaskById = async (req, res, next) => {
   try {
     const { devolucion, observation, grade } = req.body
-    const { matricula_id, id } = req.params
+    const { matricula_id, id } = req.params //(task_id)
 
-    const [count] = await Task.update(
+    const [count] = await StudentTask.update(
       { devolucion, observation, grade },
       {
         where: {
           matricula_id,
-          id,
+          task_id: id,
         },
       }
     )
@@ -255,8 +290,11 @@ const changeTaskStatusById = async (req, res, next) => {
     const matriculaId = await Matricula.findOne({
       where: { student_id: userId },
     })
+    const date = new Date()
+
     const [count] = await StudentTask.update(
-      { status: 'submitted' },
+      { status: 'submitted', fecha_entregada: date },
+
       {
         where: { task_id: id, matricula_id: matriculaId.dataValues.id },
         returning: true,
@@ -272,6 +310,52 @@ const changeTaskStatusById = async (req, res, next) => {
   }
 }
 
+const subirTarea = async (req, res, next) => {
+  const file = req.file
+  const { task_id, matricula_id } = req.body
+  try {
+    const filepath = file && crearRuta(req, file.filename)
+    const tareaAlumno = await StudentTask.findOne({
+      where: { task_id, matricula_id },
+    })
+
+    if (!tareaAlumno)
+      return res.status(400).json({ error: 'Tarea no encontrada.' })
+
+    const newFile =
+      filepath &&
+      (await File.create({
+        url: filepath,
+        name: file.filename,
+        type: file.mimetype,
+      }))
+    tareaAlumno.setFile(newFile)
+
+    return res.status(201).json({ message: 'Tarea cargada' })
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
+const eliminarFile = async (req, res, next) => {
+  const { task_id, matricula_id } = req.body
+  try {
+    const tareaAlumno = await StudentTask.findOne({
+      where: { task_id, matricula_id },
+    })
+
+    if (!tareaAlumno)
+      return res.status(400).json({ error: 'Tarea no encontrada.' })
+
+    tareaAlumno.setFile(null)
+
+    return res.status(201).json({ message: 'Tarea eliminada' })
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
 
 module.exports = {
   getTasks,
@@ -283,4 +367,6 @@ module.exports = {
   alumnoGetTasks,
   profesorGetStudentsTask,
   profesorUpdateStudentTaskById,
+  subirTarea,
+  eliminarFile,
 }

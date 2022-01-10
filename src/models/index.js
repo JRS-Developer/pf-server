@@ -36,6 +36,6 @@ module.exports = {
   CicloElectivo,
   Matricula,
   TeachersMaterias,
-	File,
-  ExamenesNotas
+  File,
+  ExamenesNotas,
 }
