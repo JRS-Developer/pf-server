@@ -156,16 +156,24 @@ const profesorGetStudentsTask = async (req, res, next) => {
       }
     })
 
-    const tasks = taskFound.toJSON()
-
-    tasks.matriculas.forEach(async (matricula) => {
+    let tasks = taskFound.toJSON()
+    let promises = tasks.matriculas.map(async (matricula) => {
       let file_id = file_ids.filter(
         (file_id) => file_id.matricula_id === matricula.id
       )[0]
 
-      const fileFound = await File.findByPk(file_id.file_id)
+      return File.findByPk(file_id.file_id, {
+        attributes: ['id', 'name', 'url'],
+      })
+    })
 
-      matricula.file = fileFound
+    await Promise.all(promises).then((respuestas) => {
+      // Agrego el file a cada student task
+      tasks.matriculas.forEach((matricula, index) => {
+        matricula.student_tasks.file = respuestas[index]
+          ? respuestas[index].toJSON()
+          : null
+      })
     })
 
     return res.json(tasks)
