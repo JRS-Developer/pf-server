@@ -29,7 +29,7 @@ classes.forEach((clase) =>
             ciclo_lectivo_id: ciclolectivo2022,
             teacher_id: profesor.teacher_id,
             materia_id: materia.id,
-            clase_id: clase.id
+            clase_id: clase.id,
           },
         ]
       }

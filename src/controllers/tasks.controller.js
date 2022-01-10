@@ -149,21 +149,25 @@ const profesorGetStudentsTask = async (req, res, next) => {
       return res.status(400).json({ error: 'Task not found' })
     }
 
-    const file_ids = taskFound?.matriculas?.map((matricula)=>{
-      return { matricula_id:matricula.id, file_id:matricula.student_tasks.file_id} 
+    const file_ids = taskFound?.matriculas?.map((matricula) => {
+      return {
+        matricula_id: matricula.id,
+        file_id: matricula.student_tasks.file_id,
+      }
     })
 
     const tasks = taskFound.toJSON()
 
-    tasks.matriculas.forEach(async (matricula)=> {
-      let file_id = file_ids.filter((file_id) => file_id.matricula_id === matricula.id)[0]
+    tasks.matriculas.forEach(async (matricula) => {
+      let file_id = file_ids.filter(
+        (file_id) => file_id.matricula_id === matricula.id
+      )[0]
 
       const fileFound = await File.findByPk(file_id.file_id)
 
       matricula.file = fileFound
-
     })
-    
+
     return res.json(tasks)
   } catch (error) {
     console.error(error)
@@ -356,6 +360,5 @@ module.exports = {
   profesorGetStudentsTask,
   profesorUpdateStudentTaskById,
   subirTarea,
-  eliminarFile
-  
+  eliminarFile,
 }

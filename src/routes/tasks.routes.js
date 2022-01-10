@@ -37,6 +37,6 @@ router.put('/:id', esProfesor, updateTaskById)
 router.put('/:matricula_id/:id', esProfesor, profesorUpdateStudentTaskById)
 router.get('/:id', esProfesorOrAlumno, profesorGetStudentsTask)
 router.delete('/:id', esProfesor, deleteTaskById)
-router.patch('/alumno',esProfesorOrAlumno, eliminarFile) //pongo patch porque si es delete me tira error de permisos (rarisimo)
+router.patch('/alumno', esProfesorOrAlumno, eliminarFile) //pongo patch porque si es delete me tira error de permisos (rarisimo)
 
 module.exports = router

@@ -1,46 +1,75 @@
-const { ExamenesNotas, Matricula, Classes, Schools, CicloElectivo, Materias, User} = require('../models');
+const {
+  ExamenesNotas,
+  Matricula,
+  Classes,
+  Schools,
+  CicloElectivo,
+  Materias,
+  User,
+} = require('../models')
 
 const getNotas = async (req, res, next) => {
   try {
-
-    const {school_id, clase_id, ciclo_lectivo_id, id} = req.body // id => id de la materia
+    const { school_id, clase_id, ciclo_lectivo_id, id } = req.body // id => id de la materia
 
     const notas = await ExamenesNotas.findAll({
       where: {
-        materia_id: id
+        materia_id: id,
       },
-      attributes: ['id', 'fecha', 'nota', 'examen', 'materia_id', 'periodo', 'matriculaId'],
+      attributes: [
+        'id',
+        'fecha',
+        'nota',
+        'examen',
+        'materia_id',
+        'periodo',
+        'matriculaId',
+      ],
       include: [
         {
           model: Matricula,
           where: {
-            school_id, clase_id, ciclo_lectivo_id
+            school_id,
+            clase_id,
+            ciclo_lectivo_id,
           },
-          attributes: ['id', 'fecha', 'student_id', 'school_id', 'clase_id', 'ciclo_lectivo_id', 'status'],
+          attributes: [
+            'id',
+            'fecha',
+            'student_id',
+            'school_id',
+            'clase_id',
+            'ciclo_lectivo_id',
+            'status',
+          ],
           include: [
             {
               model: Classes,
-              attributes: ['id', 'name']
-            },{
+              attributes: ['id', 'name'],
+            },
+            {
               model: Schools,
-              attributes: ['id', 'name']
-            },{
+              attributes: ['id', 'name'],
+            },
+            {
               model: CicloElectivo,
-              attributes: ['id', 'name']
-            },{
+              attributes: ['id', 'name'],
+            },
+            {
               model: User,
-              attributes: ['id','identification', 'firstName', 'lastName']
-            }
-          ]
-        },{
+              attributes: ['id', 'identification', 'firstName', 'lastName'],
+            },
+          ],
+        },
+        {
           model: Materias,
-          attributes: ['id', 'name']
-        }
-      ]
+          attributes: ['id', 'name'],
+        },
+      ],
     })
 
-    let $datos = [];
-    notas.map(nt => {
+    let $datos = []
+    notas.map((nt) => {
       $datos.push({
         id: nt.id,
         fecha: nt.fecha,
@@ -50,13 +79,12 @@ const getNotas = async (req, res, next) => {
         school: nt?.matricula?.school.name,
         clase: nt?.matricula?.class.name,
         ciclo_lectivo: nt?.matricula?.ciclo_electivo.name,
-        student: `${nt?.matricula?.user.firstName} ${nt?.matricula?.user.lastName}`
+        student: `${nt?.matricula?.user.firstName} ${nt?.matricula?.user.lastName}`,
       })
     })
 
     return res.json($datos)
-
-  }catch (error) {
+  } catch (error) {
     next(error.message)
   }
 }
@@ -68,12 +96,16 @@ const addNotas = async (req, res, next) => {
     console.log(req.body)
 
     await ExamenesNotas.create({
-      fecha, materia_id, matriculaId, examen, nota, periodo
+      fecha,
+      materia_id,
+      matriculaId,
+      examen,
+      nota,
+      periodo,
     })
 
     res.json({ message: 'notas successfully created' })
-
-  }catch (error) {
+  } catch (error) {
     next(error.message)
   }
 }
@@ -89,9 +121,9 @@ const getExamenNotasById = async (req, res, next) => {
           include: {
             model: User,
             attributes: ['identification', 'firstName', 'lastName'],
-          }
-        }
-      ]
+          },
+        },
+      ],
     })
 
     res.json(datos)
@@ -103,12 +135,13 @@ const getExamenNotasById = async (req, res, next) => {
 
 const updateExamenNotasById = async (req, res, next) => {
   try {
-    const { id, nota, examen, materia_id, periodo, matriculaId, fecha } = req.body
+    const { id, nota, examen, materia_id, periodo, matriculaId, fecha } =
+      req.body
 
     await ExamenesNotas.update(
       { nota, examen, materia_id, periodo, matriculaId, fecha },
       {
-        where: { id }
+        where: { id },
       }
     )
 
@@ -123,5 +156,5 @@ module.exports = {
   getNotas,
   addNotas,
   getExamenNotasById,
-  updateExamenNotasById
+  updateExamenNotasById,
 }

@@ -248,7 +248,6 @@ const profesoresAccess = [
   },
 ]
 
-
 const access = [
   /*ROL TUTOR => CLASSROM*/
   //Aula Virtual (Módulo Padre)
@@ -298,7 +297,6 @@ const access = [
   },
 ]
 
-
 const sUsersdata = setUserAccesses(sUsers, sUserAccess)
 const alumnosdata = setUserAccesses(alumnos, alumnosAccess)
 const profesoresdata = setUserAccesses(profesores, profesoresAccess)
@@ -308,5 +306,5 @@ access.push(...sUsersdata, ...alumnosdata, ...profesoresdata)
 module.exports = {
   access,
   alumnosAccess,
-  profesoresAccess
+  profesoresAccess,
 }

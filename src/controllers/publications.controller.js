@@ -62,7 +62,7 @@ const separateImgsAndDocs = (files, req) => {
         path: file.path,
       })
     } else {
-      const filePath =  crearRuta(req,file.filename)
+      const filePath = crearRuta(req, file.filename)
 
       // Si es un documento entonces lo guardo en documentos
       documents.push({

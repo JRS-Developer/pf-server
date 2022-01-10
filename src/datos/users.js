@@ -302,7 +302,6 @@ const users = [
     country: 'Argentina',
     roleId: '606c0802-5332-4531-9189-eac84e6fcceb',
   },
-
 ]
 
 module.exports = { users }

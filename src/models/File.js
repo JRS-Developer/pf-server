@@ -7,18 +7,18 @@ const File = conn.define('file', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
-	name : {
-		type: DataTypes.STRING,
-		allowNull: false
-	},
-	url: {
-		type: DataTypes.STRING,
-		allowNull: false
-	},
-	type: {
-		type: DataTypes.STRING,
-		allowNull: false
-	}
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  url: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  type: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 })
 
 module.exports = File

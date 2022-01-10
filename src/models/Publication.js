@@ -50,8 +50,8 @@ Publication.belongsTo(Materia)
 School.hasMany(Publication)
 Publication.belongsTo(School)
 
-CicloLectivo.hasMany(Publication, {foreignKey: 'cicloLectivoId'})
-Publication.belongsTo(CicloLectivo, {foreignKey: 'cicloLectivoId'})
+CicloLectivo.hasMany(Publication, { foreignKey: 'cicloLectivoId' })
+Publication.belongsTo(CicloLectivo, { foreignKey: 'cicloLectivoId' })
 
 // INFO: El post_id y postID es adrede, sin esto no funciona la asociacion entre file como imagen y file como document, si no se hace asi, al colocar setImages() pondra las imagenes en images y documents.
 Publication.hasMany(File, { as: 'images', foreignKey: 'postId' })
