@@ -3,6 +3,7 @@ const Joi = require('joi')
 const path = require('path')
 const uploadImage = require('../utils')
 const fs = require('fs-extra')
+const crearRuta = require('../utils/crearRutaDoc')
 
 const getPostSchema = Joi.object({
   classId: Joi.string().uuid(),
@@ -61,9 +62,8 @@ const separateImgsAndDocs = (files, req) => {
         path: file.path,
       })
     } else {
-      const filePath = encodeURI(
-        `${req.protocol}://${req.get('host')}/files/${file.filename}`
-      )
+      const filePath = crearRuta(req, file.filename)
+
       // Si es un documento entonces lo guardo en documentos
       documents.push({
         name,
