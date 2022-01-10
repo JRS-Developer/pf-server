@@ -6,21 +6,21 @@ const fs = require('fs-extra')
 const crearRuta = require('../utils/crearRutaDoc')
 
 const getPostSchema = Joi.object({
-  classId: Joi.string().uuid(),
-  materiaId: Joi.string().uuid(),
+  classId: Joi.string().uuid().allow(null),
+  materiaId: Joi.string().uuid().allow(null),
   cicloLectivoId: Joi.string().uuid(),
   schoolId: Joi.string().uuid(),
-}).and('classId', 'materiaId', 'cicloLectivoId', 'schoolId')
+})
 
 const createPubliSchema = Joi.object({
   title: Joi.string().required(),
   text: Joi.string().required(),
   publisher_id: Joi.string().uuid().required(),
-  classId: Joi.string().uuid(),
-  materiaId: Joi.string().uuid(),
+  classId: Joi.string().uuid().allow(null),
+  materiaId: Joi.string().uuid().allow(null),
   cicloLectivoId: Joi.string().uuid(),
   schoolId: Joi.string().uuid(),
-}).and('classId', 'materiaId', 'cicloLectivoId', 'schoolId')
+})
 
 const updatePubliSchema = Joi.object({
   title: Joi.string().allow('', null),
@@ -96,8 +96,8 @@ const getPublications = async (req, res, next) => {
     const { materiaId, classId, schoolId, cicloLectivoId } = req.query
 
     const data = {
-      materiaId,
-      classId,
+      materiaId: materiaId || null,
+      classId: classId || null,
       cicloLectivoId,
       schoolId,
     }
@@ -140,7 +140,7 @@ const getPublications = async (req, res, next) => {
       order: [['createdAt', 'DESC']],
     }
 
-    if (data.materiaId) options.where = { ...options.where, ...data }
+    options.where = { ...options.where, ...data }
 
     let publications = await Publication.findAll(options)
 
