@@ -11,7 +11,7 @@ const {
 const getNotas = async (req, res, next) => {
   try {
     const { school_id, clase_id, ciclo_lectivo_id, id } = req.body // id => id de la materia
-    const {student} = req.query;
+    const { student } = req.query
 
     let whereMatricula = {
       school_id,
@@ -19,7 +19,7 @@ const getNotas = async (req, res, next) => {
       ciclo_lectivo_id,
     }
 
-    if(student === 'true'){
+    if (student === 'true') {
       whereMatricula.student_id = res.locals.userId
     }
 
