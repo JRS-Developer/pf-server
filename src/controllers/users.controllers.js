@@ -1,10 +1,10 @@
-const { User, Role, Classes, Access } = require('../models/')
+const { User, Role, /* Classes, */ Access } = require('../models/')
 const { alumnosAccess, profesoresAccess } = require('../datos/access')
 const Joi = require('joi')
 const uploadImage = require('../utils')
 const fs = require('fs-extra')
 const path = require('path')
-const { access } = require('fs')
+// const { access } = require('fs')
 
 const NO_USER_FOUND = "There isn't any user with that id"
 

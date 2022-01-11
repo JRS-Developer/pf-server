@@ -6,6 +6,7 @@ const {
   getMatriculaById,
   createMatricula,
   updateMatriculaById,
+  getMatriculaByUserId,
   getDatosMatricula,
   getStudentMatricula,
 } = require('../controllers/matricula.controller')
@@ -13,16 +14,17 @@ const {
 const {
   verifyToken,
   esSuperUser,
-  esSuperUserOrAdmin,
 } = require('../middlewares/auth')
 
 router.use(verifyToken)
 
-router.get('/', esSuperUserOrAdmin, getMatriculas)
-router.get('/:id', esSuperUserOrAdmin, getMatriculaById)
+router.get('/',  getMatriculas)
+router.get('/:id', getMatriculaById)
+router.get('/user/:id', getMatriculaByUserId)
 router.post('/', esSuperUser, createMatricula)
 router.put('/:id', esSuperUser, updateMatriculaById)
 router.get('/datos/matricula', getDatosMatricula)
 router.post('/students/matricula', getStudentMatricula)
+
 
 module.exports = router

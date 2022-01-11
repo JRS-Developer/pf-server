@@ -13,7 +13,7 @@ const {
   verifyToken,
   esSuperUser,
   esSuperUserOrAdmin,
-} = require('../middlewares/auth')
+  } = require('../middlewares/auth')
 
 router.use(verifyToken)
 

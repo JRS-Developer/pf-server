@@ -7,11 +7,11 @@ const {
   getSchoolById,
 } = require('../controllers/schools.controller')
 
-const { verifyToken, esSuperUser, esSuperUserOrAdminOrProfesor} = require('../middlewares/auth')
+const { verifyToken, esSuperUser} = require('../middlewares/auth')
 
 router.use(verifyToken)
 
-router.get('/', esSuperUserOrAdminOrProfesor, getSchools)
+router.get('/', getSchools)
 router.get('/:id', esSuperUser, getSchoolById)
 router.post('/', esSuperUser, createSchool)
 
