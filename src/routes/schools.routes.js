@@ -7,7 +7,7 @@ const {
   getSchoolById,
 } = require('../controllers/schools.controller')
 
-const { verifyToken, esSuperUser} = require('../middlewares/auth')
+const { verifyToken, esSuperUser } = require('../middlewares/auth')
 
 router.use(verifyToken)
 

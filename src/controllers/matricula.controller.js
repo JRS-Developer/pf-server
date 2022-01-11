@@ -90,9 +90,7 @@ const getMatriculaByUserId = async (req, res, next) => {
   const { id } = req.params
 
   try {
-    const userFind = await Matricula.findOne( {where: {student_id:id}
-
-    })
+    const userFind = await Matricula.findOne({ where: { student_id: id } })
 
     return res.json(userFind)
   } catch (error) {
@@ -100,7 +98,6 @@ const getMatriculaByUserId = async (req, res, next) => {
     next(error)
   }
 }
-
 
 const createMatricula = async (req, res, next) => {
   try {

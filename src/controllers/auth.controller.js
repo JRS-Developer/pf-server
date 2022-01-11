@@ -53,7 +53,7 @@ const loginUser = async (req, res, next) => {
       token,
       user: userFound.id,
       message: 'Sesión iniciada correctamente',
-      role: userFound.role.name
+      role: userFound.role.name,
     })
   } catch (error) {
     console.error(error)
