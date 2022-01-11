@@ -13,6 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@pusher/push-notifications-server": "^1.2.4",
+    "@pusher/push-notifications-web": "^1.1.0",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^1.27.1",
     "cors": "^2.8.5",
@@ -27,7 +29,8 @@
     "nodemon": "^2.0.15",
     "pg": "^8.7.1",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.12.0-alpha.1"
+    "sequelize": "^6.12.0-alpha.1",
+    "web-push": "^3.4.5"
   },
   "devDependencies": {
     "chai": "^4.3.4",
