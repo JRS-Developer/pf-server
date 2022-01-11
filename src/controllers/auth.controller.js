@@ -26,7 +26,6 @@ const loginUser = async (req, res, next) => {
       include: { model: Role },
       where: { email },
     })
-
     // Sino existe le retorno un error
     if (!userFound)
       return res
@@ -43,14 +42,19 @@ const loginUser = async (req, res, next) => {
     // Creo el token almacenandole el id del usuario y sus roles
     // INFO: Lo mas probable es que despues se quiera guardar tambien los access, pero falta gestionar esa tabla.
     const token = jwt.sign(
-      { id: userFound.id, roles: userFound.roleId, email: userFound.email },
+      { id: userFound.id, roleId: userFound.roleId, email: userFound.email },
       secret,
       {
         expiresIn: '24h',
       }
     )
 
-    res.json({ token, user: userFound.id, message: 'Sesión iniciada correctamente' })
+    res.json({
+      token,
+      user: userFound.id,
+      message: 'Sesión iniciada correctamente',
+      role: userFound.role.name,
+    })
   } catch (error) {
     console.error(error)
     next(error)

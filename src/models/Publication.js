@@ -5,6 +5,8 @@ const Like = require('./Like')
 const Materia = require('./Materias')
 const Class = require('./Classes')
 const File = require('./File')
+const CicloLectivo = require('./CicloElectivo')
+const School = require('./Schools')
 
 const Publication = conn.define('publication', {
   id: {
@@ -44,6 +46,12 @@ Publication.belongsTo(Class)
 
 Materia.hasMany(Publication)
 Publication.belongsTo(Materia)
+
+School.hasMany(Publication)
+Publication.belongsTo(School)
+
+CicloLectivo.hasMany(Publication, { foreignKey: 'cicloLectivoId' })
+Publication.belongsTo(CicloLectivo, { foreignKey: 'cicloLectivoId' })
 
 // INFO: El post_id y postID es adrede, sin esto no funciona la asociacion entre file como imagen y file como document, si no se hace asi, al colocar setImages() pondra las imagenes en images y documents.
 Publication.hasMany(File, { as: 'images', foreignKey: 'postId' })

@@ -1,10 +1,10 @@
-const { User, Role, Classes, Access } = require('../models/')
-const { alumnosAccess } = require('../datos/access')
+const { User, Role, /* Classes, */ Access } = require('../models/')
+const { alumnosAccess, profesoresAccess } = require('../datos/access')
 const Joi = require('joi')
 const uploadImage = require('../utils')
 const fs = require('fs-extra')
 const path = require('path')
-const { access } = require('fs')
+// const { access } = require('fs')
 
 const NO_USER_FOUND = "There isn't any user with that id"
 
@@ -15,7 +15,7 @@ const createUserSchema = Joi.object({
   email: Joi.string().email().required(),
   password: Joi.string().required(),
   avatar: Joi.string().allow('', null),
-  birthdate: Joi.date(),
+  birthdate: Joi.date().required(),
   identification: Joi.string().required(),
   country: Joi.string().required(),
   roleId: Joi.string().guid().allow('', null),
@@ -88,7 +88,7 @@ const getUserById = async (req, res, next) => {
 }
 
 //get para obtener datos de usuarios por roles
-const getUsersByRole = async (req, res) => {
+const getUsersByRole = async (req, res, next) => {
   try {
     const { role_id } = req.body
 
@@ -143,7 +143,7 @@ const createUser = async (req, res, next) => {
     //se crea el nuevo objeto en la BD
     const usuario = await User.create(data)
     //mensaje satisfactorio
-    res.json({ message: 'User created successfully' })
+    res.status(201).json({ message: 'User created successfully' })
 
     //Si el user es Alumno le genero accesos por default.
     const findrole = await Role.findByPk(data.roleId)
@@ -159,6 +159,20 @@ const createUser = async (req, res, next) => {
         })
       )
       await Access.bulkCreate(alumno)
+    }
+
+    // Si es profesor le asigno los accesos por default
+    if (findrole && findrole.dataValues.name === 'Profesor') {
+      const profesor = []
+      //profesorAccess es un array con modulos y acciones importado de datos/access.js
+      profesoresAccess.forEach((element) =>
+        profesor.push({
+          user_id: usuario.dataValues.id,
+          module_id: element.module_id,
+          action_id: element.action_id,
+        })
+      )
+      await Access.bulkCreate(profesor)
     }
 
     //en caso de haber error es manejado por el catch

@@ -7,12 +7,21 @@ const creaCicloElectivoSchema = Joi.object({
 })
 
 const getCicloElectivos = async (req, res, next) => {
+  const { status } = req.query
+  console.log(typeof status)
   try {
+    let cicloElectivos
+    if (status === 'true') {
+      cicloElectivos = await CicloElectivo.findAll({
+        where: {
+          status: true,
+        },
+      })
+    } else {
+      cicloElectivos = await CicloElectivo.findAll()
+    }
 
-    const cicloElectivos = await CicloElectivo.findAll()
-
-    return res.json(cicloElectivos);
-
+    return res.json(cicloElectivos)
   } catch (error) {
     console.error(error)
     next(error)
@@ -25,12 +34,12 @@ const createCicloElectivo = async (req, res, next) => {
 
     // Validar datos
     const { error } = creaCicloElectivoSchema.validate({
-      name
+      name,
     })
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     await CicloElectivo.create({
-      name
+      name,
     })
 
     return res.json({ message: 'Ciclo Electivo created successfully' })
@@ -65,19 +74,19 @@ const updateCicloElectivoById = async (req, res, next) => {
     const { name } = req.body
     const { id } = req.params
 
-    if( !req.body.name ){
+    if (!req.body.name) {
       const updated = await CicloElectivo.update(
         { status: req.body.status },
         {
           where: {
-            id
-          }
+            id,
+          },
         }
       )
       if (updated.length) {
         return res.json({ message: 'Status updated successfully' })
       }
-    }else{
+    } else {
       const updated = await CicloElectivo.update(
         { name },
         {
@@ -86,7 +95,7 @@ const updateCicloElectivoById = async (req, res, next) => {
           },
         }
       )
-      console.log(updated);
+      console.log(updated)
       if (updated.length) {
         return res.json({ message: 'Ciclo Electivos updated successfully' })
       }

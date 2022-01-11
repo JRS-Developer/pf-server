@@ -1,6 +1,6 @@
 const Task = require('./Task/Task')
 const StudentTask = require('./Task/StudentTask')
-const Notes = require('./Notes')
+const HomeworkGrade = require('./HomeworkGrade')
 const Schools = require('./Schools')
 const Classes = require('./Classes')
 const Materias = require('./Materias')
@@ -13,11 +13,15 @@ const Publication = require('./Publication')
 const Like = require('./Like')
 const CicloElectivo = require('./CicloElectivo')
 const Matricula = require('./Matricula')
+const ExamenesNotas = require('./ExamenesNotas')
+
+const TeachersMaterias = require('./TeachersMaterias')
+
 const File = require('./File')
 
 module.exports = {
   Task,
-  Notes,
+  HomeworkGrade,
   Classes,
   Schools,
   Materias,
@@ -31,5 +35,7 @@ module.exports = {
   Like,
   CicloElectivo,
   Matricula,
-	File
+  TeachersMaterias,
+  File,
+  ExamenesNotas,
 }

@@ -11,11 +11,9 @@ const creaActionSchema = Joi.object({
 
 const getActions = async (req, res, next) => {
   try {
-
     const actions = await Action.findAll()
 
-    return res.json(actions);
-
+    return res.json(actions)
   } catch (error) {
     console.error(error)
     next(error)
@@ -74,7 +72,7 @@ const updateActionById = async (req, res, next) => {
     const { name, action_param, onclick, icon } = req.body
     const { id } = req.params
 
-    if( !req.body.name ){
+    if (!req.body.name) {
       const updated = await Action.update(
         { status: req.body.status },
         {
@@ -86,7 +84,7 @@ const updateActionById = async (req, res, next) => {
       if (updated.length) {
         return res.json({ message: 'Status updated successfully' })
       }
-    }else{
+    } else {
       const updated = await Action.update(
         { name, action_param, onclick, icon },
         {
@@ -95,7 +93,7 @@ const updateActionById = async (req, res, next) => {
           },
         }
       )
-      console.log(updated);
+      console.log(updated)
       if (updated.length) {
         return res.json({ message: 'Actions updated successfully' })
       }

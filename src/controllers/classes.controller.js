@@ -1,7 +1,6 @@
 const { Classes, Schools, Materias } = require('../models/')
 const Joi = require('joi')
 const { conn: sequelize } = require('../db')
-const { materias } = require('../datos/materias')
 
 const getClassesSchema = Joi.object({
   school_id: Joi.string().guid().required(),
@@ -32,7 +31,14 @@ const getClassesBySchoolId = async (req, res, next) => {
     if (error) return res.status(400).json({ error: error.details[0].message })
 
     const classes = await Classes.findAll({
-      include: [{ model: Materias, through: { attributes: [] } },{model:Schools, through:{where:{schoolId:school_id},attributes:[]},right: true} ],
+      include: [
+        { model: Materias, through: { attributes: [] } },
+        {
+          model: Schools,
+          through: { where: { schoolId: school_id }, attributes: [] },
+          right: true,
+        },
+      ],
     })
 
     res.json(classes)
@@ -60,15 +66,7 @@ const getClasses = async (req, res, next) => {
       ],
     })
 
-    let listClases = classes.map((clase) => {
-      clase = clase.toJSON()
-      return {
-        ...clase,
-        school: clase.school?.name,
-      }
-    })
-
-    res.json(listClases)
+    res.json(classes)
   } catch (error) {
     console.error(error)
     next(error)
@@ -77,7 +75,7 @@ const getClasses = async (req, res, next) => {
 
 const createClass = async (req, res, next) => {
   try {
-    const { name, school_ids , materia_ids } = req.body // materia_ids = [] de ids de materias
+    const { name, school_ids, materia_ids } = req.body // materia_ids = [] de ids de materias
 
     // Validacion de los parametros del body
     const { error } = createClassSchema.validate({ name, school_ids })
@@ -110,6 +108,10 @@ const getClassById = async (req, res, next) => {
         {
           model: Materias,
           through: { attributes: [] },
+        },
+        {
+          model: Schools,
+          attributes: ['id', 'name'],
         },
       ],
     })
@@ -156,9 +158,11 @@ const updateClassById = async (req, res, next) => {
       return res.json({ message: 'class updated' })
     }
 
-    materia_ids && updatedClasses && updatedClasses[0]?.setMaterias?.(materia_ids) //materia_ids es un array de id de materias.
+    materia_ids &&
+      updatedClasses &&
+      updatedClasses[0]?.setMaterias?.(materia_ids) //materia_ids es un array de id de materias.
     school_ids && updatedClasses && updatedClasses[0]?.setSchools?.(school_ids)
-    
+
     if (count === 0)
       return res.status(400).json({ error: 'No se pudo actualizar la clase.' })
 

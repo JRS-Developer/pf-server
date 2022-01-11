@@ -1,10 +1,9 @@
-
 const rol = {
   sAdmin: 'SuperAdmin',
   admin: 'Admin',
   profesor: 'Profesor',
   alumno: 'Alumno',
-  tutor: 'Tutor'
+  tutor: 'Tutor',
 }
 
 module.exports = {
@@ -20,8 +19,8 @@ module.exports = {
     { id: 8, name: 'Juan', rol: rol.alumno },
   ],
   aulas: [
-    { id: 1, name: " Aula general", userId: [3] },
-    { id: 2, name: "Aula de Valentin", userId: [2, 3, 4] },
-    { id: 3, name: "Aula de Luan", userId: [5, 8, 7] }
-  ]
+    { id: 1, name: ' Aula general', userId: [3] },
+    { id: 2, name: 'Aula de Valentin', userId: [2, 3, 4] },
+    { id: 3, name: 'Aula de Luan', userId: [5, 8, 7] },
+  ],
 }

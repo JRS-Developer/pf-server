@@ -3,26 +3,37 @@ const Joi = require('joi')
 const path = require('path')
 const uploadImage = require('../utils')
 const fs = require('fs-extra')
+const crearRuta = require('../utils/crearRutaDoc')
 
 const getPostSchema = Joi.object({
-  classId: Joi.string().guid(),
-  materiaId: Joi.string().guid(),
+  classId: Joi.string().uuid().allow(null),
+  materiaId: Joi.string().uuid().allow(null),
+  cicloLectivoId: Joi.string().uuid(),
+  schoolId: Joi.string().uuid(),
 })
 
 const createPubliSchema = Joi.object({
   title: Joi.string().required(),
   text: Joi.string().required(),
   publisher_id: Joi.string().uuid().required(),
-  classId: Joi.string().guid(),
-  materiaId: Joi.string().guid(),
+  classId: Joi.string().uuid().allow(null),
+  materiaId: Joi.string().uuid().allow(null),
+  cicloLectivoId: Joi.string().uuid(),
+  schoolId: Joi.string().uuid(),
 })
 
 const updatePubliSchema = Joi.object({
   title: Joi.string().allow('', null),
   text: Joi.string().allow('', null),
   status: Joi.bool(),
-  images: Joi.array().items(Joi.string()).allow(null),
-  documents: Joi.array().items(Joi.string()).allow(null),
+  images: Joi.alternatives(
+    Joi.array().items(Joi.string().uuid()).allow(null),
+    Joi.string().uuid()
+  ),
+  documents: Joi.alternatives(
+    Joi.array().items(Joi.string().uuid()).allow(null),
+    Joi.string().uuid()
+  ),
 })
 
 const userMadeLike = (userId, post) =>
@@ -51,9 +62,8 @@ const separateImgsAndDocs = (files, req) => {
         path: file.path,
       })
     } else {
-      const filePath = encodeURI(
-        `${req.protocol}://${req.get('host')}/files/${file.filename}`
-      )
+      const filePath = crearRuta(req, file.filename)
+
       // Si es un documento entonces lo guardo en documentos
       documents.push({
         name,
@@ -83,9 +93,16 @@ const uploadImagesAndUnlink = async (images) => {
 const getPublications = async (req, res, next) => {
   try {
     const userId = res.locals.userId
-    const { materiaId, classId } = req.query
+    const { materiaId, classId, schoolId, cicloLectivoId } = req.query
 
-    const { error } = getPostSchema.validate()
+    const data = {
+      materiaId: materiaId || null,
+      classId: classId || null,
+      cicloLectivoId,
+      schoolId,
+    }
+
+    const { error } = getPostSchema.validate(data)
 
     if (error) return res.status(400).json({ error: error.details[0].message })
 
@@ -117,9 +134,13 @@ const getPublications = async (req, res, next) => {
           },
         },
       ],
+      where: {
+        status: true,
+      },
+      order: [['createdAt', 'DESC']],
     }
 
-    if (materiaId && classId) options.where = { materiaId, classId }
+    options.where = { ...options.where, ...data }
 
     let publications = await Publication.findAll(options)
 
@@ -189,15 +210,25 @@ const getOnePublication = async (req, res, next) => {
 const createPublication = async (req, res, next) => {
   try {
     // Obtengo la data del body
-    const { title, text, publisher_id, materiaId, classId } = req.body
-    let data = { title, text, publisher_id }
+    const {
+      title,
+      text,
+      publisher_id,
+      materiaId,
+      classId,
+      cicloLectivoId,
+      schoolId,
+    } = req.body
 
-    if (materiaId && classId)
-      data = {
-        ...data,
-        materiaId,
-        classId,
-      }
+    const data = {
+      title,
+      text,
+      publisher_id,
+      materiaId,
+      classId,
+      cicloLectivoId,
+      schoolId,
+    }
 
     // Valido datos
     const { error } = createPubliSchema.validate(data)
@@ -214,6 +245,7 @@ const createPublication = async (req, res, next) => {
     const docsDB = await File.bulkCreate(documents)
 
     // Creo la publicacion y coloco sus documentos e imagenes
+
     const newPost = await Publication.create(data)
     await newPost?.setDocuments?.(docsDB)
     await newPost?.setImages?.(imgsDB)
@@ -265,15 +297,16 @@ const updatePublication = async (req, res, next) => {
     // Si imgSReq y docsReq tienen valores entonces los añado al array images y documents
     if (imgsDB.length) {
       // Si images no es mandado, da un error de que no es array, asi que debo hacer una comprobacion
-      if (Array.isArray(images)) images = [...images, imgsDB]
+      if (Array.isArray(images)) images = [...images, ...imgsDB]
       else {
-        images = imgsDB
+        // Ya que images puede ser un string, si es un string entonces lo guardo en un array junto a imgsDB e igual con los documentos
+        images = images ? [images, ...imgsDB] : imgsDB
       }
     }
     if (docsDB.length) {
-      if (Array.isArray(documents)) documents = [...documents, docsDB]
+      if (Array.isArray(documents)) documents = [...documents, ...docsDB]
       else {
-        documents = docsDB
+        documents = documents ? [documents, ...docsDB] : docsDB
       }
     }
 
