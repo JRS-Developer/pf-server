@@ -4,6 +4,7 @@ const cors = require('cors')
 const helmet = require('helmet')
 const routes = require('./routes')
 const config = require('./lib/config')
+const server = require('./services')
 
 const app = express()
 
@@ -17,7 +18,7 @@ app.use(
 )
 app.use(helmet())
 app.use('/files', express.static('files'))
-
+app.use('/webpush', server)
 app.use('/api', routes)
 
 module.exports = app
