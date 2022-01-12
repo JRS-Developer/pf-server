@@ -1,6 +1,9 @@
 const webpush = require('./webpushConfig')
 const { Subscription, Notification } = require('../models')
 
+// message: string que contiene el mensaje a enviar
+// url: string que contiene la url a la que se enviara el mensaje
+// receivers: array de strings uuid de los usuarios a los que se enviara el mensaje
 const createNotification = async (message, url, receivers) => {
   try {
     // Creo la notificacion
@@ -12,7 +15,7 @@ const createNotification = async (message, url, receivers) => {
     // Envio la notificacion a todos los receivers
     let promises = receivers.map(
       async (r) =>
-        await Subscription.findAll(/* { where: { userId: r } } */).then(
+        await Subscription.findAll({ where: { userId: r } }).then(
           async (subs) => {
             return Promise.allSettled(
               subs.map((sub) => {

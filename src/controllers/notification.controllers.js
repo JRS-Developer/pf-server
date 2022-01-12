@@ -21,8 +21,7 @@ const subscription = async (req, res, next) => {
       userId: user,
     })
 
-    const response = await webpush.sendNotification(sub, 'test')
-    console.log(response)
+    await webpush.sendNotification(sub, 'test')
 
     res.sendStatus(200)
   } catch (error) {
