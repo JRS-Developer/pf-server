@@ -326,10 +326,6 @@ const adminAccess = [
     module_id: '92d8947d-42d8-4db9-a732-529a9532b2e6',
     action_id: '318caf13-5c64-4aec-91fb-26abca03c348',
   },
-  {
-    module_id: '92d8947d-42d8-4db9-a732-529a9532b2e6',
-    action_id: 'f33c5435-9cb2-4d18-8530-e37f28fd231d',
-  },
 ]
 
 const alumnosAccess = [
