@@ -17,8 +17,6 @@ const subscription = async (req, res, next) => {
     // Creo la subscripcion
     const res = await Subscription.create({ ...sub, userId: user })
 
-    await webpush.sendNotification(req.body.sub, 'Hello World!')
-    console.log('conexión exitosa')
     res.json({ msg: 'conexión exitosa' })
   } catch (error) {
     next(error)

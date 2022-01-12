@@ -1,6 +1,7 @@
 const Joi = require('joi')
 const { Task, Matricula, StudentTask, User, File } = require('../models')
 const crearRuta = require('../utils/crearRutaDoc')
+const { createNotification } = require('../services/notifications')
 
 // Schemas
 const getTasksSchema = Joi.object({
@@ -125,6 +126,8 @@ const createTask = async (req, res, next) => {
     task.setMatriculas(matriculas)
 
     // Envio la notificacion a los estudiantes
+    const students = [...new Set(matriculas.map((m) => m.student_id))]
+    createNotification('Tarea nueva creada', 'https://google.com', students)
 
     return res.json({ message: 'Task created successfully' })
   } catch (error) {
