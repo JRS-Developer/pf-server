@@ -44,6 +44,7 @@ const getMatriculas = async (req, res, next) => {
         class: matricula.class.name,
         ciclo_electivo: matricula.ciclo_electivo.name,
         school: matricula.school.name,
+        status: matricula.status
       })
     })
 
