@@ -20,8 +20,12 @@ const subscription = async (req, res, next) => {
       keys: JSON.stringify(sub.keys),
       userId: user,
     })
+    const payload = JSON.stringify({
+      title: 'Nueva subscripcion',
+      body: `${user} se ha suscrito a las notificaciones`,
+    })
 
-    await webpush.sendNotification(sub, 'test')
+    await webpush.sendNotification(sub, payload)
 
     res.sendStatus(200)
   } catch (error) {
