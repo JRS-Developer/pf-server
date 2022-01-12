@@ -15,20 +15,11 @@ const Subscription = conn.define('subscriptions', {
   },
   expirationTime: {
     type: DataTypes.DATE,
-
     allowNull: false,
   },
   keys: {
     type: DataTypes.JSON,
     allowNull: false,
-  },
-  userId: {
-    type: DataTypes.UUID,
-    allowNull: false,
-    references: {
-      model: User,
-      key: 'id',
-    },
   },
 })
 

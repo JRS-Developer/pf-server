@@ -124,6 +124,8 @@ const createTask = async (req, res, next) => {
     //Le asigno la tarea a los estudiantes mediante su matricula
     task.setMatriculas(matriculas)
 
+    // Envio la notificacion a los estudiantes
+
     return res.json({ message: 'Task created successfully' })
   } catch (error) {
     console.error(error)
