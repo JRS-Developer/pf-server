@@ -27,6 +27,14 @@ const actions = [
     action_param: 'access',
     icon: 'admin_panel_settings',
   },
+  {
+    id: '0c377e51-7c25-41f0-9a25-8cf2b0e6b048',
+    name: 'Ver',
+    onclick: 'handleClickOpen',
+    action_param: 'ver',
+    icon: 'visibility',
+  },
+  
 ]
 
 const modules = [
