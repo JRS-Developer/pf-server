@@ -54,6 +54,10 @@ const User = conn.define('users', {
     type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
+  online: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  },
   avatar: DataTypes.STRING, // Opcional
 })
 

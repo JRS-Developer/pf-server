@@ -16,7 +16,17 @@ const io = new Server(server, {
 
 //inicializamos socket.io
 io.on('connection', (socket) => {
+
   console.log('Nueva conexion')
+  socket.on('online', (user) => {
+    
+  })
+
+  socket.on('notification', (data) => {
+    
+    data.receivers
+  })
+
   socket.on('disconnect', () => {
     console.log('Conexion terminada')
   })
