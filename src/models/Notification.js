@@ -2,22 +2,22 @@ const { DataTypes } = require('sequelize')
 const { conn } = require('../db')
 const User = require('./User')
 
-const Notification = conn.define('publication', {
+const Notification = conn.define('notification', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
   message: {
-    type: String,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   url: {
-    type: String,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   status: {
-    type: Boolean,
+    type: DataTypes.BOOLEAN,
     defaultValue: true,
   },
 })
