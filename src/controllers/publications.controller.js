@@ -245,6 +245,7 @@ const createPublication = async (req, res, next) => {
     const docsDB = await File.bulkCreate(documents)
 
     // Creo la publicacion y coloco sus documentos e imagenes
+
     const newPost = await Publication.create(data)
     await newPost?.setDocuments?.(docsDB)
     await newPost?.setImages?.(imgsDB)
