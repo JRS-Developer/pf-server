@@ -162,14 +162,6 @@ const sUserAccess = [
     module_id: '6a0ecd53-8566-48ae-89c4-c9dbbf647091',
     action_id: '30fe307d-363c-46d3-8cf5-184254e45198',
   },
-  {
-    module_id: '6a0ecd53-8566-48ae-89c4-c9dbbf647091',
-    action_id: '318caf13-5c64-4aec-91fb-26abca03c348',
-  },
-  {
-    module_id: '6a0ecd53-8566-48ae-89c4-c9dbbf647091',
-    action_id: 'f33c5435-9cb2-4d18-8530-e37f28fd231d',
-  },
   //  Clases
   {
     module_id: 'cebc1da6-3402-4d58-844e-2407b189c826',
