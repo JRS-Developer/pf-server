@@ -86,6 +86,19 @@ const getMatriculaById = async (req, res, next) => {
   }
 }
 
+const getMatriculaByUserId = async (req, res, next) => {
+  const { id } = req.params
+
+  try {
+    const userFind = await Matricula.findOne({ where: { student_id: id } })
+
+    return res.json(userFind)
+  } catch (error) {
+    console.error(error)
+    next(error)
+  }
+}
+
 const createMatricula = async (req, res, next) => {
   try {
     const { fecha, student_id, school_id, clase_id, ciclo_lectivo_id } =
@@ -246,6 +259,7 @@ module.exports = {
   getMatriculas,
   createMatricula,
   getMatriculaById,
+  getMatriculaByUserId,
   updateMatriculaById,
   getDatosMatricula,
   getStudentMatricula,

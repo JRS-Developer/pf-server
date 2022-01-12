@@ -18,7 +18,7 @@ app.use(
 )
 app.use(helmet())
 app.use('/files', express.static('files'))
-app.use('/webpush',server)
+app.use('/webpush', server)
 app.use('/api', routes)
 
 module.exports = app

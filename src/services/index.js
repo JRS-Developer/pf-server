@@ -1,11 +1,10 @@
-const router = require('express').Router();
-const webpush = require('./webpushConfig');
+const router = require('express').Router()
 const {
-    subscription
-} = require('../controllers/notification.controllers');
+  subscription,
+  getNotifications,
+} = require('../controllers/notification.controllers')
 
 router.post('/subscription', subscription)
-
-
+router.get('/notifications', getNotifications)
 
 module.exports = router

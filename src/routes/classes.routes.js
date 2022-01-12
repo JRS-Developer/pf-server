@@ -26,5 +26,4 @@ router.get('/clase/:id', esSuperUserOrAdminOrProfesor, getClassById) //sUser, ad
 router.put('/:id', esSuperUserOrAdmin, updateClassById) //sUser, admin y los participantes(profesor participante, verificar q sea profesor en el rol)
 router.delete('/:id', esSuperUserOrAdmin, deleteClassById)
 
-
 module.exports = router

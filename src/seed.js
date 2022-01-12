@@ -43,6 +43,7 @@ conn.sync({ force: true }).then(async () => {
   await intialMateriasAsignadasAProfe()
 
   console.log('Cargado los datos default en la base de datos! :D')
+  return
 
   async function initialRoles() {
     await Role.bulkCreate(roles)
@@ -87,7 +88,12 @@ conn.sync({ force: true }).then(async () => {
           icon: dt.icon,
           module_id: dt.module_id,
         })
-
+        if (dt.id === '9c137ea3-5958-47c9-bd91-91766d322141') {
+          //le asigno la action ver solo al modulo noticias!
+          newModule.then(function (res) {
+            res.addAction(actions[4].id)
+          })
+        }
         newModule.then(function (res) {
           res.addActions(arrayActionsIds)
           $saveData.push(newModule)
