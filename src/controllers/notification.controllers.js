@@ -40,6 +40,7 @@ const getNotifications = async (req, res, next) => {
   }
 }
 
+// Esta funcion tal vez no se necesite, pero por si acaso
 const createNotification = async (req, res, next) => {
   try {
     const { message, url, receivers } = req.body

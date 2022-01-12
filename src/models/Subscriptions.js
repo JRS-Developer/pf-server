@@ -2,7 +2,7 @@ const { conn } = require('../db')
 const User = require('./User')
 const { DataTypes } = require('sequelize')
 
-const Subscription = conn.define('subscriptions', {
+const Subscription = conn.define('subscription', {
   id: {
     type: DataTypes.UUID,
     defaultValue: DataTypes.UUIDV4,
@@ -23,7 +23,8 @@ const Subscription = conn.define('subscriptions', {
   },
 })
 
-User.belongsTo(Subscription, { foreignKey: 'userId', sourceKey: 'id' })
-Subscription.hasMany(User, { foreignKey: 'userId', sourceKey: 'id' })
+User.hasMany(Subscription)
+
+Subscription.belongsTo(User)
 
 module.exports = Subscription
