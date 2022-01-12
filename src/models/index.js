@@ -17,6 +17,8 @@ const ExamenesNotas = require('./ExamenesNotas')
 const TeachersMaterias = require('./TeachersMaterias')
 
 const File = require('./File')
+const Subscription = require('./Subscriptions')
+const Notification = require('./Notification')
 
 module.exports = {
   Task,
@@ -36,4 +38,6 @@ module.exports = {
   TeachersMaterias,
   File,
   ExamenesNotas,
+  Subscription,
+  Notification,
 }
