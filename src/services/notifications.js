@@ -1,6 +1,5 @@
 const webpush = require('./webpushConfig')
 const { Subscription, Notification } = require('../models')
-const { cors: web } = require('../lib/config')
 
 // message: string que contiene el mensaje a enviar
 // url: string que contiene la url relativo a la cual se enviara el mensaje, ej: /tasks/1, /materias/1
@@ -31,7 +30,7 @@ const sendNotification = async ({ title, message, url, receivers }) => {
     const payload = JSON.stringify({
       title,
       message,
-      url: url ? `${web}/${url}` : null,
+      url: url ? url : null,
     })
 
     console.log('payload', payload)
