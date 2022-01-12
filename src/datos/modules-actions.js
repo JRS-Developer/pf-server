@@ -34,7 +34,6 @@ const actions = [
     action_param: 'ver',
     icon: 'visibility',
   },
-  
 ]
 
 const modules = [
