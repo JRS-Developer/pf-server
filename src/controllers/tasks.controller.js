@@ -127,7 +127,15 @@ const createTask = async (req, res, next) => {
 
     // Envio la notificacion a los estudiantes
     const students = [...new Set(matriculas.map((m) => m.student_id))]
-    createNotification(`Tarea nueva creada, ${title} `, 'https://google.com', students)
+
+    const notification = {
+      title: 'Nueva Tarea',
+      message: `Tarea ${title} asignada por el profesor`,
+      url: `/tareas/${task.id}`,
+      receivers: students,
+    }
+
+    createNotification(notification)
 
     return res.json({ message: 'Task created successfully' })
   } catch (error) {
