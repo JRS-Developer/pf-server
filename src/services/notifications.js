@@ -1,17 +1,38 @@
 const webpush = require('./webpushConfig')
 const { Subscription, Notification } = require('../models')
+const { cors: web } = require('../lib/config')
 
 // message: string que contiene el mensaje a enviar
-// url: string que contiene la url a la que se enviara el mensaje
+// url: string que contiene la url relativo a la cual se enviara el mensaje, ej: /tasks/1, /materias/1
 // receivers: array de strings uuid de los usuarios a los que se enviara el mensaje
-const createNotification = async (message, url, receivers) => {
+const createNotification = async ({ title, message, url, receivers }) => {
   try {
     // Creo la notificacion
-    const newNotification = await Notification.create({ message, url })
+    const newNotification = await Notification.create({ message, url, title })
+
+    // Envio las notificaciones
+    await sendNotification({
+      message,
+      url,
+      receivers,
+      title,
+    })
 
     // Asigno los que van a recibir la notificacion
     await newNotification.setUsers(receivers)
+  } catch (error) {
+    console.error(error)
+    throw error
+  }
+}
 
+const sendNotification = async ({ title, message, url, receivers }) => {
+  try {
+    const payload = JSON.stringify({
+      title,
+      message,
+      url: `${web}/${url}`,
+    })
     // Envio la notificacion a todos los receivers
     let promises = receivers.map(
       async (r) =>
@@ -21,19 +42,20 @@ const createNotification = async (message, url, receivers) => {
               subs.map((sub) => {
                 sub = sub.toJSON()
                 sub = { ...sub, keys: JSON.parse(sub.keys) }
-                console.log('sub', sub)
-                return webpush.sendNotification(sub, message)
+                return webpush.sendNotification(sub, payload)
               })
-            ).then((results) => {
-              console.log('exitos', results)
-              results.forEach((result) => {
-                if (result.status === 'rejected') {
-                  console.log(result.reason)
-                }
+            )
+              .then((results) => {
+                console.log('exitos', results)
+                results.forEach((result) => {
+                  if (result.status === 'rejected') {
+                    console.log(result.reason)
+                  }
+                })
               })
-            }).catch((err) => {
-              console.error('error linea 30', err)
-            })
+              .catch((err) => {
+                console.error('error linea 30', err)
+              })
           }
         )
     )
@@ -45,7 +67,6 @@ const createNotification = async (message, url, receivers) => {
     throw error
   }
 }
-
 module.exports = {
   createNotification,
 }

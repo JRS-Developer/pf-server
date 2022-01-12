@@ -8,6 +8,10 @@ const Notification = conn.define('notification', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true,
   },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   message: {
     type: DataTypes.STRING,
     allowNull: false,
