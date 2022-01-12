@@ -8,7 +8,7 @@ CUIDADO, ESTE ARCHIVO ESTÁ DEPRECADO
 CUIDADO, ESTE ARCHIVO ESTÁ DEPRECADO
 */
 
-const { ne } = require('sequelize/dist/lib/operators')
+// const { ne } = require('sequelize/dist/lib/operators')
 const HomeworkGrade = require('../models/HomeworkGrade')
 const Joi = require('joi')
 

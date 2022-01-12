@@ -1,4 +1,4 @@
-const webpush = require('../webpushConfig')
+const webpush = require('./webpushConfig')
 const { Subscription, Notification } = require('../models')
 
 const createNotification = async ({ message, url, receivers }) => {
