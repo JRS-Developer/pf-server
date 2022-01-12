@@ -31,8 +31,10 @@ const sendNotification = async ({ title, message, url, receivers }) => {
     const payload = JSON.stringify({
       title,
       message,
-      url: `${web}/${url}`,
+      url: url ? `${web}/${url}` : null,
     })
+
+    console.log('payload', payload)
     // Envio la notificacion a todos los receivers
     let promises = receivers.map(
       async (r) =>
