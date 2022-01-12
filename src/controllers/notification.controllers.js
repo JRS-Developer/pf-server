@@ -15,7 +15,7 @@ const subscription = async (req, res, next) => {
     }
 
     // Creo la subscripcion
-    const res = await Subscription.create({ ...sub, userId: user })
+    await Subscription.create({ ...sub, keys: JSON.stringify(sub.keys), userId: user })
 
     res.json({ msg: 'conexión exitosa' })
   } catch (error) {

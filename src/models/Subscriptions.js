@@ -15,7 +15,7 @@ const Subscription = conn.define('subscription', {
   },
   expirationTime: {
     type: DataTypes.DATE,
-    allowNull: false,
+    allowNull: true
   },
   keys: {
     type: DataTypes.JSON,
