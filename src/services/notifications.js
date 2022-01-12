@@ -22,6 +22,7 @@ const createNotification = async (message, url, receivers) => {
                 return webpush.sendNotification(sub, message)
               })
             ).then((results) => {
+              console.log('exitos', results)
               results.forEach((result) => {
                 if (result.status === 'rejected') {
                   console.log(result.reason)
