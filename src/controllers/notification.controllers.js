@@ -15,9 +15,37 @@ const subscription = async (req, res, next) => {
     }
 
     // Creo la subscripcion
-    await Subscription.create({ ...sub, keys: JSON.stringify(sub.keys), userId: user })
+    await Subscription.create({
+      ...sub,
+      keys: JSON.stringify(sub.keys),
+      userId: user,
+    })
 
-    res.json({ msg: 'conexión exitosa' })
+    res.sendStatus(200)
+  } catch (error) {
+    next(error)
+    console.error(error)
+  }
+}
+
+const updateSubscribe = async (req, res, next) => {
+  try {
+    const { user, endpoint, newSubscription } = req.body
+    console.log('actualizando', req.body)
+
+    // Actualizo la subscripcion
+    const newSub = await Subscription.update(
+      {
+        keys: JSON.stringify(newSubscription.keys),
+        endpoint: newSubscription.endpoint,
+      },
+      {
+        where: { userId: user, endpoint: endpoint },
+      }
+    )
+    console.log('Se actualizo la subscripcion', newSub)
+
+    res.sendStatus(200)
   } catch (error) {
     next(error)
     console.error(error)
@@ -76,4 +104,5 @@ const createNotification = async (req, res, next) => {
 module.exports = {
   subscription,
   getNotifications,
+  updateSubscribe,
 }
