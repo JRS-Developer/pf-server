@@ -14,17 +14,27 @@ const createNotification = async (message, url, receivers) => {
       async (r) =>
         await Subscription.findAll(/* { where: { userId: r } } */).then(
           async (subs) => {
-            return subs.map(async (sub) => {
-              sub = sub.toJSON()
-              sub = {...sub, keys: JSON.parse(sub.keys)}
-              return await webpush.sendNotification(sub, message)
+            return Promise.allSettled(
+              subs.map((sub) => {
+                sub = sub.toJSON()
+                sub = { ...sub, keys: JSON.parse(sub.keys) }
+                console.log('sub', sub)
+                return webpush.sendNotification(sub, message)
+              })
+            ).then((results) => {
+              results.forEach((result) => {
+                if (result.status === 'rejected') {
+                  console.log(result.reason)
+                }
+              })
+            }).catch((err) => {
+              console.error('error linea 30', err)
             })
           }
         )
     )
 
-    const results = await Promise.allSettled(promises)
-    console.log(results)
+    let results = await Promise.allSettled(promises)
     return results
   } catch (error) {
     console.error(error)
