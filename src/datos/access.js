@@ -374,7 +374,15 @@ const profesoresAccess = [
   //  Classroom
   {
     module_id: 'b3602ada-16bf-44b4-8c24-2a35a5539c58',
-    action_id: '0c377e51-7c25-41f0-9a25-8cf2b0e6b048',
+    action_id: '30fe307d-363c-46d3-8cf5-184254e45198',
+  },
+  {
+    module_id: 'b3602ada-16bf-44b4-8c24-2a35a5539c58',
+    action_id: '318caf13-5c64-4aec-91fb-26abca03c348',
+  },
+  {
+    module_id: 'b3602ada-16bf-44b4-8c24-2a35a5539c58',
+    action_id: 'f33c5435-9cb2-4d18-8530-e37f28fd231d',
   },
 ]
 
