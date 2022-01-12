@@ -97,6 +97,20 @@ const users = [
     country: 'Argentina',
     roleId: 'a83af560-8a48-4edd-83eb-6bd3f7e97861',
   },
+  // ADMINISTRATIVO
+  {
+    id: 'f53105d6-51f0-41ea-b293-0880add49fb8',
+    firstName: 'Escuela',
+    lastName: 'Gaia',
+    userName: 'administracion',
+    birthdate: '2021-12-03',
+    identification: '123456789',
+    email: 'administracion@hotmail.com',
+    password: '1234',
+    country: 'Gaia',
+    roleId: '633c2cda-d0f1-40f8-b07c-041a8cc217be',
+  },
+
   //ALUMNOS
   {
     id: 'cb270528-8125-466c-847a-3948b71f76bc',

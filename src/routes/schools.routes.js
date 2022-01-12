@@ -11,7 +11,7 @@ const { verifyToken, esSuperUser } = require('../middlewares/auth')
 
 router.use(verifyToken)
 
-router.get('/', esSuperUser, getSchools)
+router.get('/', getSchools)
 router.get('/:id', esSuperUser, getSchoolById)
 router.post('/', esSuperUser, createSchool)
 

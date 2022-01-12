@@ -26,7 +26,6 @@ const loginUser = async (req, res, next) => {
       include: { model: Role },
       where: { email },
     })
-
     // Sino existe le retorno un error
     if (!userFound)
       return res
@@ -54,6 +53,7 @@ const loginUser = async (req, res, next) => {
       token,
       user: userFound.id,
       message: 'Sesión iniciada correctamente',
+      role: userFound.role.name,
     })
   } catch (error) {
     console.error(error)

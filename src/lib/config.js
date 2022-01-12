@@ -15,6 +15,8 @@ const config = {
   cors: process.env.CORS || 'http://localhost:3000',
   secret: process.env.SECRET,
   dbURL: process.env.DATABASE_URL,
+  private_vapid_key: process.env.PRIVATE_KEY,
+  public_vapid_key: process.env.PUBLIC_KEY,
   // Heroku db url
 }
 
