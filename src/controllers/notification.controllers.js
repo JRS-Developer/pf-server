@@ -1,5 +1,6 @@
 const Subscription = require('../models/Subscriptions')
-const Notification = require('../models/Notification')
+const Notification = require('../models/Notification/Notification')
+const UserNotification = require('../models/Notification/UserNotification')
 const User = require('../models/User')
 const webpush = require('../services/webpushConfig')
 
@@ -66,12 +67,42 @@ const getNotifications = async (req, res, next) => {
     const notifications = await Notification.findAll({
       include: {
         model: User,
-        where: { id: userId, status: true },
-        order: [['createdAt', 'DESC']],
+        where: { id: userId },
+        attributes: [],
+        through: {
+          where: { status: true },
+          attributes: [],
+        },
       },
+      order: [['createdAt', 'DESC']],
     })
 
     res.json(notifications)
+  } catch (error) {
+    next(error)
+    console.error(error)
+  }
+}
+
+const deleteNotifications = async (req, res, next) => {
+  try {
+    const { notificationsIds } = req.body
+    const userId = res.locals.userId || req.body.userId
+    console.log(req.body)
+    console.log(userId)
+
+    // Elimino las notificaciones
+    let promises = notificationsIds.map(
+      async (id) =>
+        await UserNotification.update(
+          { status: false },
+          { where: { notificationId: id, userId } }
+        )
+    )
+
+    await Promise.all(promises)
+
+    res.status(200).json({ message: 'Notificaciones eliminadas' })
   } catch (error) {
     next(error)
     console.error(error)
@@ -115,4 +146,5 @@ module.exports = {
   subscription,
   getNotifications,
   updateSubscribe,
+  removeNotifications: deleteNotifications,
 }

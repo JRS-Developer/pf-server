@@ -18,7 +18,7 @@ const TeachersMaterias = require('./TeachersMaterias')
 
 const File = require('./File')
 const Subscription = require('./Subscriptions')
-const Notification = require('./Notification')
+const Notification = require('./Notification/Notification')
 
 module.exports = {
   Task,
