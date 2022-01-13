@@ -43,6 +43,7 @@ conn.sync({ force: true }).then(async () => {
   await intialMateriasAsignadasAProfe()
 
   console.log('Cargado los datos default en la base de datos! :D')
+  return
 
   async function initialRoles() {
     await Role.bulkCreate(roles)
