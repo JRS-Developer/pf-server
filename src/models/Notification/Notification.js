@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize')
-const { conn } = require('../db')
-const User = require('./User')
+const { conn } = require('../../db')
+const User = require('../User')
+const UserNotification = require('./UserNotification')
 
 const Notification = conn.define('notification', {
   id: {
@@ -26,7 +27,12 @@ const Notification = conn.define('notification', {
   },
 })
 
-Notification.belongsToMany(User, { through: 'user_notification' })
-User.belongsToMany(Notification, { through: 'user_notification' })
+// Sender TODO: Agregar esta relacion para tener la info del quien lo encia
+// User.hasMany(Notification, { as: 'sender', foreignKey: 'senderId' })
+// Notification.belongsTo(User, { as: 'sender', foreignKey: 'senderId' })
+
+// Receivers
+Notification.belongsToMany(User, { through: UserNotification })
+User.belongsToMany(Notification, { through: UserNotification })
 
 module.exports = Notification
