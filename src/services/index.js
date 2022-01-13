@@ -3,8 +3,9 @@ const {
   subscription,
   getNotifications,
 } = require('../controllers/notification.controllers')
+const { verifyToken } = require('../middlewares/auth')
 
 router.post('/subscription', subscription)
-router.get('/notifications', getNotifications)
+router.get('/notifications', verifyToken, getNotifications)
 
 module.exports = router

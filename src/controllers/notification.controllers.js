@@ -1,5 +1,6 @@
 const Subscription = require('../models/Subscriptions')
 const Notification = require('../models/Notification')
+const User = require('../models/User')
 const webpush = require('../services/webpushConfig')
 
 const subscription = async (req, res, next) => {
@@ -63,8 +64,11 @@ const getNotifications = async (req, res, next) => {
     const { userId } = req.query
 
     const notifications = await Notification.findAll({
-      where: { userId, status: true },
-      order: [['createdAt', 'DESC']],
+      include: {
+        model: User,
+        where: { id: userId, status: true },
+        order: [['createdAt', 'DESC']],
+      },
     })
 
     res.json(notifications)
