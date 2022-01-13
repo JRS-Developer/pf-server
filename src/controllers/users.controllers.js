@@ -316,6 +316,15 @@ const deleteUser = async (req, res, next) => {
   }
 }
 
+// const setOnline = async (req, res, next) => {
+
+//   try {
+    
+//   } catch (error) {
+    
+//   }
+// }
+
 //put para cambiar rol de usuario
 const setUserRole = async (req, res, next) => {
   try {

@@ -152,6 +152,7 @@ const createNotification = async (req, res, next) => {
 module.exports = {
   subscription,
   getNotifications,
+  createNotification,
   updateSubscribe,
   removeNotifications: deleteNotifications,
 }
