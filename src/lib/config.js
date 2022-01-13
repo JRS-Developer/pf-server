@@ -17,6 +17,7 @@ const config = {
   dbURL: process.env.DATABASE_URL,
   private_vapid_key: process.env.PRIVATE_KEY,
   public_vapid_key: process.env.PUBLIC_KEY,
+  api: process.env.API || 'http://localhost:3001/api'
   // Heroku db url
 }
 

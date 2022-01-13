@@ -1,12 +1,14 @@
 const config = require('./lib/config')
 //traemos express para poder usarlo
 const app = require('./app')
+const axios = require('axios')
 //conectamos express a http para poder luego conectar al webSocket server
 const http = require('http')
 const server = http.createServer(app)
 
 //conectamos el server con la webSocket
 const { Server } = require('socket.io')
+const { userInfo } = require('os')
 const io = new Server(server, {
   cors: {
     origin: config.cors,
@@ -14,17 +16,28 @@ const io = new Server(server, {
   },
 })
 
+const onlineUsers = []
+
 //inicializamos socket.io
 io.on('connection', (socket) => {
 
   console.log('Nueva conexion')
   socket.on('online', (user) => {
-    
+
+    const userInfo = axios.get(`${config.api}/matriculas/user/${user}`)
+
+    console.log(info)
+
   })
 
-  socket.on('notification', (data) => {
+  socket.on('notification', async (data) => {
     
-    data.receivers
+   const receivers = await axios.post(`${config.api}/matriculas/student/matricula`, data)
+
+   receivers.forEach(user => {
+
+   })
+
   })
 
   socket.on('disconnect', () => {
