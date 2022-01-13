@@ -28,8 +28,8 @@ const Notification = conn.define('notification', {
 })
 
 // Sender TODO: Agregar esta relacion para tener la info del quien lo encia
-// User.hasMany(Notification, { as: 'sender', foreignKey: 'senderId' })
-// Notification.belongsTo(User, { as: 'sender', foreignKey: 'senderId' })
+User.hasMany(Notification, { as: 'sender', foreignKey: 'senderId' })
+Notification.belongsTo(User, { as: 'sender', foreignKey: 'senderId' })
 
 // Receivers
 Notification.belongsToMany(User, { through: UserNotification })

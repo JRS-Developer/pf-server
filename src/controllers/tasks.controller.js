@@ -133,6 +133,7 @@ const createTask = async (req, res, next) => {
       message: `Tarea ${title} asignada por el profesor`,
       url: `/tareas/${task.id}`,
       receivers: students,
+      senderId: res.locals.userId,
     }
 
     createNotification(notification)

@@ -65,15 +65,22 @@ const getNotifications = async (req, res, next) => {
     const { userId } = req.query
 
     const notifications = await Notification.findAll({
-      include: {
-        model: User,
-        where: { id: userId },
-        attributes: [],
-        through: {
-          where: { status: true },
+      include: [
+        {
+          model: User,
+          where: { id: userId },
           attributes: [],
+          through: {
+            where: { status: true },
+            attributes: [],
+          },
         },
-      },
+        {
+          model: User,
+          as: 'sender',
+          attributes: ['id', 'firstName', 'lastName', 'avatar'],
+        },
+      ],
       order: [['createdAt', 'DESC']],
     })
 

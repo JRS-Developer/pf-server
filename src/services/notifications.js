@@ -4,10 +4,21 @@ const { Subscription, Notification } = require('../models')
 // message: string que contiene el mensaje a enviar
 // url: string que contiene la url relativo a la cual se enviara el mensaje, ej: /tasks/1, /materias/1
 // receivers: array de strings uuid de los usuarios a los que se enviara el mensaje
-const createNotification = async ({ title, message, url, receivers }) => {
+const createNotification = async ({
+  title,
+  message,
+  url,
+  receivers,
+  senderId,
+}) => {
   try {
     // Creo la notificacion
-    const newNotification = await Notification.create({ message, url, title })
+    const newNotification = await Notification.create({
+      message,
+      url,
+      title,
+      senderId,
+    })
 
     // Envio las notificaciones
     await sendNotification({
