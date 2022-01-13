@@ -20,24 +20,23 @@ const onlineUsers = []
 
 //inicializamos socket.io
 io.on('connection', (socket) => {
-
   console.log('Nueva conexion')
   socket.on('online', async (user) => {
-
     const userInfo = await axios.get(`${config.api}/matriculas/user/${user}`)
 
     console.log(userInfo)
-
   })
 
   socket.on('notification', async (data) => {
-    
-   const receivers = await axios.post(`${config.api}/matriculas/student/matricula`, data)
+    const receivers = await axios.post(
+      `${config.api}/matriculas/student/matricula`,
+      data
+    )
 
-   console.log(receivers)
-  //  receivers.forEach(user => {
+    console.log(receivers)
+    //  receivers.forEach(user => {
 
-  //  })
+    //  })
   })
 
   socket.on('disconnect', () => {

@@ -7,5 +7,4 @@ webpush.setVapidDetails(
   private_vapid_key
 )
 
-
 module.exports = webpush
