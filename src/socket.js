@@ -20,7 +20,6 @@ const onlineUsers = []
 
 //inicializamos socket.io
 io.on('connection', (socket) => {
-
   console.log('Nueva conexion')
   socket.on('online', async (user) => {
 

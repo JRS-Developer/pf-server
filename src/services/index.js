@@ -10,5 +10,4 @@ router.post('/subscription', subscription)
 router.get('/notifications', verifyToken, getNotifications)
 router.delete('/notifications', verifyToken, removeNotifications)
 
-
 module.exports = router
