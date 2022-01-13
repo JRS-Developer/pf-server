@@ -22,11 +22,11 @@ const onlineUsers = []
 io.on('connection', (socket) => {
 
   console.log('Nueva conexion')
-  socket.on('online', (user) => {
+  socket.on('online', async (user) => {
 
-    const userInfo = axios.get(`${config.api}/matriculas/user/${user}`)
+    const userInfo = await axios.get(`${config.api}/matriculas/user/${user}`)
 
-    console.log(info)
+    console.log(userInfo)
 
   })
 
@@ -34,10 +34,10 @@ io.on('connection', (socket) => {
     
    const receivers = await axios.post(`${config.api}/matriculas/student/matricula`, data)
 
-   receivers.forEach(user => {
+   console.log(receivers)
+  //  receivers.forEach(user => {
 
-   })
-
+  //  })
   })
 
   socket.on('disconnect', () => {
